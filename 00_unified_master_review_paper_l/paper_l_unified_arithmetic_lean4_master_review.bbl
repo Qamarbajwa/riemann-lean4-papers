@@ -1,0 +1,120 @@
+\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
+\providecommand{\MR}{\relax\ifhmode\unskip\space\fi MR }
+% \MRhref is called by the amsart/book/proc definition of \MR.
+\providecommand{\MRhref}[2]{%
+  \href{http://www.ams.org/mathscinet-getitem?mr=#1}{#2}
+}
+\providecommand{\href}[2]{#2}
+\begin{thebibliography}{10}
+
+\bibitem{BaezDuarte2003}
+Luis B{\'a}ez-Duarte, \emph{A strengthening of the {N}yman--{B}eurling
+  criterion for the {R}iemann hypothesis}, Rendiconti Lincei --- Matematica e
+  Applicazioni \textbf{14} (2003), no.~1, 5--11.
+
+\bibitem{BaezDuarte2005}
+\bysame, \emph{A {G}enerality on the {N}yman--{B}eurling {C}riterion for the
+  {R}iemann {H}ypothesis}, Journal of Number Theory \textbf{113} (2005), no.~1,
+  1--10.
+
+\bibitem{BaezDuarteBalazardLandreauSaias2000}
+Luis B{\'a}ez-Duarte, Michel Balazard, Bernard Landreau, and {\'E}ric Saias,
+  \emph{Notes sur la fonction {$\zeta$} de {R}iemann, {III}: {A}pproximation de
+  {D}irichlet par des polyn{\^o}mes trigonom{\'e}triques}, Advances in
+  Mathematics \textbf{149} (2000), no.~1, 130--144.
+
+\bibitem{Bagchi2006}
+Bhaskar Bagchi, \emph{On {N}yman, {B}eurling and {B}{\'a}ez-{D}uarte's
+  {H}ilbert space reformulation of the {R}iemann hypothesis}, Proceedings of
+  the Indian Academy of Sciences --- Mathematical Sciences \textbf{116} (2006),
+  no.~2, 137--146.
+
+\bibitem{BalazardSaiasYor1999}
+Michel Balazard, {\'E}ric Saias, and Marc Yor, \emph{Notes sur la fonction
+  {$\zeta$} de {R}iemann, {I}}, Advances in Mathematics \textbf{143} (1999),
+  no.~2, 284--287.
+
+\bibitem{BettinConrey2013}
+Sandro Bettin and J.~Brian Conrey, \emph{Period functions and cotangent sums},
+  Algebra \& Number Theory \textbf{7} (2013), no.~1, 215--242.
+
+\bibitem{Beurling1955}
+Arne Beurling, \emph{A closure problem related to the {R}iemann zeta-function},
+  Proceedings of the National Academy of Sciences of the United States of
+  America \textbf{41} (1955), no.~5, 312--314.
+
+\bibitem{Burnol2002}
+Jean-Fran{\c{c}}ois Burnol, \emph{A lower bound in an approximation problem
+  involving the zeros of the {R}iemann zeta function}, Advances in Mathematics
+  \textbf{170} (2002), no.~1, 56--70.
+
+\bibitem{deLaValleePoussin1899}
+Charles-Jean {de la Vall{\'e}e Poussin}, \emph{Sur la fonction {$\zeta(s)$} de
+  {R}iemann et le nombre des nombres premiers inf{\'e}rieurs {\`a} une limite
+  donn{\'e}e}, M{\'e}moires couronn{\'e}s et autres m{\'e}moires publi{\'e}s
+  par l'Acad{\'e}mie Royale des Sciences, des Lettres et des Beaux-Arts de
+  Belgique \textbf{59} (1899), 1--74.
+
+\bibitem{deMouraUllrich2021}
+Leonardo de~Moura and Sebastian Ullrich, \emph{The {L}ean 4 theorem prover and
+  programming language}, Automated Deduction --- CADE 28, Lecture Notes in
+  Computer Science, vol. 12699, Springer, 2021, pp.~625--635.
+
+\bibitem{Hardy1914}
+Godfrey~Harold Hardy, \emph{Sur les z{\'e}ros de la fonction {$\zeta(s)$} de
+  {R}iemann}, Comptes Rendus de l'Acad{\'e}mie des Sciences \textbf{158}
+  (1914), 1012--1014.
+
+\bibitem{Littlewood1912}
+John~Edensor Littlewood, \emph{Quelques cons{\'e}quences de l'hypoth{\`e}se que
+  la fonction {$\zeta(s)$} de {R}iemann n'a pas de z{\'e}ros dans le demi-plan
+  {$\operatorname{Re}(s) > \frac{1}{2}$}}, Comptes Rendus de l'Acad{\'e}mie des
+  Sciences \textbf{154} (1912), 263--266.
+
+\bibitem{MaierRassias2016}
+Helmut Maier and Michael~Th. Rassias, \emph{Generalizations of a cotangent sum
+  associated to the {E}stermann zeta function}, Communications in Contemporary
+  Mathematics \textbf{18} (2016), no.~1, 1550078.
+
+\bibitem{MunawerRiemannBlueprint2026}
+Qamar Munawer, \emph{{RiemannBlueprint}: Formally verified modular {L}ean
+  4.35.0 arithmetic framework surrounding the {R}iemann zeta function}, Zenodo
+  Software Archive Hub~07, 2026.
+
+\bibitem{Nyman1950}
+Bertil Nyman, \emph{On the one-dimensional translation group and semi-group in
+  certain function spaces}, Ph.D. thesis, Uppsala University, 1950.
+
+\bibitem{Riemann1859}
+Bernhard Riemann, \emph{{\"{U}}ber die {A}nzahl der {P}rimzahlen unter einer
+  gegebenen {G}r{\"{o}}sse}, Monatsberichte der K{\"{o}}niglichen
+  Preu{\ss}ischen Akademie der Wissenschaften zu Berlin (1859), 671--680.
+
+\bibitem{Selberg1942}
+Atle Selberg, \emph{On the zeros of {R}iemann's zeta-function}, Skrifter utgitt
+  av Det Norske Videnskaps-Akademi i Oslo, Matematisk-Naturvidenskapelig Klasse
+  \textbf{10} (1942), 1--59.
+
+\bibitem{mathlibCommunity2020}
+{The mathlib Community}, \emph{The {L}ean mathematical library}, Proceedings of
+  the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs
+  (CPP 2020), ACM, 2020, pp.~367--381.
+
+\bibitem{Titchmarsh1986}
+Edward~Charles Titchmarsh, \emph{The theory of the {R}iemann zeta-function},
+  2nd ed., Oxford University Press, Oxford, 1986, Revised by D. R. Heath-Brown.
+
+\bibitem{Vasyunin1995}
+Vasily~Ivanovich Vasyunin, \emph{On a biorthogonal system associated with the
+  {R}iemann hypothesis}, Algebra i Analiz \textbf{7} (1995), no.~3, 118--135.
+
+\bibitem{vonKoch1901}
+Helge {von Koch}, \emph{Sur la distribution des nombres premiers}, Acta
+  Mathematica \textbf{24} (1901), 159--182.
+
+\bibitem{Weingartner2007}
+Andreas Weingartner, \emph{On a question of {B}alazard and {S}aias related to
+  the {R}iemann hypothesis}, Advances in Mathematics \textbf{208} (2007),
+  no.~2, 905--908.
+
+\end{thebibliography}

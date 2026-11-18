@@ -99,6 +99,13 @@ All 55 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` a
 - **Hub 09 (Paper G):** `10.5281/zenodo.24328921`
 - **Hub 10 (Paper H):** `10.5281/zenodo.24328927`
 - **Hub 11 (Paper I):** `10.5281/zenodo.24328929`
-- **Hub 12 (Paper J):** `10.5281/zenodo.24330500`
-- **Hub 13 (Paper K):** `10.5281/zenodo.24344084` *(prev `24343525`, `24342906`, `24342619`, `24342096`, `24341228`, `24341007`, `24339838`)*
-- **Hub 14 (Paper L — Unified Master Review):** Published live at `10.5281/zenodo.24344093` *(prev `24343534`, `24342950`, `24342626`, `24342101`, `24341718`, `24341498`; supplemented by `10.5281/zenodo.24329861`)*
+- **Hub 12 (Paper J):** `10.5281/zenodo.24344628` *(prev `24330500`, `24330400`)*
+- **Hub 13 (Paper K):** `10.5281/zenodo.24344631` *(prev `24344084`, `24343525`, `24342906`, `24342619`, `24342096`, `24341228`, `24341007`, `24339838`)*
+- **Hub 14 (Paper L — Unified Master Review):** Published live at `10.5281/zenodo.24344632` *(prev `24344093`, `24343534`, `24342950`, `24342626`, `24342101`, `24341718`, `24341498`; supplemented by `10.5281/zenodo.24329861`)*
+
+---
+
+## 5. Zotero BibTeX Integration & Citation-Style Switching
+Every manuscript package (`PAPER_J_SUBMISSION_PACKAGE`, `PAPER_K_SUBMISSION_PACKAGE`, `PAPER_L_SUBMISSION_PACKAGE`) ships the master BibTeX database `riemann_master_references.bib` paired with pre-generated `.bbl` files:
+- **Zotero Import / Better BibTeX Sync:** In Zotero, choose **File $\to$ Import...** and select `riemann_master_references.bib` (or configure Better BibTeX auto-export to track the file directly). All historical and contemporary entries include full bibliographic metadata and standard DOIs.
+- **Switching Journal Styles in LaTeX:** Each `.tex` file uses `\bibliographystyle{amsplain}` and `\bibliography{riemann_master_references}`. Replace `amsplain` with any standard style (`amsalpha`, `apalike`, `unsrtnat`, `elsarticle-num`) and re-run `pdflatex -> bibtex -> pdflatex -> pdflatex`.

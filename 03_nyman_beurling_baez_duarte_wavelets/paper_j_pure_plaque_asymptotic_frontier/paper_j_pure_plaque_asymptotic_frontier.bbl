@@ -1,0 +1,58 @@
+\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
+\providecommand{\MR}{\relax\ifhmode\unskip\space\fi MR }
+% \MRhref is called by the amsart/book/proc definition of \MR.
+\providecommand{\MRhref}[2]{%
+  \href{http://www.ams.org/mathscinet-getitem?mr=#1}{#2}
+}
+\providecommand{\href}[2]{#2}
+\begin{thebibliography}{10}
+
+\bibitem{BaezDuarte2003}
+Luis B{\'a}ez-Duarte, \emph{A strengthening of the {N}yman--{B}eurling
+  criterion for the {R}iemann hypothesis}, Rendiconti Lincei --- Matematica e
+  Applicazioni \textbf{14} (2003), no.~1, 5--11.
+
+\bibitem{BaezDuarteBalazardLandreauSaias2000}
+Luis B{\'a}ez-Duarte, Michel Balazard, Bernard Landreau, and {\'E}ric Saias,
+  \emph{Notes sur la fonction {$\zeta$} de {R}iemann, {III}: {A}pproximation de
+  {D}irichlet par des polyn{\^o}mes trigonom{\'e}triques}, Advances in
+  Mathematics \textbf{149} (2000), no.~1, 130--144.
+
+\bibitem{Beurling1955}
+Arne Beurling, \emph{A closure problem related to the {R}iemann zeta-function},
+  Proceedings of the National Academy of Sciences of the United States of
+  America \textbf{41} (1955), no.~5, 312--314.
+
+\bibitem{deMouraUllrich2021}
+Leonardo de~Moura and Sebastian Ullrich, \emph{The {L}ean 4 theorem prover and
+  programming language}, Automated Deduction --- CADE 28, Lecture Notes in
+  Computer Science, vol. 12699, Springer, 2021, pp.~625--635.
+
+\bibitem{MunawerPaperE2026}
+Qamar Munawer, \emph{Constructive candidate sequences and cotangent gram matrix
+  benchmarks on the {B}{\'a}ez--{D}uarte subspace}, Zenodo Preprint Archive
+  Hub~06, 2026.
+
+\bibitem{MunawerRiemannBlueprint2026}
+\bysame, \emph{{RiemannBlueprint}: Formally verified modular {L}ean 4.35.0
+  arithmetic framework surrounding the {R}iemann zeta function}, Zenodo
+  Software Archive Hub~07, 2026.
+
+\bibitem{Nyman1950}
+Bertil Nyman, \emph{On the one-dimensional translation group and semi-group in
+  certain function spaces}, Ph.D. thesis, Uppsala University, 1950.
+
+\bibitem{mathlibCommunity2020}
+{The mathlib Community}, \emph{The {L}ean mathematical library}, Proceedings of
+  the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs
+  (CPP 2020), ACM, 2020, pp.~367--381.
+
+\bibitem{Titchmarsh1986}
+Edward~Charles Titchmarsh, \emph{The theory of the {R}iemann zeta-function},
+  2nd ed., Oxford University Press, Oxford, 1986, Revised by D. R. Heath-Brown.
+
+\bibitem{Vasyunin1995}
+Vasily~Ivanovich Vasyunin, \emph{On a biorthogonal system associated with the
+  {R}iemann hypothesis}, Algebra i Analiz \textbf{7} (1995), no.~3, 118--135.
+
+\end{thebibliography}

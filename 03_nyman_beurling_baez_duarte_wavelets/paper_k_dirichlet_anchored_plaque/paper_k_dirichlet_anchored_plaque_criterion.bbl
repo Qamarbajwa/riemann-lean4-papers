@@ -1,0 +1,59 @@
+\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
+\providecommand{\MR}{\relax\ifhmode\unskip\space\fi MR }
+% \MRhref is called by the amsart/book/proc definition of \MR.
+\providecommand{\MRhref}[2]{%
+  \href{http://www.ams.org/mathscinet-getitem?mr=#1}{#2}
+}
+\providecommand{\href}[2]{#2}
+\begin{thebibliography}{10}
+
+\bibitem{BaezDuarte2003}
+Luis B{\'a}ez-Duarte, \emph{A strengthening of the {N}yman--{B}eurling
+  criterion for the {R}iemann hypothesis}, Rendiconti Lincei --- Matematica e
+  Applicazioni \textbf{14} (2003), no.~1, 5--11.
+
+\bibitem{BaezDuarteBalazardLandreauSaias2000}
+Luis B{\'a}ez-Duarte, Michel Balazard, Bernard Landreau, and {\'E}ric Saias,
+  \emph{Notes sur la fonction {$\zeta$} de {R}iemann, {III}: {A}pproximation de
+  {D}irichlet par des polyn{\^o}mes trigonom{\'e}triques}, Advances in
+  Mathematics \textbf{149} (2000), no.~1, 130--144.
+
+\bibitem{Bagchi2006}
+Bhaskar Bagchi, \emph{On {N}yman, {B}eurling and {B}{\'a}ez-{D}uarte's
+  {H}ilbert space reformulation of the {R}iemann hypothesis}, Proceedings of
+  the Indian Academy of Sciences --- Mathematical Sciences \textbf{116} (2006),
+  no.~2, 137--146.
+
+\bibitem{BettinConrey2013}
+Sandro Bettin and J.~Brian Conrey, \emph{Period functions and cotangent sums},
+  Algebra \& Number Theory \textbf{7} (2013), no.~1, 215--242.
+
+\bibitem{MaierRassias2016}
+Helmut Maier and Michael~Th. Rassias, \emph{Generalizations of a cotangent sum
+  associated to the {E}stermann zeta function}, Communications in Contemporary
+  Mathematics \textbf{18} (2016), no.~1, 1550078.
+
+\bibitem{MunawerPaperJ2026}
+Qamar Munawer, \emph{Pure 4-point plaque reduction, anchor-drive cancellation,
+  and the diagonal/off-diagonal asymptotic frontier on {$\mathcal{A}_N$}},
+  Zenodo Preprint Archive Hub~12, 2026.
+
+\bibitem{Selberg1942}
+Atle Selberg, \emph{On the zeros of {R}iemann's zeta-function}, Skrifter utgitt
+  av Det Norske Videnskaps-Akademi i Oslo, Matematisk-Naturvidenskapelig Klasse
+  \textbf{10} (1942), 1--59.
+
+\bibitem{Titchmarsh1986}
+Edward~Charles Titchmarsh, \emph{The theory of the {R}iemann zeta-function},
+  2nd ed., Oxford University Press, Oxford, 1986, Revised by D. R. Heath-Brown.
+
+\bibitem{Vasyunin1995}
+Vasily~Ivanovich Vasyunin, \emph{On a biorthogonal system associated with the
+  {R}iemann hypothesis}, Algebra i Analiz \textbf{7} (1995), no.~3, 118--135.
+
+\bibitem{Weingartner2007}
+Andreas Weingartner, \emph{On a question of {B}alazard and {S}aias related to
+  the {R}iemann hypothesis}, Advances in Mathematics \textbf{208} (2007),
+  no.~2, 905--908.
+
+\end{thebibliography}

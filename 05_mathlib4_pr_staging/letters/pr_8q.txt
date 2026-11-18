@@ -1,13 +1,36 @@
 Hello everyone,
 
-This small pull request adds the exact adjacent harmonic cell defect identity and quantitative prime cell lower bound to Mathlib/NumberTheory/LSeries/BaezDuartePrimeCellEnergyFloor.lean.
+In the previous push, we showed that for any prime number p greater than the finite cutoff N, the discrete Nyman cell residual jumps by a fixed amount c 1 (which is -1 under the Dirichlet anchor) when we move from cell p - 1 to cell p. That qualitative jump was enough to prove that the L2 integral on (0, 1] cannot be zero, but it did not give an explicit formula for how much L2 energy each prime p forces into the sum.
 
-Right now, even after proving that every prime greater than N creates a step jump of size c 1 between cells p minus 1 and p, we only know qualitatively that the integral is strictly positive. By completing the square over two adjacent harmonic cell widths, we get a direct algebraic formula and an exact lower bound 1 / (2 * p^2) for every prime p > N under Dirichlet anchoring.
+This single push closes that gap by giving an exact algebraic formula for the combined L2 energy of the two adjacent cells p - 1 and p. Even when we do not know the individual cell values a = discreteCellResidual c N (p - 1) and b = discreteCellResidual c N p, we know their difference b - a = c 1. Because the width of cell p - 1 is 1 / ((p - 1) * p) and the width of cell p is 1 / (p * (p + 1)), their two denominators (p - 1) * p = p^2 - p and p * (p + 1) = p^2 + p add up to 2 * p^2, where the -p and +p cancel out completely. Using this nice cancellation, we complete the square by basic school algebra and prove that every prime p > N contributes at least (c 1)^2 / (2 * p^2), which is 1 / (2 * p^2) when c 1 = -1.
 
-Here is the school-style derivation step by step:
+The step by step maths behind how this works is very simple:
 
-Step 1: Write the sum of two adjacent cell energies a^2 / ((p - 1) * p) + b^2 / (p * (p + 1)) over the common denominator 2 * p^2 * (p - 1) * (p + 1).
-Step 2: Expand (b - a)^2 * (p^2 - 1) + ((p + 1) * a + (p - 1) * b)^2 and notice that the cross terms 2 * (p^2 - 1) * a * b cancel out completely, leaving the exact L2 defect identity.
-Step 3: Because the second square is always non-negative, the pair energy is at least (b - a)^2 / (2 * p^2), which gives 1 / (2 * p^2) whenever b - a = -1 at a prime p > N.
+Step 1: Let a be the constant residual value on cell p - 1 of width 1 / ((p - 1) * p), and let b be the constant residual value on cell p of width 1 / (p * (p + 1)). The combined L2 energy of these two adjacent cells is
+E = a^2 / ((p - 1) * p) + b^2 / (p * (p + 1)).
+
+Step 2: Bring both fractions over the common denominator p * (p - 1) * (p + 1):
+E = ((p + 1) * a^2 + (p - 1) * b^2) / (p * (p - 1) * (p + 1)).
+
+Step 3: Notice that the two weights (p + 1) and (p - 1) in the numerator add up to (p + 1) + (p - 1) = 2 * p. Multiply both the numerator and the denominator by 2 * p:
+2 * p * ((p + 1) * a^2 + (p - 1) * b^2) = ((p + 1) + (p - 1)) * ((p + 1) * a^2 + (p - 1) * b^2).
+
+Step 4: Expand the brackets on the right side and group the cross terms by adding and subtracting 2 * (p + 1) * (p - 1) * a * b:
+((p + 1)^2 * a^2 + 2 * (p + 1) * (p - 1) * a * b + (p - 1)^2 * b^2) + (p + 1) * (p - 1) * (a^2 - 2 * a * b + b^2)
+= ((p + 1) * a + (p - 1) * b)^2 + (p - 1) * (p + 1) * (b - a)^2.
+
+Step 5: Now divide both parts by the full denominator 2 * p^2 * (p - 1) * (p + 1). In the second part, the factor (p - 1) * (p + 1) cancels from top and bottom, leaving the exact identity
+a^2 / ((p - 1) * p) + b^2 / (p * (p + 1)) = (b - a)^2 / (2 * p^2) + ((p + 1) * a + (p - 1) * b)^2 / (2 * p^2 * (p - 1) * (p + 1)).
+
+Step 6: For any prime p >= 2, the denominator 2 * p^2 * (p - 1) * (p + 1) is strictly positive and the square ((p + 1) * a + (p - 1) * b)^2 is >= 0. So the second fraction is always >= 0. Substituting the prime cell jump b - a = c 1 gives
+E >= (c 1)^2 / (2 * p^2),
+and putting in the Dirichlet anchor c 1 = -1 gives E >= 1 / (2 * p^2).
+
+Step 7: Finally, if we take any two primes p and q with N < p, p + 2 <= q, and q <= M, the four cell indices p - 1, p, q - 1, and q are all separate numbers inside {1, ..., M}. Since every cell term in harmonicCellL2PartialSum is a square divided by n * (n + 1) and therefore >= 0, dropping all other cells gives the two-prime lower bound
+harmonicCellL2PartialSum c N M >= 1 / (2 * p^2) + 1 / (2 * q^2).
+
+In the Lean 4 code, the algebraic identity in Step 5 is proved using field_simp and ring, and the finite sum lower bounds use Finset.sum_le_sum_of_subset_of_nonneg on the two-element and four-element subsets of Finset.Icc 1 M.
+
+Please let me know if any theorem names or docstrings should be adjusted.
 
 ai is being used as a tool

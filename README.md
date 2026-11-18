@@ -16,7 +16,7 @@
    - [`paper_b_titchmarsh_vasyunin_criterion`](./03_nyman_beurling_baez_duarte_wavelets/paper_b_titchmarsh_vasyunin_criterion/) — Zenodo DOI: [`10.5281/zenodo.24328037`](https://doi.org/10.5281/zenodo.24328037)
    - [`paper_e_wavelet_dipole_rayleigh`](./03_nyman_beurling_baez_duarte_wavelets/paper_e_wavelet_dipole_rayleigh/) — Zenodo DOI: [`10.5281/zenodo.24328047`](https://doi.org/10.5281/zenodo.24328047)
    - [`paper_f_mellin_converse_and_rouche`](./03_nyman_beurling_baez_duarte_wavelets/paper_f_mellin_converse_and_rouche/) — Zenodo DOI: [`10.5281/zenodo.24328918`](https://doi.org/10.5281/zenodo.24328918)
-   - [`paper_j_pure_plaque_asymptotic_frontier`](./03_nyman_beurling_baez_duarte_wavelets/paper_j_pure_plaque_asymptotic_frontier/) — Zenodo DOI: [`10.5281/zenodo.24330400`](https://doi.org/10.5281/zenodo.24330400)
+   - [`paper_j_pure_plaque_asymptotic_frontier`](./03_nyman_beurling_baez_duarte_wavelets/paper_j_pure_plaque_asymptotic_frontier/) — Zenodo DOI: [`10.5281/zenodo.24330500`](https://doi.org/10.5281/zenodo.24330500)
 4. **[`04_spectral_diagnostics_and_audits`](./04_spectral_diagnostics_and_audits/)**
    - [`paper_h_gram_indefiniteness_arb512`](./04_spectral_diagnostics_and_audits/paper_h_gram_indefiniteness_arb512/) — Zenodo DOI: [`10.5281/zenodo.24328927`](https://doi.org/10.5281/zenodo.24328927)
    - [`paper_i_prime_composite_partition`](./04_spectral_diagnostics_and_audits/paper_i_prime_composite_partition/) — Zenodo DOI: [`10.5281/zenodo.24328929`](https://doi.org/10.5281/zenodo.24328929)

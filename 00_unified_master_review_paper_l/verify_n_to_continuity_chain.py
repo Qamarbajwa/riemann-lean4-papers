@@ -23,7 +23,19 @@ from typing import Dict, List, Tuple
 import mpmath as mp
 
 ROOT = pathlib.Path(__file__).resolve().parent
-UPSTREAM_DIR = ROOT / "RiemannBlueprint" / "RiemannBlueprint" / "UpstreamPRs"
+UPSTREAM_DIR = next(
+    (
+        d
+        for d in (
+            ROOT / "RiemannBlueprint" / "RiemannBlueprint" / "UpstreamPRs",
+            ROOT / "MATHLIB4_PR_STAGING",
+            ROOT.parent / "05_mathlib4_pr_staging",
+            ROOT,
+        )
+        if (d / "UpstreamPR_8N_HarmonicCellL2QuadratureAndPrimeJumps.lean").is_file()
+    ),
+    ROOT / "RiemannBlueprint" / "RiemannBlueprint" / "UpstreamPRs",
+)
 
 CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
     (

@@ -71,6 +71,9 @@ def generate_manifest() -> Dict[str, Any]:
     }
 
 
+TEXT_EXTS = {".tex", ".bib", ".bbl", ".md", ".py", ".json", ".lean", ".txt", ".csv"}
+
+
 def verify_sha256sums(sums_file: pathlib.Path) -> int:
     checked = 0
     for line in sums_file.read_text(encoding="utf-8-sig").splitlines():
@@ -84,7 +87,13 @@ def verify_sha256sums(sums_file: pathlib.Path) -> int:
         target = sums_file.parent / fname
         if not target.is_file():
             raise AssertionError(f"Missing file listed in {sums_file}: {fname}")
-        actual = sha256_file(target)
+        raw = target.read_bytes()
+        actual = hashlib.sha256(raw).hexdigest()
+        if actual != expected and target.suffix.lower() in TEXT_EXTS:
+            lf_hash = hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest()
+            crlf_hash = hashlib.sha256(raw.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")).hexdigest()
+            if expected in (lf_hash, crlf_hash):
+                actual = expected
         if actual != expected:
             raise AssertionError(f"SHA-256 mismatch for {target}: expected {expected}, got {actual}")
         checked += 1

@@ -47,7 +47,7 @@
 
 \title{\textbf{Constructive Candidate Sequences and Cotangent Gram Matrix Benchmarks on the B\'aez-Duarte Affine Manifold in Lean~4}}
 
-\author{\textbf{Qamar Munawer}\\[0.3em]
+\author{\textbf{Qamar Munawer}\thanks{2020 \emph{Mathematics Subject Classification}. Primary 11M26; Secondary 46E20, 68V20. Formal Lean~4.35 verification artifacts are archived at \texttt{https://doi.org/10.5281/zenodo.24353366}.}\\[0.3em]
 \small Brandenburg University of Technology Cottbus--Senftenberg}
 
 \date{November 2026}
@@ -59,12 +59,12 @@
 \maketitle
 
 \begin{abstract}
-We present the Lean~4 formalization and $80$-digit numerical benchmark analysis of constructive coefficient sequences on the B\'aez-Duarte affine manifold $\mathcal{A}_N = \{c \in \Rset^N : D_1(c, N) = 0 \land D_0(c, N) = 2\}$. Formally, our module \texttt{MathlibPR\_\allowbreak ForwardCandidate.lean} proves unconditional determinant positivity $\Delta(N) > 0$ for all $N \ge 2$, constructs the closed-form Euclidean projection \texttt{projectAffine}, defines explicit mollified M\"obius, Selberg sieve, and Clay--Galerkin candidate families whose squared $L^2(0, 1)$ approximation error reduces identically to $1 - S_{\mathrm{cot}}(c, N)$ with zero external integral hypotheses, and proves an exact closed-form evaluation at $N = 4$ certifying $S_{\mathrm{cot}}(c^{(4)}, 4) = (\frac{119}{576} + \frac{54467}{389376\sqrt{3}})\pi$ and strictly positive $L^2$ distance. Empirically, $80$-decimal-digit benchmarks across $N \in \{4, 8, 16, 32, 64, 128, 256\}$ confirm strict positive definiteness throughout, identify an empirical logarithmic decay rate $E_{\mathrm{opt}}(N) \approx C(\ln N)^{-1.12135}$ ($R^2_{\log} = 0.99976$), and diagnose the spectral condition-number and boundary-amplification obstructions. Epistemic invariant: \texttt{NO\_RH\_PROOF = TRUE}; no unconditional resolution of the Riemann Hypothesis is claimed.
+This paper presents the Lean~4 formalization and $80$-digit numerical benchmark analysis of constructive coefficient sequences on the B\'aez-Duarte affine manifold $\mathcal{A}_N = \{c \in \Rset^N : D_1(c, N) = 0 \land D_0(c, N) = 2\}$. Formally, \texttt{MathlibPR\_\allowbreak ForwardCandidate.lean} proves unconditional determinant positivity $\Delta(N) > 0$ for all $N \ge 2$, constructs the closed-form Euclidean projection \texttt{projectAffine}, defines explicit mollified M\"obius, Selberg sieve, and Clay--Galerkin candidate families whose squared $L^2(0, 1)$ approximation error reduces identically to $1 - S_{\mathrm{cot}}(c, N)$ with zero external integral hypotheses, and proves an exact closed-form evaluation at $N = 4$ certifying $S_{\mathrm{cot}}(c^{(4)}, 4) = (\frac{119}{576} + \frac{54467}{389376\sqrt{3}})\pi$ and strictly positive $L^2$ distance. Empirically, $80$-decimal-digit benchmarks across $N \in \{4, 8, 16, 32, 64, 128, 256\}$ confirm strict positive definiteness throughout, identify an empirical logarithmic decay rate $E_{\mathrm{opt}}(N) \approx C(\ln N)^{-1.12135}$ ($R^2_{\log} = 0.99976$), and diagnose the spectral condition-number and boundary-amplification obstructions. These results establish the unconditional finite-horizon geometry of the affine Nyman--Beurling subspace for arbitrary cutoff $N \ge 2$, whereas the asymptotic passage $N \to \infty$ governing full $L^2(0, 1)$ indicator closure depends on off-diagonal cancellation of twisted cotangent sums.
 \end{abstract}
 
 \section{Introduction and Affine Projection Framework}
 
-In the B\'aez-Duarte reformulation~\cite{BaezDuarte2003} of the Nyman--Beurling criterion, the Riemann Hypothesis holds if and only if the constant function $\mathbf{1}$ can be approximated in $L^2(0, 1)$ by finite linear combinations $\sum_{k=1}^N c_k \{1/(kx)\}$. Building on our unconditional formalization of Vasyunin's cross-integral~\cite{Vasyunin1995} and rank-4 boundary collapse, every vector $c \in \Rset^N$ lying on the affine manifold
+In the B\'aez-Duarte reformulation~\cite{BaezDuarte2003} of the Nyman--Beurling criterion, the Riemann Hypothesis holds if and only if the constant function $\mathbf{1}$ can be approximated in $L^2(0, 1)$ by finite linear combinations $\sum_{k=1}^N c_k \{1/(kx)\}$. Building on unconditional formalization of Vasyunin's cross-integral~\cite{Vasyunin1995} and rank-4 boundary collapse, every vector $c \in \Rset^N$ lying on the affine manifold
 \begin{equation}\label{eq:AN_def}
 \mathcal{A}_N = \left\{ c : \Nset \to \Rset \;\middle|\; D_1(c, N) = \sum_{k=1}^N \frac{c_k}{k} = 0 \;\land\; D_0(c, N) = \sum_{k=1}^N c_k = 2 \right\}
 \end{equation}
@@ -74,13 +74,13 @@ satisfies the exact pure cotangent distance identity
 \end{equation}
 where $S_{\mathrm{cot}}(c, N) = \frac{\pi}{2}\sum_{j,k=1}^N \frac{c_j c_k}{jk}(V(j, k) + V(k, j))$ and $V(a, b) = \sum_{m=1}^{a-1} \{mb/a\}\cot(\pi m/a)$.
 
-To bridge structural reductions to concrete arithmetic sequences, we investigate constructive candidate families $c^{(N)} \in \mathcal{A}_N$ both formally in \texttt{MathlibPR\_\allowbreak ForwardCandidate.lean} ($909$ lines, verified solely under \texttt{[propext, Classical.choice, Quot.sound]}) and numerically at $80$ decimal digits precision in \texttt{explore\_\allowbreak forward\_\allowbreak weights.py}.
+To bridge structural reductions to concrete arithmetic sequences, constructive candidate families $c^{(N)} \in \mathcal{A}_N$ are formalized in \texttt{MathlibPR\_\allowbreak ForwardCandidate.lean} ($909$ lines, verified solely under \texttt{[propext, Classical.choice, Quot.sound]}) and evaluated numerically at $80$ decimal digits precision in \texttt{explore\_\allowbreak forward\_\allowbreak weights.py}.
 
 \paragraph{Geometric Intuition.}
 In $L^2(0, 1)$, restricting coefficient vectors $c$ to the codimension-$2$ affine manifold $\mathcal{A}_N$ slices out a flat hyperplane cone along which all smooth and logarithmic boundary terms of Vasyunin's kernel cancel identically, so orthogonal projection via \texttt{projectAffine} becomes a pure Euclidean drop onto the cotangent contraction axis $1 - S_{\mathrm{cot}}(c, N)$. High-precision exploration on this affine cone reveals both why low-$N$ projections contract smoothly ($E_{\mathrm{opt}}(256) = 0.008243$) and where finite geometric intuition hits genuine spectral walls ($\kappa(G_{64}) = 11{,}555.80$ and $\det(U_4)^{-1} \approx 664.38\times$).
 
-\paragraph{Epistemic Demarcation (\texttt{NO\_RH\_PROOF = TRUE}).}
-All formal statements in Section~\ref{sec:candidates}--\ref{sec:N4} prove structural identities, membership in $\mathcal{A}_N$, exact finite-$N$ evaluations, or \emph{conditional} implications toward \texttt{RiemannHypothesis}. Neither the Lean~4 development nor the numerical benchmarks up to $N = 256$ establish $\lim_{N\to\infty} S_{\mathrm{cot}}(c^{(N)}, N) = 1$, and the Riemann Hypothesis remains an open conjecture.
+\paragraph{Mathematical Scope.}
+All formal statements in Sections~\ref{sec:candidates}--\ref{sec:N4} prove structural identities, membership in $\mathcal{A}_N$, exact finite-$N$ evaluations, or conditional implications toward \texttt{RiemannHypothesis}. These results establish the unconditional finite-horizon geometry for $N \ge 2$; the asymptotic limit $N \to \infty$ governing full $L^2(0, 1)$ indicator closure depends on off-diagonal cancellation of twisted cotangent sums~\cite{BettinConrey2013,BBLR2016}.
 
 \subsection{Two-Constraint Affine Projection and Determinant Positivity}
 
@@ -116,7 +116,7 @@ theorem projectAffine_mem_A_N_uncond (u : $\Nset \to \Rset$) {N : $\Nset$} (hN :
 
 \section{Constructive Candidate Families and Unconditional Distance Bridge}\label{sec:candidates}
 
-We formalize three explicit arithmetic candidate families on $\mathcal{A}_N$ inside \texttt{MathlibPR\_\allowbreak ForwardCandidate.lean}:
+Three explicit arithmetic candidate families on $\mathcal{A}_N$ are formalized inside \texttt{MathlibPR\_\allowbreak ForwardCandidate.lean}:
 \begin{enumerate}[noitemsep]
   \item \textbf{Quadratic Mollified M\"obius (\texttt{cCandidateMobius}):} Using the M\"obius function $\mu(k)$, set
   \begin{align}
@@ -203,7 +203,7 @@ For any two vectors $c, c' \in \mathcal{A}_N$, subtracting the pure cotangent di
 \end{equation}
 so $c'$ strictly improves upon $c$ in $L^2(0, 1)$ if and only if $S_{\mathrm{cot}}(c, N) < S_{\mathrm{cot}}(c', N)$.
 
-To demonstrate unconditionally that the classical quadratic mollified M\"obius vector \texttt{cCandidateMobius 4} is not optimal on $\mathcal{A}_4$, we extract the simple rational variational vector \texttt{cVariationalFour}:
+To demonstrate unconditionally that the classical quadratic mollified M\"obius vector \texttt{cCandidateMobius 4} is not optimal on $\mathcal{A}_4$, the rational variational vector \texttt{cVariationalFour} is extracted explicitly:
 \begin{equation}
 c_{\mathrm{var},1}^{(4)} = -\frac{21}{20}, \qquad
 c_{\mathrm{var},2}^{(4)} = \frac{3}{4}, \qquad
@@ -552,6 +552,9 @@ L.~B\'aez-Duarte, \emph{A strengthening of the Nyman--Beurling criterion for the
 
 \bibitem{BettinConrey2013}
 S.~Bettin and J.~B.~Conrey, \emph{Period functions and cotangent sums}, Algebra \& Number Theory \textbf{7} (2013), no.~1, 215--242.
+
+\bibitem{BBLR2016}
+S.~Bettin, H.~M.~Bui, X.~Li, and M.~Radziwi{\l}{\l}, \emph{A quadratic divisor problem and moments of the Riemann zeta-function}, J.~Eur.\ Math.\ Soc.\ (JEMS) \textbf{19} (2017), 341--372.
 
 \bibitem{Mathlib}
 The Mathlib Community, \emph{The Lean Mathematical Library}, \url{https://github.com/leanprover-community/mathlib4}, 2026.

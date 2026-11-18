@@ -1,8 +1,8 @@
-<!-- Zenodo DOI: 10.5281/zenodo.24328047 | Epistemic Status: NO_RH_PROOF = TRUE -->
+<!-- Zenodo DOI: 10.5281/zenodo.24353578 -->
 # Paper E: Constructive Candidate Sequences and Cotangent Gram Matrix Benchmarks on the Baez-Duarte Affine Manifold in Lean 4
 
-- **Zenodo DOI:** [10.5281/zenodo.24328047](https://doi.org/10.5281/zenodo.24328047)
-- **Epistemic Invariant:** NO_RH_PROOF = TRUE
+- **Zenodo DOI:** [`10.5281/zenodo.24353578`](https://doi.org/10.5281/zenodo.24353578) (prev `10.5281/zenodo.24328047`)
+- **MSC 2020:** Primary 11M26; Secondary 46E20, 68V20
 
 # Submission Package: Constructive Candidate Sequences and Cotangent Gram Benchmarks on $\mathcal{A}_N$
 
@@ -19,8 +19,8 @@ This package contains the complete LaTeX source, compiled 6-page manuscript, and
 3. **Exact Closed-Form $N = 4$ Lean 4 Certificate:** `HSum_four`, `S2Sum_four`, `DeltaDet_four`, `mollifiedMobius_four_eval`, `cCandidateMobius_four_eval`, `SCot_cCandidateMobius_four_eq` $\big((\frac{119}{576} + \frac{54467}{389376\sqrt{3}})\pi\big)$, `cCandidateMobius_four_l2_dist_eq`, and `cCandidateMobius_four_l2_dist_pos`.
 4. **80-Digit Benchmarks & Obstruction Analysis:** Summarizes `explore_forward_weights.py` results ($E_{\mathrm{opt}}(256) = 0.00824337$, $R^2_{\log} = 0.99976$ on $[16, 256]$) and isolates the Gram condition-number / $\ell^2$-norm growth obstruction ($\kappa(G_{64}) = 11{,}555.80$) and rank-4 Clay boundary amplification ($\det(U_4)^{-1} \approx 664.38\times$).
 
-## Epistemic Status and Verification Invariants
-- **Epistemic Invariant:** `NO_RH_PROOF = TRUE`. Neither the Lean 4 formalization nor finite-horizon numerical experiments establish $\lim_{N\to\infty} S_{\mathrm{cot}}(c^{(N)}, N) = 1$; no unconditional proof of the Riemann Hypothesis is claimed.
+## Mathematical Scope and Verification Invariants
+- **MSC 2020:** Primary `11M26`; Secondary `46E20`, `68V20`. Establishes the unconditional finite-horizon affine geometry for $N \ge 2$, while asymptotic $L^2(0,1)$ closure depends on twisted fourth-moment cancellation as $N \to \infty$.
 - **Foundational Axioms:** Strictly `[propext, Classical.choice, Quot.sound]` with zero `sorry`, zero `admit`, and zero custom axioms.
 
 ## Package File Manifest

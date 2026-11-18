@@ -1,8 +1,8 @@
-<!-- Zenodo DOI: 10.5281/zenodo.24328033 | Epistemic Status: NO_RH_PROOF = TRUE -->
+<!-- Zenodo DOI: 10.5281/zenodo.24353570 -->
 # Paper 0: Geometric Intuition, Joined-Cone Zeta Visualizations, and the Genesis of the Lean 4 Formalization
 
-- **Zenodo DOI:** [10.5281/zenodo.24328033](https://doi.org/10.5281/zenodo.24328033)
-- **Epistemic Invariant:** NO_RH_PROOF = TRUE
+- **Zenodo DOI:** [`10.5281/zenodo.24353570`](https://doi.org/10.5281/zenodo.24353570) (prev `10.5281/zenodo.24328033`)
+- **MSC 2020:** Primary 11M26; Secondary 46E20, 68V20
 
 # Submission Package: Companion Paper 0 — Geometric Intuition & Joined-Cone Visualizations
 
@@ -19,8 +19,8 @@ Companion micro-paper documenting the intuitive, visual, and experimental genesi
 3. **Analytic Obstructions & Necessity of Lean 4 (`Section 3`):** Documents superlinear Gram ill-conditioning ($\kappa(G_{64}) = 11{,}555.80$), rank-4 boundary amplification ($\det(U_4)^{-1} \approx 664.38\times$), and why formal verification in Lean 4 is essential to catch subtle algebraic mismatches.
 4. **Traceability Architecture (`Section 4`):** Maps every geometric insight cleanly to **Papers A, B, C, D, and E** and Wave 1 Mathlib PR staging (`MATHLIB4_PR_STAGING/`).
 
-## Epistemic Status
-- **Epistemic Invariant:** `NO_RH_PROOF = TRUE`. Visual experiments and finite-horizon benchmarks serve as a discovery compass; no unconditional proof of the Riemann Hypothesis is claimed.
+## Mathematical Scope
+- **MSC 2020:** Primary `11M26`; Secondary `46E20`, `68V20`. Visual experiments and finite-horizon benchmarks identify candidate algebraic structures; machine-checked Lean 4 proofs establish the certified theorems.
 
 ## Package File Manifest
 - `paper_0_geometric_intuition_cones.tex`: LaTeX source (synchronized bit-for-bit with root `paper_0_geometric_intuition_cones.tex`).

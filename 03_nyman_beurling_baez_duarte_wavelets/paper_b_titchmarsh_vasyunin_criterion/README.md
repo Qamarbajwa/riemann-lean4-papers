@@ -1,8 +1,8 @@
-<!-- Zenodo DOI: 10.5281/zenodo.24328037 | Epistemic Status: NO_RH_PROOF = TRUE -->
+<!-- Zenodo DOI: 10.5281/zenodo.24353573 -->
 # Paper B: Formalizing Titchmarsh Fractional-Part Identity and the Forward Nyman-Beurling Criterion in Lean 4
 
-- **Zenodo DOI:** [10.5281/zenodo.24328037](https://doi.org/10.5281/zenodo.24328037)
-- **Epistemic Invariant:** NO_RH_PROOF = TRUE
+- **Zenodo DOI:** [`10.5281/zenodo.24353573`](https://doi.org/10.5281/zenodo.24353573) (prev `10.5281/zenodo.24328037`)
+- **MSC 2020:** Primary 11M26; Secondary 46E20, 68V20
 
 # Submission Package: Titchmarsh's Fractional-Part Identity and the Nyman–Beurling / Vasyunin Reduction
 
@@ -24,8 +24,8 @@ This package contains the complete LaTeX source, compiled 9-page manuscript, and
 4. **Affine Rank-4 Boundary Collapse (`Section8_VasyuninBDR.lean`, `MathlibPR_VasyuninCrossIntegral.lean`):**
    Zero-assumption pure cotangent distance identities on $\mathcal{A}_N = \{c \mid D_1(c, N) = 0 \land D_0(c, N) = 2\}$: `affine_l2_pure_cotangent_bridge`, `affine_l2_dist_eq_one_sub_scot`, `nymanBeurling_approx_iff_scot_gt`, and `riemannHypothesis_of_cotangent_limit`.
 
-## Epistemic Status and Verification Invariants
-- **Epistemic Invariant:** `NO_RH_PROOF = TRUE`. All theorems establish unconditional integral/matrix identities or conditional implications toward `RiemannHypothesis`; no unconditional proof of RH is claimed.
+## Mathematical Scope and Verification Invariants
+- **MSC 2020:** Primary `11M26`; Secondary `46E20`, `68V20`. All theorems establish unconditional integral/matrix identities on finite cutoffs or conditional implications toward `RiemannHypothesis`.
 - **Foundational Axioms:** Strictly `[propext, Classical.choice, Quot.sound]` with zero `sorry`, zero `admit`, and zero custom axioms.
 
 ## Package File Manifest

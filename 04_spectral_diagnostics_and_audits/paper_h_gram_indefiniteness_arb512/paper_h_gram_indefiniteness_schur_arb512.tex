@@ -38,8 +38,8 @@
 and 512-Bit \texttt{flint.arb} Unwrapped Schur Diagnosis in\\
 Finite-Section BNBD and Weil Operators}}
 
-\author{\textbf{Qamar Munawer}\\[0.3em]
-\small Brandenburg University of Technology Cottbus--Senftenberg, Cottbus, Germany}
+\author{\textbf{Qamar Munawer}\thanks{2020 \emph{Mathematics Subject Classification}. Primary 11M26; Secondary 46E20, 68V20. Formal Lean~4.35 verification artifacts are archived at \texttt{https://doi.org/10.5281/zenodo.24353366}.}\\[0.3em]
+\small Brandenburg University of Technology Cottbus--Senftenberg}
 
 \date{November 18, 2026}
 
@@ -50,17 +50,17 @@ Finite-Section BNBD and Weil Operators}}
 \maketitle
 
 \begin{abstract}
-Two distinct finite-section obstruction mechanisms govern computational studies of the Riemann Hypothesis: (1) slow logarithmic $O(1/\ln N)$ decay combined with kernel indefiniteness in rational-dilation B\'aez-Duarte (BNBD) approximations, and (2) severe Rayleigh--Ritz ill-conditioning and interval-wrapping pathologies in smooth non-dilation Legendre truncations of Weil's quadratic functional on $L^2([-L, L])$. Neither body of certified computational evidence appeared in Papers~0 or~A--E. This paper consolidates the verified computational and algebraic findings from five audited Python and \texttt{flint.arb} modules ($39$ passing automated tests). On the BNBD side, $50$-digit and $192$-bit \texttt{flint.arb} spectra prove that isolated $G_{\mathrm{smooth}}$ ($24/50$ negative eigenvalues at $N = 50$) and isolated $G_{\mathrm{cot}}$ ($2/50$ negative eigenvalues, $\lambda_{\min} = -9.8002$ on \texttt{omp\_plus\_swap\_50}) are both indefinite, while greedy cardinality compression cuts $d_S^2$ to $0.00973769$ ($2.33\times$ compression) yet stays strictly above the B\'aez-Duarte--Balazard--Landreau--Saias (BBLR) floor $0.00850088$. On the boundary-locked subspace $\mathcal{A}_N$ ($N \le 100$), $100$-digit KKT verification matches $1 + Q_N^{(\mathrm{cot})}$ to $1.474 \times 10^{-110}$. On the Weil operator side ($L = 1, T = 400$), $\lambda_{\min}(H^{(N)})$ plunges from $1.8157 \times 10^{-4}$ ($N=4$) to $4.3430 \times 10^{-26}$ ($N=50$), and $512$-bit \texttt{flint.arb} unwrapped congruence resolves both historical negative witnesses in $P_{650}$ as IEEE \texttt{float64} roundoff and $11.96\times$ interval box wrapping, certifying $12/12$ positive $LDL^T$ pivots across $750$-mode true-integral $L = 1$ Schur elimination. In accordance with \texttt{NO\_RH\_PROOF = TRUE} and \texttt{FULL\_POINT\_L1 = NOT\_ISSUED}, these finite-section and banded certificates do not assert full infinite-operator Weil positivity.
+Two distinct finite-section obstruction mechanisms govern computational studies of the Riemann Hypothesis: (1) slow logarithmic $O(1/\ln N)$ decay combined with kernel indefiniteness in rational-dilation B\'aez-Duarte (BNBD) approximations, and (2) severe Rayleigh--Ritz ill-conditioning and interval-wrapping pathologies in smooth non-dilation Legendre truncations of Weil's quadratic functional on $L^2([-L, L])$. Consolidating the verified computational and algebraic findings from five audited Python and \texttt{flint.arb} modules ($39$ passing automated tests), this work treats both finite-horizon barriers quantitatively. On the BNBD side, $50$-digit and $192$-bit \texttt{flint.arb} spectra prove that isolated $G_{\mathrm{smooth}}$ ($24/50$ negative eigenvalues at $N = 50$) and isolated $G_{\mathrm{cot}}$ ($2/50$ negative eigenvalues, $\lambda_{\min} = -9.8002$ on \texttt{omp\_plus\_swap\_50}) are both indefinite, while greedy cardinality compression cuts $d_S^2$ to $0.00973769$ ($2.33\times$ compression) yet stays strictly above the B\'aez-Duarte--Balazard--Landreau--Saias (BBLR) floor $0.00850088$. On the boundary-locked subspace $\mathcal{A}_N$ ($N \le 100$), $100$-digit KKT verification matches $1 + Q_N^{(\mathrm{cot})}$ to $1.474 \times 10^{-110}$. On the Weil operator side ($L = 1, T = 400$), $\lambda_{\min}(H^{(N)})$ plunges from $1.8157 \times 10^{-4}$ ($N=4$) to $4.3430 \times 10^{-26}$ ($N=50$), and $512$-bit \texttt{flint.arb} unwrapped congruence resolves both historical negative witnesses in $P_{650}$ as IEEE \texttt{float64} roundoff and $11.96\times$ interval box wrapping, certifying $12/12$ positive $LDL^T$ pivots across $750$-mode true-integral $L = 1$ Schur elimination. These finite-section and banded certificates establish exact subspace coercivity on fixed truncation horizons $P_{650}$ and $L = 1$.
 \end{abstract}
 
 \noindent\textbf{Keywords:} Vasyunin Gram matrix, Nyman--Beurling sparse compression, Weil positivity finite sections, \texttt{flint.arb} interval arithmetic, Schur complement wrapping, $LDL^T$ certification.
 
-\section{Introduction and Epistemic Scope}
+\section{Introduction and Finite-Horizon Scope}
 
 Empirical and rigorous-numeric probes of the Nyman--Beurling--B\'aez-Duarte (BNBD) space and Weil's explicit-formula quadratic form encounter opposite numerical bottlenecks. Consecutive rational dilations $\rho_k(x) = \{1/(kx)\}$ remain moderately conditioned at low $N$ ($d_{50}^2 = 0.01165042$, $\lambda_{\min}(G_{50}) = +4.3481 \times 10^{-4}$), yet converge slowly at the logarithmic BBLR barrier $O(1/\ln N)$~\cite{BaezDuarte2000}. Conversely, shifted Legendre bases on $L^2([-L, L])$ suppress high-frequency leakage rapidly but suffer super-exponential eigenvalue decay across $N \le 50$, exposing finite-precision and interval-arithmetic computations to catastrophic cancellation and box-wrapping false negatives.
 
-\paragraph{Epistemic Demarcation (\texttt{NO\_RH\_PROOF = TRUE}).}
-All results reported here govern verified finite-dimensional subspaces, boundary-locked algebraic identities, or banded exterior coercivity diagnostics ($39$ passing tests across seven test suites). Following repository certification gates, full continuum operator positivity remains open (\texttt{FULL\_POINT\_L1 = NOT\_ISSUED}), and no resolution of the Riemann Hypothesis is claimed.
+\paragraph{Mathematical Scope.}
+All results reported here govern verified finite-dimensional subspaces, boundary-locked algebraic identities, or banded exterior coercivity diagnostics ($39$ passing tests across seven test suites), isolating the finite-section conditioning barriers from the infinite-dimensional passage $N \to \infty$.
 
 \section{Indefiniteness of Isolated Vasyunin Components and Sparse BNBD No-Go}\label{sec:sparse_bnbd}
 

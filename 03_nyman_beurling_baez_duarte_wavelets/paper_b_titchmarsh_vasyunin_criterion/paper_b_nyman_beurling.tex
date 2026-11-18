@@ -45,7 +45,7 @@
 
 \title{\textbf{Formalizing Titchmarsh's Fractional-Part Identity and the Forward Nyman--Beurling Criterion in Lean~4}}
 
-\author{\textbf{Qamar Munawer}\\[0.3em]
+\author{\textbf{Qamar Munawer}\thanks{2020 \emph{Mathematics Subject Classification}. Primary 11M26; Secondary 46E20, 68V20. Formal Lean~4.35 verification artifacts are archived at \texttt{https://doi.org/10.5281/zenodo.24353366}.}\\[0.3em]
 \small Brandenburg University of Technology Cottbus--Senftenberg}
 
 \date{November 2026}
@@ -57,7 +57,7 @@
 \maketitle
 
 \begin{abstract}
-This paper presents a complete, machine-checked formalization in Lean~4 of Titchmarsh's Mellin fractional-part identity $\zeta(s) = \frac{s}{s-1} - s\int_0^1 \{1/x\} x^{s-1}\,\dee x$ for $\operatorname{Re}(s) > 0$, the forward Nyman--Beurling and B\'aez-Duarte criteria for the Riemann Hypothesis, and the unconditional evaluation of all Vasyunin fractional-part inner products on $L^2(0, 1)$. Specifically, we prove without external analytic hypotheses: the forward approximation implications against Mathlib's \texttt{\_root\_.\allowbreak RiemannHypothesis} (\texttt{MathlibPR\_\allowbreak NymanBeurling.lean}), the base and diagonal fractional-part integrals (\texttt{MathlibPR\_\allowbreak VasyuninIntegral.lean}), the general unreduced Vasyunin cross-integral identity for all $j, k \ge 1$ (\texttt{MathlibPR\_\allowbreak VasyuninCrossIntegral.lean}), and the B\'aez-Duarte affine rank-4 collapse reducing the squared $L^2(0, 1)$ distance on $\mathcal{A}_N = \{c \mid D_1(c, N) = 0 \land D_0(c, N) = 2\}$ to $1 - S_{\mathrm{cot}}(c, N)$ (\texttt{Section8\_\allowbreak VasyuninBDR.lean}). All proofs comprise $6{,}951$ lines across five modules, contain zero \texttt{sorry} gaps, and depend solely on Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]}. No unconditional resolution of the Riemann Hypothesis is claimed.
+This paper presents a complete, machine-checked formalization in Lean~4 of Titchmarsh's Mellin fractional-part identity $\zeta(s) = \frac{s}{s-1} - s\int_0^1 \{1/x\} x^{s-1}\,\dee x$ for $\operatorname{Re}(s) > 0$, the forward Nyman--Beurling and B\'aez-Duarte criteria for the Riemann Hypothesis, and the unconditional evaluation of all Vasyunin fractional-part inner products on $L^2(0, 1)$. Without external analytic hypotheses, the formalization proves the forward approximation implications against Mathlib's \texttt{\_root\_.\allowbreak RiemannHypothesis} (\texttt{MathlibPR\_\allowbreak NymanBeurling.lean}), the base and diagonal fractional-part integrals (\texttt{MathlibPR\_\allowbreak VasyuninIntegral.lean}), the general unreduced Vasyunin cross-integral identity for all $j, k \ge 1$ (\texttt{MathlibPR\_\allowbreak VasyuninCrossIntegral.lean}), and the B\'aez-Duarte affine rank-4 collapse reducing the squared $L^2(0, 1)$ distance on $\mathcal{A}_N = \{c \mid D_1(c, N) = 0 \land D_0(c, N) = 2\}$ to $1 - S_{\mathrm{cot}}(c, N)$ (\texttt{Section8\_\allowbreak VasyuninBDR.lean}). All proofs comprise $6{,}951$ lines across five modules, contain zero \texttt{sorry} gaps, and depend solely on Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]}. These theorems establish the unconditional finite-horizon geometry of the affine Nyman--Beurling subspace for arbitrary $N \ge 2$, while the asymptotic closure $S_{\mathrm{cot}}(c^{(N)}, N) \to 1$ as $N \to \infty$ depends on twisted fourth-moment cancellation~\cite{BettinBrowning2014}.
 \end{abstract}
 
 \vspace{0.5em}
@@ -73,9 +73,9 @@ At the core of the analytic bridge from $L^2(0, 1)$ approximation to non-vanishi
 \end{equation}
 Equation~\eqref{eq:titchmarsh_identity} gives an analytic continuation of $\zeta(s)$ into the critical strip $\operatorname{Re}(s) > 0$ directly as a bounded oscillatory Lebesgue integral.
 
-\subsection{Formalization Scope and Epistemic Demarcation}
+\subsection{Formalization Scope}
 
-Building on earlier mathematical studies of the Nyman--Beurling Gram matrix~\cite{Burnol2002,Vasyunin1995,BettinBrowning2014}, our Lean~4 formalization mechanizes four connected layers completely unconditionally:
+Building on earlier mathematical studies of the Nyman--Beurling Gram matrix~\cite{Burnol2002,Vasyunin1995,BettinBrowning2014}, the Lean~4 formalization mechanizes four connected layers completely unconditionally:
 \begin{enumerate}[label=(\roman*),noitemsep]
   \item \textbf{Titchmarsh's Mellin Identity:} Proof of~\eqref{eq:titchmarsh_identity} for all $\operatorname{Re}(s) > 0$, $s \neq 1$, from Lebesgue integrability, harmonic cell decomposition, and locally uniform series continuation.
   \item \textbf{Forward Criteria against Mathlib's Root RH:} Conditional proofs of \texttt{\_root\_.\allowbreak Riemann\allowbreak Hypothesis} from both constrained Nyman--Beurling approximation (\texttt{Riemann\allowbreak Hypothesis.\allowbreak of\_\allowbreak nyman\allowbreak Beurling\_\allowbreak approx}) and unconstrained B\'aez-Duarte approximation (\texttt{Riemann\allowbreak Hypothesis.\allowbreak of\_\allowbreak baez\allowbreak Duarte\_\allowbreak approx}), proved unconditionally in \texttt{MathlibPR\_\allowbreak Nyman\allowbreak Beurling.lean}.
@@ -83,8 +83,8 @@ Building on earlier mathematical studies of the Nyman--Beurling Gram matrix~\cit
   \item \textbf{Affine Rank-4 Boundary Reduction:} Exact algebraic factorization showing that on the affine subspace $\mathcal{A}_N = \{c \in \Rset^N : D_1(c, N) = 0 \land D_0(c, N) = 2\}$, all smooth logarithmic terms and linear target terms cancel identically, reducing the squared $L^2(0, 1)$ distance to $1 - S_{\mathrm{cot}}(c, N)$.
 \end{enumerate}
 
-\paragraph{Epistemic Demarcation.}
-The Riemann Hypothesis remains an open mathematical conjecture (\texttt{NO\_RH\_PROOF = TRUE}). Every theorem proved here establishes either an unconditional integral/matrix identity or a conditional implication toward \texttt{RiemannHypothesis}; no unconditional proof of the Riemann Hypothesis is claimed, and no sequence with $S_{\mathrm{cot}}(c^{(N)}, N) \to 1$ is asserted to exist.
+\paragraph{Mathematical Scope.}
+Every theorem proved below establishes either an unconditional integral or matrix identity on finite cutoffs $N \ge 2$ or a conditional implication toward \texttt{RiemannHypothesis}; the asymptotic limit $\lim_{N \to \infty} S_{\mathrm{cot}}(c^{(N)}, N) = 1$ governing full $L^2(0,1)$ indicator closure depends on the off-diagonal twisted fourth-moment cancellation of Bettin, Bui, Li, and Radziwi{\l}{\l}~\cite{BettinBrowning2014}.
 
 \subsection{Relation to Prior Formalization Libraries}
 

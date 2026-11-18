@@ -8,7 +8,7 @@ import RiemannBlueprint.CMIAuditBridge
 /-!
 # Open-Strip Rouché Zero-Exclusion, Penetration Lower Bounds & Distributed Rank-4 Neutrality
 
-Formalizes under the standing epistemic invariant **`NO_RH_PROOF = TRUE`**:
+Unconditional finite-horizon identities and conditional Rouché strip-exclusion implications:
 1. Exact complex-strip coupling `stripDefect N c s = 1 + ζ(s) D_c(s)` with the unit-interval
    Mellin residual `s * Mellin(1 - Φ_c, s)` via `MellinFracPart`.
 2. Unconditional entire holomorphy of `dirichletPoly N c` and `{1}ᶜ`-analyticity of
@@ -326,7 +326,7 @@ theorem theorem1_rouche_zero_exclusion (h_rouche : RectRoucheProperty)
   intro s hs
   exact mul_ne_zero_iff.mp (hprod s hs)
 
-/-- **Theorem 2 (⇐) (Rank-4 Boundary-Exhaustion Implies RH, `NO_RH_PROOF = TRUE`):**
+/-- **Theorem 2 (⇐) (Conditional Rank-4 Boundary-Exhaustion Implies RH):**
 Assuming `RectRoucheProperty`, if every compact strip rectangle `R ⊂ (1/2, ∞) × (0, ∞)` admits
 a Rank-4 boundary-compliant horizon `(N, c)` satisfying `SatisfiesClayBoundaryConditions c N` and
 `‖1 + ζ(s) D_c(s)‖ < 1` on `∂R`, then `_root_.RiemannHypothesis` holds unconditionally. -/

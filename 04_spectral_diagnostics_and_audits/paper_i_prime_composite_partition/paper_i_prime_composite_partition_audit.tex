@@ -42,8 +42,8 @@
 Critical-Strip Convergence Firewalls, and Verified Lean~4\\
 Strip Quantifier Audits}}
 
-\author{\textbf{Qamar Munawer}\\[0.3em]
-\small Brandenburg University of Technology Cottbus--Senftenberg, Cottbus, Germany}
+\author{\textbf{Qamar Munawer}\thanks{2020 \emph{Mathematics Subject Classification}. Primary 11M26; Secondary 46E20, 68V20. Formal Lean~4.35 verification artifacts are archived at \texttt{https://doi.org/10.5281/zenodo.24353366}.}\\[0.3em]
+\small Brandenburg University of Technology Cottbus--Senftenberg}
 
 \date{November 18, 2026}
 
@@ -54,7 +54,7 @@ Strip Quantifier Audits}}
 \maketitle
 
 \begin{abstract}
-While Papers~0 and~A--E of the series formalize analytic equivalences and cotangent benchmarks for the Riemann Hypothesis, the foundational additive--multiplicative partition layer of \texttt{RiemannBlueprint}—comprising Sections~2 through~6 together with the critical-strip quantifier audit module—remained confined to internal monograph drafts. This paper presents an unconditional, axiom-free Lean~4 synthesis totaling $4{,}207$ lines across seven modules: elementary prime sieves (\texttt{Section2\_\allowbreak PrimeAtoms.lean}, $111$ lines), pure/mixed composite arithmetic and truncated M\"obius inversion (\texttt{Section3\_\allowbreak CompositeTaxonomy.lean}, $625$ lines), the convergent additive zeta decomposition $\zeta(s) = 1 + P(s) + \zeta_{\mathrm{comp}}(s)$ for $\operatorname{Re}(s) > 1$ (\texttt{Section4\_\allowbreak CompositeZeta.lean}, $299$ lines), the M\"obius composite sieve and Dirichlet convolution inverse $\mu * \zeta = 1$ (\texttt{Section5\_\allowbreak MobiusMertens.lean}, $610$ lines), the critical-strip divergence firewall and unitary phasor modulus $\|\chi(1/2 + it)\| = 1$ (\texttt{Section6\_\allowbreak CriticalStripAudit.lean}, $176$ lines), the critical-strip quantifier and Szeg\H{o} reproducing-kernel audit (\texttt{CMIAuditBridge.lean}, $2{,}166$ lines), and the explicit kernel-integrity check (\texttt{VerifyNoTraps.lean}, $220$ lines). All modules compile with zero \texttt{sorry}s and strictly foundational Lean axioms \texttt{[propext, Classical.choice, Quot.sound]} under \texttt{NO\_RH\_PROOF = TRUE}.
+While Papers~0 and~A--E of the series formalize analytic equivalences and cotangent benchmarks for the Riemann Hypothesis, the foundational additive--multiplicative partition layer---comprising five integer and critical-strip modules together with quantifier and integrity audits---completes the arithmetic infrastructure. This paper presents an unconditional, axiom-free Lean~4 synthesis totaling $4{,}207$ lines across seven modules: elementary prime sieves (\texttt{Section2\_\allowbreak PrimeAtoms.lean}, $111$ lines), pure/mixed composite arithmetic and truncated M\"obius inversion (\texttt{Section3\_\allowbreak CompositeTaxonomy.lean}, $625$ lines), the convergent additive zeta decomposition $\zeta(s) = 1 + P(s) + \zeta_{\mathrm{comp}}(s)$ for $\operatorname{Re}(s) > 1$ (\texttt{Section4\_\allowbreak CompositeZeta.lean}, $299$ lines), the M\"obius composite sieve and Dirichlet convolution inverse $\mu * \zeta = 1$ (\texttt{Section5\_\allowbreak MobiusMertens.lean}, $610$ lines), the critical-strip divergence firewall and unitary phasor modulus $\|\chi(1/2 + it)\| = 1$ (\texttt{Section6\_\allowbreak CriticalStripAudit.lean}, $176$ lines), the critical-strip quantifier and Szeg\H{o} reproducing-kernel audit (\texttt{CMIAuditBridge.lean}, $2{,}166$ lines), and the explicit kernel-integrity check (\texttt{VerifyNoTraps.lean}, $220$ lines). All modules compile with zero \texttt{sorry}s and strictly foundational Lean axioms \texttt{[propext, Classical.choice, Quot.sound]}.
 \end{abstract}
 
 \noindent\textbf{Keywords:} prime--composite partition, M\"obius convolution inverse, critical-strip divergence, functional equation unitary modulus, strip quantifier audit, Lean~4, Mathlib4.

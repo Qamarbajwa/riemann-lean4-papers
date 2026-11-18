@@ -1,18 +1,18 @@
-# Modular Lean 4 Formalization Guide — Waves 1–8 (57 Self-Contained Units)
+# Modular Lean 4 Formalization Guide (64 Self-Contained Units)
 
 **Author / Contributor:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Staging Directory:** `MATHLIB4_PR_STAGING/`  
 **Verified Build Mirror:** `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/`  
 **Automation Script:** `push_carved_prs_to_mathlib4.py`  
-**Fork Archive Target:** `Qamarbajwa/mathlib4` (`57` standalone `feat/*` branches; `ALLOW_UPSTREAM_BOT_ACTIONS = False` — never opens or comments on upstream PRs)  
-**Epistemic Invariant:** `NO_RH_PROOF = TRUE` (all 57 modules verify unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, exact `N = 4, 5, 6` certificates, all-`N` universal symmetries, pointwise continuity, prime-harmonic cell plateaus, or conditional RH bridges; none claim an unconditional RH proof)
+**Fork Archive Target:** `Qamarbajwa/mathlib4` (`64` standalone `feat/*` branches; never opens or comments on upstream PRs)  
+**Mathematical Scope:** All `64` modules verify unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, exact `N = 4, 5, 6` certificates, all-`N` universal symmetries, pointwise continuity, prime-harmonic cell plateaus, double-cone folding, Euclidean Book X.1 exhaustion bounds, or conditional implications toward the Riemann Hypothesis.
 
 ---
 
 ## Standalone Repository & Fork Archive Policy
 
-1. All 57 `UpstreamPR_1A`–`8N.lean` files are maintained as **57 self-contained, linter-verified modular Lean 4 formalization units** archived on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4`, and Zenodo (`10.5281/zenodo.24329861`).
-2. `ALLOW_UPSTREAM_BOT_ACTIONS = False` and `ENABLE_LIVE_AUTO_SUBMIT = False` disable automated `gh pr create` and `gh pr comment` mutations against `leanprover-community/mathlib4`. `--inspect`, `--advance-queue`, and `--poll-and-advance` operate strictly as read-only local status monitors.
+1. All `64` `UpstreamPR_1A`–`8U.lean` files (milestone history `57`–`64`) are maintained as **self-contained, linter-verified modular Lean 4 formalization units** archived on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4`, and Zenodo (`10.5281/zenodo.24353134`).
+2. Local automation disables all automated `gh pr create` and `gh pr comment` mutations against `leanprover-community/mathlib4`. `--inspect`, `--advance-queue`, and `--poll-and-advance` operate strictly as read-only local status monitors.
 3. Branches are pushed strictly to the user-owned fork `https://github.com/Qamarbajwa/mathlib4.git`.
 4. Every module registers cleanly as `public import Mathlib.NumberTheory.LSeries.<Name>` in `Mathlib.lean` (never before line 1 `module`).
 
@@ -306,7 +306,7 @@ Wave 5 covers Papers F & G:
 
 ---
 
-## Wave 8 Dependency Stack (`PR-8A`–`PR-8R`, Papers K & L)
+## Pure Plaque & Cell-Quadrature Dependency Stack (`PR-8A`–`PR-8U`, Papers K & L)
 
 - **PR-8A** (`Mathlib/NumberTheory/LSeries/BaezDuartePlaqueCauchySchwarz.lean`, `feat/baez-duarte-plaque-cauchy-schwarz`, stacked on `PR-7D` + `PR-4H`, 144 lines, max 96 chars): `dipolePlaqueForm`, `dipoleCoord_sub_cBaseAnchor_eq`, `dipolePlaqueForm_sub_cBaseAnchor_eq`, `QCot_eq_h_one_mul_drive_add_dipolePlaqueForm`, `SCot_eq_neg_c_one_mul_drive_sub_dipolePlaqueForm`, `l2_dist_eq_one_add_c_one_mul_drive_add_dipolePlaqueForm`, `sq_linearCotDrive_sub_le_dipolePlaqueForm`, `neg_h_one_sq_div_four_le_dipolePlaqueForm`, `one_sub_h_one_le_dipolePlaqueForm_of_unit_drive`.
 - **PR-8B** (`Mathlib/NumberTheory/LSeries/BaezDuarteDirichletAnchoredPlaque.lean`, `feat/baez-duarte-dirichlet-anchored-plaque`, stacked on `PR-8A`, 147 lines, max 99 chars): `IsDirichletAnchored`, `cDirichletAnchor`, `cDirichletAnchor_isDirichletAnchored`, `IsDirichletAnchored.sub_mem_tangent`, `dipolePlaqueForm_ge_of_dirichlet`, `dipolePlaqueForm_nonneg_of_dirichlet_of_one_le_drive`, `neg_one_div_four_le_dipolePlaqueForm_of_dirichlet`, `SCot_eq_drive_sub_dipolePlaqueForm_of_dirichlet`, `unit_drive_dirichlet_plaque_eq_l2_dist`, `unit_drive_dirichlet_plaque_nonneg`.
@@ -330,7 +330,7 @@ Wave 5 covers Papers F & G:
 - **PR-8T** (`Mathlib/NumberTheory/LSeries/BaezDuarteDoubleConeFolding.lean`, `feat/baez-duarte-double-cone-folding`, stacked on `PR-8S`, 196 lines, max 99 chars; letter `letters/pr_8t.txt`): `doubleConeSymmetricWidth`, `doubleConeAsymmetricWidth`, `counterRotatingCellFlux`, `weightedCounterRotatingFlux`, `modularCellResidual_sq_palindromic_eq`, `counterRotatingCellFlux_eq_two_mul_sq`, `sum_Icc_counterRotatingCellFlux_eq`, `modularCellResidual_one_eq_zero`, `modularCellResidual_period_sub_two_eq_zero`, `weightedCounterRotatingFlux_eq_two_mul_doubleCone`, `harmonicCellL2PartialSum_period_sub_two_eq_doubleCone`, `sum_Icc_weightedCounterRotatingFlux_eq_two_mul_l2`.
 - **PR-8U** (`Mathlib/NumberTheory/LSeries/BaezDuarteEuclideanExhaustion.lean`, `feat/baez-duarte-euclidean-exhaustion`, stacked on `PR-8T`, 173 lines, max 98 chars; letter `letters/pr_8u.txt`): `harmonicCellL2TailSum`, `harmonicCellL2TailSum_nonneg`, `harmonicCellL2PartialSum_sub_eq_tailSum`, `sum_Icc_harmonicCellWidth_tail`, `sum_Icc_harmonicCellWidth_tail_le`, `harmonicCellL2TailSum_le_mul_sub`, `harmonicCellL2TailSum_le_div_succ`, `harmonicCellL2TailSum_lt_eps_of_gt`, `euclidean_book_ix_and_x_continuity_capstone`.
 
-Total modular units: `64` (`Waves 1–8`, `UpstreamPR_1A`–`8U`, keeping `57`/`58`/`59`/`60`/`61`/`62`/`63` prior milestone compatibility).
+Total modular units: `64` (`UpstreamPR_1A`–`8U`, keeping `57`/`58`/`59`/`60`/`61`/`62`/`63` prior milestone compatibility).
 
 Human-letter format enforced by `verify_human_letter_and_size` (`letters/micro_pr_01.txt`..`micro_pr_05.txt`):
 

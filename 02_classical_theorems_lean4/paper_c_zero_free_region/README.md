@@ -1,8 +1,8 @@
-<!-- Zenodo DOI: 10.5281/zenodo.24328039 | Epistemic Status: NO_RH_PROOF = TRUE -->
+<!-- Zenodo DOI: 10.5281/zenodo.24353574 -->
 # Paper C: Formalizing De la Vallee Poussin (1899) Unconditional Zero-Free Region for the Riemann Zeta Function in Lean 4
 
-- **Zenodo DOI:** [10.5281/zenodo.24328039](https://doi.org/10.5281/zenodo.24328039)
-- **Epistemic Invariant:** NO_RH_PROOF = TRUE
+- **Zenodo DOI:** [`10.5281/zenodo.24353574`](https://doi.org/10.5281/zenodo.24353574) (prev `10.5281/zenodo.24328039`)
+- **MSC 2020:** Primary 11M26; Secondary 46E20, 68V20
 
 # Submission Package: De la Vallée Poussin's (1899) Unconditional Zero-Free Region
 
@@ -23,8 +23,8 @@ Rather than introducing logarithmic derivatives $-\zeta'/\zeta$, the proof speci
 4. `valleePoussin_cubic_opt_identity` & `deLaValleePoussin_contradiction`: The $\eta = 3\delta$ optimization ($256/27$).
 5. `deLaValleePoussin_zero_free_region_unconditional`: Final hypothesis-free boundary theorem with $c = \min(1/8, c_0)$.
 
-## Epistemic Status and Verification Invariants
-- **Epistemic Invariant:** `NO_RH_PROOF = TRUE`. This work formalizes an unconditional classical zero-free boundary inside the critical strip; no unconditional proof of the Riemann Hypothesis is claimed.
+## Mathematical Scope and Verification Invariants
+- **MSC 2020:** Primary `11M26`; Secondary `46E20`, `68V20`. Formalizes an unconditional classical zero-free boundary inside the critical strip.
 - **Foundational Axioms:** Strictly `[propext, Classical.choice, Quot.sound]` with zero `sorry`, zero `admit`, and zero custom axioms.
 - **Definitional Binding:** `VerifyNoTraps.lean` certifies `riemannZeta = _root_.riemannZeta` by `rfl`.
 

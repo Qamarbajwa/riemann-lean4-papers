@@ -39,7 +39,7 @@
 Reciprocal Zeta Holomorphy, and Open-Strip Rouch\'e\\
 and Equipartition Bridges in Lean~4}}
 
-\author{\textbf{Qamar Munawer}\\[0.3em]
+\author{\textbf{Qamar Munawer}\thanks{2020 \emph{Mathematics Subject Classification}. Primary 11M26; Secondary 46E20, 68V20. Formal Lean~4.35 verification artifacts are archived at \texttt{https://doi.org/10.5281/zenodo.24353366}.}\\[0.3em]
 \small Brandenburg University of Technology Cottbus--Senftenberg, Cottbus, Germany}
 
 \date{November 18, 2026}
@@ -51,14 +51,14 @@ and Equipartition Bridges in Lean~4}}
 \maketitle
 
 \begin{abstract}
-Prior formalizations of the Nyman--Beurling and B\'aez-Duarte program in Lean~4 focused primarily on the forward $L^2(0,1)$ implication and finite-horizon Vasyunin cotangent kernels. This paper presents four previously unprinted, axiom-free Lean~4 formalizations totaling $2{,}361$ lines across five modules in \texttt{RiemannBlueprint}: (i) the bidirectional Mellin-space Nyman--Beurling equivalence (\texttt{MathlibPR\_\allowbreak NymanBeurlingConverse.lean}, $273$ lines), establishing \texttt{riemannHypothesis\_\allowbreak iff\_\allowbreak mellin\_\allowbreak recipFract\_\allowbreak approx} across the right half of the critical strip $1/2 < \operatorname{Re}(s) < 1$ via explicit M\"obius sawtooth cancellation and conjugate symmetry; (ii) logarithmic derivative and reciprocal zeta holomorphy (\texttt{MathlibPR\_\allowbreak ZetaLogDeriv.lean}, $112$ lines), culminating in \texttt{riemannHypothesis\_\allowbreak iff\_\allowbreak analyticAt\_\allowbreak inv\_\allowbreak riemannZeta}; (iii) open-strip Rouch\'e zero-exclusion, the $1/\|\zeta(s)\|$ critical-line penetration barrier, $C^1$ log-Hermite window flatness, and exact Rank-4 distributed orthogonal projection neutrality (\texttt{OpenStripRouche.lean}, $401$ lines); and (iv) the prime--composite $50/50$ equipartition fulcrum, $\Lambda'(1-s) = -\Lambda'(s)$ derivative antisymmetry ($\Lambda'(1/2) = 0$), and non-trivial zero reflection dichotomy (\texttt{PrimeCollapseBridge.lean}, $209$ lines), supported by the measure-theoretic Mellin--Abel kernel layer (\texttt{MellinFracPart.lean}, $1{,}366$ lines). Every formalized theorem compiles cleanly with zero \texttt{sorry} placeholders and depends strictly on Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]}. Under the invariant \texttt{NO\_RH\_PROOF = TRUE}, no unconditional proof of the Riemann Hypothesis is claimed.
+Prior formalizations of the Nyman--Beurling and B\'aez-Duarte program in Lean~4 focused primarily on the forward $L^2(0,1)$ implication and finite-horizon Vasyunin cotangent kernels. This paper presents four previously unprinted, axiom-free Lean~4 formalizations totaling $2{,}361$ lines across five modules in \texttt{RiemannBlueprint}: (i) the bidirectional Mellin-space Nyman--Beurling equivalence (\texttt{MathlibPR\_\allowbreak NymanBeurlingConverse.lean}, $273$ lines), establishing \texttt{riemannHypothesis\_\allowbreak iff\_\allowbreak mellin\_\allowbreak recipFract\_\allowbreak approx} across the right half of the critical strip $1/2 < \operatorname{Re}(s) < 1$ via explicit M\"obius sawtooth cancellation and conjugate symmetry; (ii) logarithmic derivative and reciprocal zeta holomorphy (\texttt{MathlibPR\_\allowbreak ZetaLogDeriv.lean}, $112$ lines), culminating in \texttt{riemannHypothesis\_\allowbreak iff\_\allowbreak analyticAt\_\allowbreak inv\_\allowbreak riemannZeta}; (iii) open-strip Rouch\'e zero-exclusion, the $1/\|\zeta(s)\|$ critical-line penetration barrier, $C^1$ log-Hermite window flatness, and exact Rank-4 distributed orthogonal projection neutrality (\texttt{OpenStripRouche.lean}, $401$ lines); and (iv) the prime--composite $50/50$ equipartition fulcrum, $\Lambda'(1-s) = -\Lambda'(s)$ derivative antisymmetry ($\Lambda'(1/2) = 0$), and non-trivial zero reflection dichotomy (\texttt{PrimeCollapseBridge.lean}, $209$ lines), supported by the measure-theoretic Mellin--Abel kernel layer (\texttt{MellinFracPart.lean}, $1{,}366$ lines). Every formalized theorem compiles cleanly with zero \texttt{sorry} placeholders and depends strictly on Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]}; conditional equivalences state their analytic premises explicitly.
 \end{abstract}
 
 \noindent\textbf{Keywords:} Riemann zeta function, Nyman--Beurling converse, Mellin transform, Rouch\'e zero-exclusion, completed zeta derivative antisymmetry, Lean~4, Mathlib4.
 
 \section{Introduction and Formalization Scope}
 
-Classical analytic number theory links the Riemann Hypothesis (RH) to M\"obius cancellation, Hilbert-space approximation on $L^2(0,1)$~\cite{Nyman1950,Beurling1955,BaezDuarte2003}, and holomorphic non-vanishing criteria in the right half of the critical strip $\{s \in \Cfield : 1/2 < \operatorname{Re}(s) < 1\}$. Earlier manuscripts in this series formalized Littlewood's multiplicative equivalence, the forward $L^2(0,1)$ Nyman--Beurling implication, de la Vall\'ee Poussin's zero-free region, Hardy's critical-line zeros theorem, and constructive cotangent Gram benchmarks. However, five machine-checked Lean~4 modules in \texttt{RiemannBlueprint}—comprising $2{,}361$ lines, zero \texttt{sorry}s, and strictly foundational Lean axioms—remained unrecorded in those published papers:
+Classical analytic number theory links the Riemann Hypothesis (RH) to M\"obius cancellation, Hilbert-space approximation on $L^2(0,1)$~\cite{Nyman1950,Beurling1955,BaezDuarte2003}, and holomorphic non-vanishing criteria in the right half of the critical strip $\{s \in \Cfield : 1/2 < \operatorname{Re}(s) < 1\}$. Earlier manuscripts in this series formalized Littlewood's multiplicative equivalence, the forward $L^2(0,1)$ Nyman--Beurling implication, de la Vall\'ee Poussin's zero-free region, Hardy's critical-line zeros theorem, and constructive cotangent Gram benchmarks. Five additional machine-checked Lean~4 modules in \texttt{RiemannBlueprint}---comprising $2{,}361$ lines, zero \texttt{sorry}s, and strictly foundational Lean axioms---complete the Mellin--Rouch\'e layer:
 \begin{enumerate}[label=(\roman*),noitemsep]
   \item \texttt{MathlibPR\_\allowbreak NymanBeurlingConverse.lean} ($273$ lines): bidirectional Mellin-space sawtooth equivalence for \texttt{\_root\_.\allowbreak RiemannHypothesis};
   \item \texttt{MathlibPR\_\allowbreak ZetaLogDeriv.lean} ($112$ lines): holomorphy of $\zeta'(s)/\zeta(s)$ and reciprocal analyticity equivalence;
@@ -67,7 +67,7 @@ Classical analytic number theory links the Riemann Hypothesis (RH) to M\"obius c
   \item \texttt{MellinFracPart.lean} ($1{,}366$ lines): Lebesgue split and discrete Abel telescope infrastructure supporting the complex-strip Mellin identities.
 \end{enumerate}
 
-\paragraph{Epistemic Demarcation (\texttt{NO\_RH\_PROOF = TRUE}).}
+\paragraph{Mathematical Scope.}
 All unconditional identities and bidirectional equivalences below are verified without custom axioms or analytic oracles. Where a theorem deduces \texttt{\_root\_.\allowbreak RiemannHypothesis} from an external approximation or rectangle-exhaustion hypothesis (such as \texttt{RectRoucheProperty} or \texttt{VonKochRemainderBound}), that hypothesis is passed explicitly as a parameter, never postulated as a Lean \texttt{axiom}.
 
 \section{Bidirectional Mellin-Space Nyman--Beurling Equivalence}\label{sec:mellin_converse}
@@ -217,7 +217,7 @@ Every module treated in this paper is compiled cleanly by Lean~4 (\texttt{lake b
 \textbf{Total} & \textbf{2,361} & \textbf{87} & \textbf{0 \texttt{sorry}, 0 custom axioms} \\
 \bottomrule
 \end{tabular}
-\caption{Kernel-verified Lean~4 inventory for Paper~F (\texttt{NO\_RH\_PROOF = TRUE}).}
+\caption{Kernel-verified Lean~4 inventory for Paper~F (standard axioms \texttt{[propext, Classical.choice, Quot.sound]}).}
 \label{tab:paper_f_audit}
 \end{table}
 

@@ -45,7 +45,7 @@
 
 \title{\textbf{Formalizing Littlewood's Equivalence for the Riemann Hypothesis in Lean~4}}
 
-\author{\textbf{Qamar Munawer}\\[0.3em]
+\author{\textbf{Qamar Munawer}\thanks{2020 \emph{Mathematics Subject Classification}. Primary 11M26; Secondary 46E20, 68V20. Formal Lean~4.35 verification artifacts are archived at \texttt{https://doi.org/10.5281/zenodo.24353366}.}\\[0.3em]
 \small Brandenburg University of Technology Cottbus--Senftenberg}
 
 \date{November 2026}
@@ -56,7 +56,7 @@
 \maketitle
 
 \begin{abstract}
-This paper presents the machine-checked formalization in Lean~4 of Littlewood's (1912) classical equivalence theorem connecting the Riemann Hypothesis (RH) to the asymptotic growth of the Mertens summatory function: RH holds if and only if $M(x) = \mathcal{O}(x^{1/2+\varepsilon})$ for every $\varepsilon > 0$. The equivalence itself is a foundational result of classical analytic number theory; no new mathematics and no unconditional progress on the truth of the Riemann Hypothesis are claimed. The formal contribution consists of providing an end-to-end, machine-checked verification of both implications against the official Mathlib definition of the Riemann Hypothesis (\texttt{\_root\_.RiemannHypothesis}), operating strictly within standard core axioms (\texttt{[propext, Classical.choice, Quot.sound]}) with zero custom axioms and zero \texttt{sorry} placeholders. The proof is structured into three self-contained stages designed for upstream integration into Mathlib: (i)~the forward direction via discrete Abel summation and Mellin transform inversion of the reciprocal zeta function; (ii)~a sub-polynomial growth bound on $\zeta(s)^{-1}$ on half-planes $\operatorname{Re}(s) \ge \sigma_0 > 1/2$ under RH via the Borel--Carath\'eodory lemma and Hadamard three-lines interpolation; and (iii)~the converse direction via a continuous trapezoidal mollifier contour shift that circumvents the conditional convergence of classical discontinuous Perron inversion.
+This paper presents the machine-checked formalization in Lean~4 of Littlewood's (1912) classical equivalence theorem connecting the Riemann Hypothesis (RH) to the asymptotic growth of the Mertens summatory function: RH holds if and only if $M(x) = \mathcal{O}(x^{1/2+\varepsilon})$ for every $\varepsilon > 0$. As a foundational equivalence of classical analytic number theory, the formal contribution supplies an end-to-end, machine-checked verification of both conditional implications against the official Mathlib definition of the Riemann Hypothesis (\texttt{\_root\_.RiemannHypothesis}), operating strictly within standard core axioms (\texttt{[propext, Classical.choice, Quot.sound]}) with zero custom axioms and zero \texttt{sorry} placeholders. The proof is structured into three self-contained stages designed for upstream integration into Mathlib: (i)~the forward direction via discrete Abel summation and Mellin transform inversion of the reciprocal zeta function; (ii)~a sub-polynomial growth bound on $\zeta(s)^{-1}$ on half-planes $\operatorname{Re}(s) \ge \sigma_0 > 1/2$ under RH via the Borel--Carath\'eodory lemma and Hadamard three-lines interpolation; and (iii)~the converse direction via a continuous trapezoidal mollifier contour shift that circumvents the conditional convergence of classical discontinuous Perron inversion.
 \end{abstract}
 
 % ===========================================================================

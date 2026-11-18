@@ -38,7 +38,7 @@
 \title{\textbf{Unconditional Formalization of Von Koch's Chebyshev $\psi$-Theorem\\
 and Modular Three-Frequency Forward Closure in Lean~4}}
 
-\author{\textbf{Qamar Munawer}\\[0.3em]
+\author{\textbf{Qamar Munawer}\thanks{2020 \emph{Mathematics Subject Classification}. Primary 11M26; Secondary 46E20, 68V20. Formal Lean~4.35 verification artifacts are archived at \texttt{https://doi.org/10.5281/zenodo.24353366}.}\\[0.3em]
 \small Brandenburg University of Technology Cottbus--Senftenberg, Cottbus, Germany}
 
 \date{November 18, 2026}
@@ -50,16 +50,16 @@ and Modular Three-Frequency Forward Closure in Lean~4}}
 \maketitle
 
 \begin{abstract}
-Prior formalizations of prime-number criteria in Lean~4 addressed Littlewood's M\"obius/Mertens criterion and constructive Nyman--Beurling cotangent kernels separately. This paper records two substantial Lean~4 formalization components absent from all six previously published micro-papers: (1) an axiom-free formalization of Von Koch's classical forward theorem in both \texttt{Section7\_\allowbreak SpectralBridge.lean} ($636$ lines) and \texttt{MathlibPR\_\allowbreak LittlewoodMertens.lean} ($342$ lines), proving unconditionally that $\psi(x) - x = \mathcal{O}(x^{1/2 + \varepsilon})$ for all $\varepsilon > 0$ implies \texttt{\_root\_.\allowbreak RiemannHypothesis} via Mellin analytic continuation across four overlapping convex open regions and order-of-zero factoring via \texttt{AnalyticAt} (\texttt{vonKoch\_\allowbreak implies\_\allowbreak rh}, \texttt{RiemannHypothesis.\allowbreak of\_\allowbreak chebyshevPsi\_\allowbreak sub\_\allowbreak self\_\allowbreak isBigO}); and (2) the complete five-stage conditional forward spectral closure architecture comprising \texttt{MathlibPR\_\allowbreak LinearMomentLimit.lean} ($195$ lines), \texttt{MathlibPR\_\allowbreak SpectralTailBound.lean} ($233$ lines), \texttt{MathlibPR\_\allowbreak MontgomeryVaughan.lean} ($279$ lines), \texttt{MathlibPR\_\allowbreak SelbergSieveBound.lean} ($215$ lines), and \texttt{MathlibPR\_\allowbreak ForwardClosure.lean} ($237$ lines). Across all modules ($1{,}795$ lines excluding the previously covered Mertens fragment), every theorem compiles cleanly with zero \texttt{sorry} placeholders and depends strictly on \texttt{[propext, Classical.choice, Quot.sound]}. Under \texttt{NO\_RH\_PROOF = TRUE}, the three-frequency closure theorems formalize exact machine-checked interfaces rather than asserting analytic proof of the constituent spectral hypotheses.
+Prior formalizations of prime-number criteria in Lean~4 addressed Littlewood's M\"obius/Mertens criterion and constructive Nyman--Beurling cotangent kernels separately. This paper records two substantial Lean~4 formalization components absent from all six previously published micro-papers: (1) an axiom-free formalization of Von Koch's classical forward theorem in both \texttt{Section7\_\allowbreak SpectralBridge.lean} ($636$ lines) and \texttt{MathlibPR\_\allowbreak LittlewoodMertens.lean} ($342$ lines), proving unconditionally that $\psi(x) - x = \mathcal{O}(x^{1/2 + \varepsilon})$ for all $\varepsilon > 0$ implies \texttt{\_root\_.\allowbreak RiemannHypothesis} via Mellin analytic continuation across four overlapping convex open regions and order-of-zero factoring via \texttt{AnalyticAt} (\texttt{vonKoch\_\allowbreak implies\_\allowbreak rh}, \texttt{RiemannHypothesis.\allowbreak of\_\allowbreak chebyshevPsi\_\allowbreak sub\_\allowbreak self\_\allowbreak isBigO}); and (2) the complete five-stage conditional forward spectral closure architecture comprising \texttt{MathlibPR\_\allowbreak LinearMomentLimit.lean} ($195$ lines), \texttt{MathlibPR\_\allowbreak SpectralTailBound.lean} ($233$ lines), \texttt{MathlibPR\_\allowbreak MontgomeryVaughan.lean} ($279$ lines), \texttt{MathlibPR\_\allowbreak SelbergSieveBound.lean} ($215$ lines), and \texttt{MathlibPR\_\allowbreak ForwardClosure.lean} ($237$ lines). Across all modules ($1{,}795$ lines excluding the previously covered Mertens fragment), every theorem compiles cleanly with zero \texttt{sorry} placeholders and depends strictly on \texttt{[propext, Classical.choice, Quot.sound]}. The three-frequency closure theorems formalize exact machine-checked conditional interfaces parameterized explicitly by the constituent spectral hypotheses.
 \end{abstract}
 
 \noindent\textbf{Keywords:} Von Koch theorem, Chebyshev $\psi$ function, Mellin transform, Montgomery--Vaughan mean value, Selberg sieve majorant, forward Nyman--Beurling closure, Lean~4, Mathlib4.
 
-\section{Introduction and Epistemic Scope}
+\section{Introduction and Mathematical Scope}
 
-Helge von Koch (1901) established that the prime-number remainder bound $\psi(x) - x = \mathcal{O}(x^{1/2}\ln^2 x)$ is closely tied to the Riemann Hypothesis; its $\varepsilon$-weakened equivalence $\psi(x) - x = \mathcal{O}(x^{1/2+\varepsilon})$ ($\forall \varepsilon > 0$) mirrors Littlewood's Mertens bound on the additive-logarithmic side of the zeta function via $-\zeta'(s)/\zeta(s)$. While Littlewood's M\"obius equivalence was formalized in earlier work, the Chebyshev $\psi(x)$ / Von Koch forward theorem in \texttt{Section7\_\allowbreak SpectralBridge.lean} and the modular five-stage forward closure pipeline (\texttt{MathlibPR\_\allowbreak LinearMomentLimit.lean} through \texttt{MathlibPR\_\allowbreak ForwardClosure.lean}) remained unrepresented in the published micro-paper series.
+Helge von Koch (1901) established that the prime-number remainder bound $\psi(x) - x = \mathcal{O}(x^{1/2}\ln^2 x)$ is closely tied to the Riemann Hypothesis; its $\varepsilon$-weakened equivalence $\psi(x) - x = \mathcal{O}(x^{1/2+\varepsilon})$ ($\forall \varepsilon > 0$) mirrors Littlewood's Mertens bound on the additive-logarithmic side of the zeta function via $-\zeta'(s)/\zeta(s)$. While Littlewood's M\"obius equivalence was formalized in earlier work, the Chebyshev $\psi(x)$ / Von Koch forward theorem in \texttt{Section7\_\allowbreak SpectralBridge.lean} and the modular five-stage forward closure pipeline (\texttt{MathlibPR\_\allowbreak LinearMomentLimit.lean} through \texttt{MathlibPR\_\allowbreak ForwardClosure.lean}) complete this spectral bridge.
 
-\paragraph{Epistemic Demarcation (\texttt{NO\_RH\_PROOF = TRUE}).}
+\paragraph{Mathematical Scope.}
 Both components below operate strictly within the machine-checked standard axiom set \texttt{[propext, Classical.choice, Quot.sound]}:
 \begin{itemize}[noitemsep]
   \item In Part~\ref{sec:vonkoch}, the implication \texttt{VonKochRemainderBound $\to$ \_root\_.\allowbreak RiemannHypothesis} is proved \emph{unconditionally}, whereas the converse direction $\mathrm{RH} \to \mathrm{VonKochRemainderBound}$ in \texttt{spectral\_\allowbreak stability\_\allowbreak theorem} remains explicitly isolated behind the analytical record \texttt{ClassicalAnalyticInterface} (reflecting truncated Perron contour integration not yet available in Mathlib4).
@@ -167,7 +167,7 @@ All modules reported here compile cleanly under \texttt{lake build} ($3{,}803$ j
 \multicolumn{4}{@{}l@{}}{\scriptsize $^*$Mertens portion previously reported in Paper~A; Chebyshev $\psi$ Von Koch portion is newly detailed here.} \\
 \bottomrule
 \end{tabular}
-\caption{Kernel-verified Lean~4 inventory for Paper~G (\texttt{NO\_RH\_PROOF = TRUE}).}
+\caption{Kernel-verified Lean~4 inventory for Paper~G (standard axioms \texttt{[propext, Classical.choice, Quot.sound]}).}
 \label{tab:paper_g_audit}
 \end{table}
 

@@ -45,7 +45,7 @@
 
 \title{\textbf{Formalizing De la Vall{\'e}e Poussin's (1899) Unconditional Zero-Free Region\\for the Riemann Zeta Function in Lean~4}}
 
-\author{\textbf{Qamar Munawer}\\[0.3em]
+\author{\textbf{Qamar Munawer}\thanks{2020 \emph{Mathematics Subject Classification}. Primary 11M26; Secondary 46E20, 68V20. Formal Lean~4.35 verification artifacts are archived at \texttt{https://doi.org/10.5281/zenodo.24353366}.}\\[0.3em]
 \small Brandenburg University of Technology Cottbus--Senftenberg}
 
 \date{November 2026}
@@ -57,11 +57,11 @@
 \maketitle
 
 \begin{abstract}
-We present a complete, hypothesis-free formalization in Lean~4 of a polynomial-logarithmic zero-free region for the Riemann zeta function $\zeta(s)$ in the style of de la Vall{\'e}e Poussin (1899). Specifically, the main theorem \texttt{deLaValleePoussin\_\allowbreak zero\_\allowbreak free\_\allowbreak region\_\allowbreak unconditional} proves the existence of an explicit positive constant $c > 0$ such that $\zeta(\sigma + it) \ne 0$ whenever $|t| \ge 2$ and $\sigma > 1 - c / \ln^9(|t|+2)$. Rather than developing logarithmic-derivative machinery for $-\zeta'/\zeta$, the formalization works directly with $\zeta(s)$ via Mathlib's $L$-function $3$-$4$-$1$ product inequality \texttt{norm\_LFunction\_\allowbreak product\_ge\_one} at trivial character modulus $1$, and discharges all required local bounds unconditionally: a pole bound near $s = 1$ from the continuity of the regular part $\zeta_0$, a strip growth bound via Euler--Maclaurin summation, a horizontal Lipschitz bound via Cauchy's integral estimate on a shrinking disk, and the $\eta = 3\delta$ repulsion optimization. Every theorem is kernel-checked against Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]} with zero \texttt{sorry} gaps.
+This paper presents a complete, hypothesis-free formalization in Lean~4 of a polynomial-logarithmic zero-free region for the Riemann zeta function $\zeta(s)$ in the style of de la Vall{\'e}e Poussin (1899). Specifically, the main theorem \texttt{deLaValleePoussin\_\allowbreak zero\_\allowbreak free\_\allowbreak region\_\allowbreak unconditional} proves the existence of an explicit positive constant $c > 0$ such that $\zeta(\sigma + it) \ne 0$ whenever $|t| \ge 2$ and $\sigma > 1 - c / \ln^9(|t|+2)$. Rather than developing logarithmic-derivative machinery for $-\zeta'/\zeta$, the formalization works directly with $\zeta(s)$ via Mathlib's $L$-function $3$-$4$-$1$ product inequality \texttt{norm\_LFunction\_\allowbreak product\_ge\_one} at trivial character modulus $1$, and discharges all required local bounds unconditionally: a pole bound near $s = 1$ from the continuity of the regular part $\zeta_0$, a strip growth bound via Euler--Maclaurin summation, a horizontal Lipschitz bound via Cauchy's integral estimate on a shrinking disk, and the $\eta = 3\delta$ repulsion optimization. Every theorem is kernel-checked against Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]} with zero \texttt{sorry} gaps.
 \end{abstract}
 
-\paragraph{Epistemic Status.}
-The Riemann Hypothesis remains an open mathematical conjecture. This work mechanizes an unconditional classical zero-free boundary inside the critical strip together with its quantitative repulsion estimates; no unconditional proof of the Riemann Hypothesis is claimed or implied.
+\paragraph{Mathematical Scope.}
+The theorems below formalize an unconditional classical zero-free boundary inside the critical strip together with its quantitative repulsion constants across all $|t| \ge 2$.
 
 \section{Introduction}
 
@@ -71,7 +71,7 @@ The distribution of prime numbers is intimately linked to zero-free regions of t
 \end{equation}
 which underpins the classical error term $\psi(x) - x = \mathcal{O}(x \exp(-c'\sqrt{\ln x}))$.
 
-While non-vanishing on $\operatorname{Re}(s) = 1$ has been mechanized in Isabelle/HOL~\cite{eberl2019} and in Lean~4~\cite{pnt2024}, extending a formalization strictly to the left of $\operatorname{Re}(s) = 1$ requires quantitative control over $\zeta$ in an explicit neighborhood of the $1$-line. In this paper we document a self-contained, completely unconditional Lean~4 formalization of the polynomial-logarithmic zero-free region
+While non-vanishing on $\operatorname{Re}(s) = 1$ has been mechanized in Isabelle/HOL~\cite{eberl2019} and in Lean~4~\cite{pnt2024}, extending a formalization strictly to the left of $\operatorname{Re}(s) = 1$ requires quantitative control over $\zeta$ in an explicit neighborhood of the $1$-line. This work documents a self-contained, completely unconditional Lean~4 formalization of the polynomial-logarithmic zero-free region
 \begin{equation}\label{eq:formal_zfr}
 \exists c > 0,\ \forall s \in \Cfield, \quad |{\operatorname{Im}}(s)| \ge 2 \ \text{and}\ \operatorname{Re}(s) > 1 - \frac{c}{\ln^9(|\operatorname{Im}(s)|+2)} \implies \zeta(s) \ne 0,
 \end{equation}
@@ -119,7 +119,7 @@ theorem riemannZeta_norm_cubed_fourth_mul_ge_one {x : $\Rset$} (hx : 0 < x) (y :
 
 \section{Unconditional Analytic Bounds Near \texorpdfstring{$\operatorname{Re}(s) = 1$}{Re(s) = 1}}\label{sec:bounds}
 
-To turn~\eqref{eq:product_ge_one} into a zero-free region at a hypothetical zero $s_0 = 1 - \delta + iy$ (setting $x = \eta > 0$), we need unconditional upper bounds on the three factors $|\zeta(1+\eta)|$, $|\zeta(1+\eta+iy)|$, and $|\zeta(1+\eta+2iy)|$.
+To turn~\eqref{eq:product_ge_one} into a zero-free region at a hypothetical zero $s_0 = 1 - \delta + iy$ (setting $x = \eta > 0$), one requires unconditional upper bounds on the three factors $|\zeta(1+\eta)|$, $|\zeta(1+\eta+iy)|$, and $|\zeta(1+\eta+2iy)|$.
 
 \subsection{Laurent Decomposition and Constructive Pole Bound}
 
@@ -232,7 +232,7 @@ c_0 = \frac{27}{256 \, C_{\text{pole}}^3 \, C_{\text{lip}}^4 \, C_{\text{growth}
 Whenever $\delta = 1 - \operatorname{Re}(s) < c / \ln^9(|{\operatorname{Im}}(s)| + 2)$, the choice $c \le 1/8$ together with $\ln(|{\operatorname{Im}}(s)|+2) > 1$ implies $\delta \le (8\ln(|{\operatorname{Im}}(s)|+2))^{-1} = R$ (and hence $3\delta \le 1$), validating the Cauchy disk and pole hypotheses unconditionally, while $c \le c_0$ gives $\delta < c_0 / \ln^9(|{\operatorname{Im}}(s)|+2)$ and triggers \texttt{deLaValleePoussin\_contradiction}.
 
 \begin{theorem}[Unconditional Polynomial-Logarithmic Zero-Free Region]\label{thm:unconditional_zfr}
-There exists an explicit constant $c > 0$ such that for all $s \in \Cfield$ with $|{\operatorname{Im}}(s)| \ge 2$ and $\operatorname{Re}(s) > 1 - c / \ln^9(|{\operatorname{Im}}(s)|+2)$, we have $\zeta(s) \ne 0$.
+There exists an explicit constant $c > 0$ such that for all $s \in \Cfield$ with $|{\operatorname{Im}}(s)| \ge 2$ and $\operatorname{Re}(s) > 1 - c / \ln^9(|{\operatorname{Im}}(s)|+2)$, $\zeta(s) \ne 0$.
 \end{theorem}
 
 In Lean~4, this theorem carries zero external analytic hypotheses:

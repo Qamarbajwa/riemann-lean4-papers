@@ -38,7 +38,7 @@
 
 \title{\textbf{Geometric Intuition, Joined-Cone Zeta Visualizations, and the Genesis of the Lean~4 Riemann Blueprint}}
 
-\author{\textbf{Qamar Munawer}\\[0.3em]
+\author{\textbf{Qamar Munawer}\thanks{2020 \emph{Mathematics Subject Classification}. Primary 11M26; Secondary 46E20, 68V20. Formal Lean~4.35 verification artifacts are archived at \texttt{https://doi.org/10.5281/zenodo.24353366}.}\\[0.3em]
 \small Brandenburg University of Technology Cottbus--Senftenberg}
 
 \date{November 2026}
@@ -50,19 +50,19 @@
 \maketitle
 
 \begin{abstract}
-Before a single theorem is formalized in Lean~4, mathematical investigation often begins with geometry, curiosity, and visual experimentation. This companion paper documents the intuitive genesis behind our five-part formalized Riemann Zeta Blueprint: how spatially driven cone models and high-precision plots of $\zeta(s)$ guided the discovery of exact symmetries, zero-pinching horizons, and analytic barriers. Specifically, we reconstruct three foundational experiments: (i) the Joined Two-Cone model across the critical strip $0 \le \operatorname{Re}(s) \le 1$, where the forward Euler/Dirichlet cone meets its functional-equation reflection cone $\xi(1-s) = \xi(s)$ along the critical-line waist $\operatorname{Re}(s) = 1/2$; (ii) the polar $3$-$4$-$1$ positivity cone $3 + 4\cos\theta + \cos(2\theta) = 2(1+\cos\theta)^2 \ge 0$ that enforces zero repulsion from $\operatorname{Re}(s) = 1$; and (iii) critical-line oscillations of Hardy's real-valued $Z(t)$ alongside $80$-digit Nyman--Beurling--B\'aez-Duarte contractions on the affine cone $\mathcal{A}_N$. We also explain candidly why visual intuition alone is insufficient: numerical tests up to $N = 256$ exposed severe Gram ill-conditioning ($\kappa(G_{64}) = 11{,}555.80$) and a $664.38\times$ boundary amplification, proving why every intuitive clue had to pass through Lean~4's axiom-free kernel. Epistemic invariant: \texttt{NO\_RH\_PROOF = TRUE}.
+Geometric intuition and high-precision numerical visualization frequently precede formal mechanization in analytic number theory. This companion paper documents the spatial models and computational experiments guiding a five-part formalized Lean~4 development of classical Riemann zeta theory: (i) the Joined Two-Cone model across the critical strip $0 \le \operatorname{Re}(s) \le 1$, where the forward Euler/Dirichlet cone meets its functional-equation reflection cone $\xi(1-s) = \xi(s)$ along the critical-line waist $\operatorname{Re}(s) = 1/2$; (ii) the polar $3$-$4$-$1$ positivity cone $3 + 4\cos\theta + \cos(2\theta) = 2(1+\cos\theta)^2 \ge 0$ enforcing zero repulsion from $\operatorname{Re}(s) = 1$; and (iii) critical-line oscillations of Hardy's real-valued $Z(t)$ paired with $80$-digit Nyman--Beurling--B\'aez-Duarte contractions on the affine cone $\mathcal{A}_N$. Quantitative conditioning diagnostics up to $N = 256$ reveal severe Gram ill-conditioning ($\kappa(G_{64}) = 11{,}555.80$) and a $664.38\times$ boundary amplification, illustrating why every geometric heuristic required verification within Lean~4's axiom-free kernel. These finite-horizon visual models and conditional bridges separate unconditionally certified finite-dimensional identities from the asymptotic closure problem as $N \to \infty$.
 \end{abstract}
 
-\paragraph{Epistemic Status (\texttt{NO\_RH\_PROOF = TRUE}).}
-This companion paper serves as a conceptual and methodological guide to Papers~A--E. Neither the cone visualizations nor the $80$-digit numerical benchmarks prove the Riemann Hypothesis, which remains an open conjecture. Visual experiments generate conjectures and expose obstructions; only the machine-checked Lean~4 proofs documented in Papers~A--E establish certified mathematical theorems.
+\paragraph{Mathematical Scope.}
+This companion paper provides a conceptual and methodological guide to Papers~A--E. Visual models and finite-horizon numerical benchmarks identify candidate algebraic structures and analytic obstructions; machine-checked Lean~4 proofs in Papers~A--E certify the corresponding unconditional identities and explicit conditional equivalences.
 
 % ============================================================================
 \section{Thinking Visually: Why Start with Cones and Plots?}\label{sec:thinking}
 % ============================================================================
 
-Every researcher enters analytic number theory along a different cognitive path. Some think first in terms of contour shifts, Tauberian kernels, or Banach-space functional analysis; others think spatially, wanting to \emph{see} how an analytic function bends, winds, pinches, and balances across the complex plane before writing down inequalities. My own path into the Riemann zeta function $\zeta(s)$ began squarely in the second camp. Rather than treating $\zeta(\sigma + it)$ purely as a formal Dirichlet series or an abstract $L$-function, I started by building geometric cone embeddings and plotting them at high precision to watch how the primes and composites compete as $\sigma = \operatorname{Re}(s)$ approaches the critical strip.
+Every researcher enters analytic number theory along a different cognitive path. Some think first in terms of contour shifts, Tauberian kernels, or Banach-space functional analysis; others think spatially, examining how an analytic function bends, winds, pinches, and balances across the complex plane before writing down inequalities. Constructing geometric cone embeddings at high precision makes the competition between prime powers and composites immediately visible as $\sigma = \operatorname{Re}(s)$ approaches the critical strip.
 
-In exploratory scripts developed at the outset of this program---specifically \texttt{composite\_\allowbreak zeta\_\allowbreak and\_\allowbreak prime\_\allowbreak duality.py} and \texttt{zeta\_\allowbreak bicone\_\allowbreak unfolding\_\allowbreak and\_\allowbreak dual\_\allowbreak sheet.py}---this visual strategy surfaced three recurring geometric pictures that later organized our entire Lean~4 architecture:
+In exploratory scripts developed at the outset of this program---specifically \texttt{composite\_\allowbreak zeta\_\allowbreak and\_\allowbreak prime\_\allowbreak duality.py} and \texttt{zeta\_\allowbreak bicone\_\allowbreak unfolding\_\allowbreak and\_\allowbreak dual\_\allowbreak sheet.py}---this visual strategy surfaced three recurring geometric pictures that subsequently organized the entire Lean~4 architecture:
 \begin{enumerate}[noitemsep]
     \item \textbf{A Prime--Composite Equilibrium Horizon Outside the Strip:} Partitioning the Dirichlet sum $\zeta(s) - 1 = P(s) + \zeta_{\mathrm{comp}}(s)$ into prime powers $P(s) = \sum_{p} p^{-s}$ and composite integers $\zeta_{\mathrm{comp}}(s)$ reveals a sharp $50/50$ crossover at $s^* \approx 1.44653762$, where $P(s^*) = \zeta_{\mathrm{comp}}(s^*) \approx 0.92409539$. For $\operatorname{Re}(s) > s^*$, $\zeta(s) - 1$ is dominated by its prime backbone; as $\sigma \downarrow 1^+$, the composite harmonics surge and carry the logarithmic pole.
     \item \textbf{Helicoidal Bicone Pinching on the Critical Line:} Embedding the critical-strip modulus $|\zeta(\sigma+it)|$ radially onto a symmetric double cone $r_\sigma(t) = \kappa |t|\,|\zeta(\sigma+it)|$ for $t \in [-\gamma_{50}, \gamma_{50}]$ ($\gamma_{50} \approx 143.1118$) showed visually why $\sigma = 1/2$ is topologically distinguished. Along $\sigma = 1/2$, every nontrivial zero pinches both the upper ($t > 0$) and lower ($t < 0$) cones tightly to the central zero axis ($R_{1/2}(\pm\gamma_k) < 10^{-70}$). Shifting off-line even slightly to $\sigma = 0.55$ or $\sigma = 0.65$ lifts every lobe off the axis, creating a rigid open collar ($\min_{k \le 50} R_{0.55}(\gamma_k) \approx 0.192273 > 0$, $\min_{k \le 50} R_{0.65}(\gamma_k) \approx 0.554235 > 0$).
@@ -75,7 +75,7 @@ Crucially, these plots did not prove a theorem on their own---and in fact, one e
 \section{The Joined Two-Cone Experiment \& Zeta Visualizations}\label{sec:cones}
 % ============================================================================
 
-To make the bridge from spatial intuition to formalized Lean~4 declarations completely transparent, we regenerate two clean vector figures in \texttt{generate\_\allowbreak intuition\_\allowbreak cone\_\allowbreak and\_\allowbreak zeta\_\allowbreak plots.py} directly from \texttt{mpmath} and our $80$-digit benchmark ledger \texttt{forward\_\allowbreak weights\_\allowbreak results.json}.
+To make the bridge from spatial intuition to formalized Lean~4 declarations transparent, two clean vector figures are generated in \texttt{generate\_\allowbreak intuition\_\allowbreak cone\_\allowbreak and\_\allowbreak zeta\_\allowbreak plots.py} directly from \texttt{mpmath} and the $80$-digit benchmark ledger \texttt{forward\_\allowbreak weights\_\allowbreak results.json}.
 
 \subsection{Joined Two-Cone Symmetry and the $3$-$4$-$1$ Positivity Cone}
 
@@ -129,9 +129,9 @@ While Figure~\ref{fig:joined_cones} explains where zeros \emph{can} and \emph{ca
 
 Looking at the downward curves in Figure~\ref{fig:critical_and_scot}, an intuitive researcher might easily be tempted to extrapolate $E_{\mathrm{opt}}(N) \to 0$ as $N \to \infty$ and conclude that proving completeness on $\mathcal{A}_N$ should be straightforward. In fact, quantitative inspection of the cone experiments exposed the exact opposite: \emph{finite visualizations can conceal subtle analytic blowups that only rigorous proof-assistant discipline forces into the open.}
 
-Three concrete lessons from our project illustrate why Lean~4 became indispensable rather than optional:
+Three concrete lessons from the project illustrate why Lean~4 became indispensable rather than optional:
 \begin{enumerate}[noitemsep]
-    \item \textbf{Spectral Ill-Conditioning of Vasyunin's Gram Cone ($\kappa(G_{64}) = 11{,}555.80$):} In floating-point IEEE-754 arithmetic, solving the Baez--Duarte Gram system $G_N c = b$ already loses accuracy around $N \approx 32$. Our $80$-digit spectral diagnostics revealed why: the condition number $\kappa(G_N) = \lambda_{\max}(G_N) / \lambda_{\min}(G_N)$ explodes superlinearly:
+    \item \textbf{Spectral Ill-Conditioning of Vasyunin's Gram Cone ($\kappa(G_{64}) = 11{,}555.80$):} In floating-point IEEE-754 arithmetic, solving the Baez--Duarte Gram system $G_N c = b$ already loses accuracy around $N \approx 32$. The $80$-digit spectral diagnostics revealed why: the condition number $\kappa(G_N) = \lambda_{\max}(G_N) / \lambda_{\min}(G_N)$ explodes superlinearly:
     \begin{gather*}
         \kappa(G_4) = 30.75 \;\longrightarrow\; \kappa(G_8) = 112.63 \;\longrightarrow\; \kappa(G_{16}) = 544.35, \\
         \kappa(G_{32}) = 2{,}726.05 \;\longrightarrow\; \kappa(G_{64}) = 11{,}555.80.
@@ -142,10 +142,10 @@ Three concrete lessons from our project illustrate why Lean~4 became indispensab
         \det(U_4) = \frac{\ln 2}{24} \ln\!\left(\frac{256}{243}\right) \approx 0.00150517 \quad \Longrightarrow \quad \det(U_4)^{-1} \approx 664.38.
     \]
     Multiplying small truncation residuals by $664.38$ overwhelms the delicate logarithmic decay. Only the $2$-constraint affine projection \texttt{projectAffine} onto $\mathcal{A}_N$ (whose determinant $\Delta(N) = N S_2(N) - H(N)^2 > 0$ is unconditionally well-behaved for all $N \ge 2$) avoids this instability.
-    \item \textbf{Catching Subtle Algebra Errors via Kernel Verification:} Even more tellingly, while formalizing Vasyunin's cross-integral $\int_0^1 \{1/(jx)\}\{1/(kx)\}\,\dee x$, an early informal write-up stated a $\gcd(j, k)$-reduced form whose diagonal formula did not match unreduced rank-$4$ $G_{\mathrm{smooth}}(j, k)$ at $j = k = 2$ (where the true continuous integral equals $(\ln(2\pi) - \gamma)/2 - 1/4$). Lean~4's kernel rejected the mismatched statement immediately, forcing us to derive and prove the exact unreduced identity \texttt{intervalIntegral\_\allowbreak recipFractScaled\_cross} in \texttt{MathlibPR\_\allowbreak VasyuninCrossIntegral.lean} identically for all $j, k \ge 1$.
+    \item \textbf{Catching Subtle Algebra Errors via Kernel Verification:} Even more tellingly, while formalizing Vasyunin's cross-integral $\int_0^1 \{1/(jx)\}\{1/(kx)\}\,\dee x$, an early informal write-up stated a $\gcd(j, k)$-reduced form whose diagonal formula did not match unreduced rank-$4$ $G_{\mathrm{smooth}}(j, k)$ at $j = k = 2$ (where the true continuous integral equals $(\ln(2\pi) - \gamma)/2 - 1/4$). Lean~4's kernel rejected the mismatched statement immediately, forcing a complete derivation and proof of the exact unreduced identity \texttt{intervalIntegral\_\allowbreak recipFractScaled\_cross} in \texttt{MathlibPR\_\allowbreak VasyuninCrossIntegral.lean} identically for all $j, k \ge 1$.
 \end{enumerate}
 
-Table~\ref{tab:horizons} summarizes the empirical decay alongside these conditioning invariants across our $80$-digit benchmark horizons.
+Table~\ref{tab:horizons} summarizes the empirical decay alongside these conditioning invariants across the $80$-digit benchmark horizons.
 
 \begin{table}[h!]
 \centering
@@ -172,7 +172,7 @@ $N$ & $E_{\mathrm{opt}}(N)$ ($\mathcal{A}_N$) & $\|c_{\mathrm{opt}}^{(N)}\|_2$ &
 \section{Architecture of the Verified 5-Paper Lean~4 Suite}\label{sec:suite}
 % ============================================================================
 
-Guided by the visual geometry of Sections~\ref{sec:thinking}--\ref{sec:wall}, we partitioned the Lean~4 blueprint into five focused, self-contained micro-papers (\textbf{Papers~A--E}), all verified strictly within Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]} with zero \texttt{sorry} gaps:
+Guided by the visual geometry of Sections~\ref{sec:thinking}--\ref{sec:wall}, the Lean~4 blueprint is partitioned into five focused, self-contained micro-papers (\textbf{Papers~A--E}), all verified strictly within Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]} with zero \texttt{sorry} gaps:
 
 \begin{table}[h!]
 \centering

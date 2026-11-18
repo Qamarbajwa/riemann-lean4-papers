@@ -1,8 +1,8 @@
-<!-- Zenodo DOI: 10.5281/zenodo.24328035 | Epistemic Status: NO_RH_PROOF = TRUE -->
+<!-- Zenodo DOI: 10.5281/zenodo.24353571 -->
 # Paper A: Formalizing Littlewood Equivalence for the Riemann Hypothesis in Lean 4
 
-- **Zenodo DOI:** [10.5281/zenodo.24328035](https://doi.org/10.5281/zenodo.24328035)
-- **Epistemic Invariant:** NO_RH_PROOF = TRUE
+- **Zenodo DOI:** [`10.5281/zenodo.24353571`](https://doi.org/10.5281/zenodo.24353571) (prev `10.5281/zenodo.24328035`)
+- **MSC 2020:** Primary 11M26; Secondary 46E20, 68V20
 
 # Submission Package: Littlewood's (1912) Mertens Equivalence for the Riemann Hypothesis
 
@@ -21,8 +21,8 @@ where $M(x) = \sum_{1 \le n \le x} \mu(n)$ is the Mertens summatory function.
 - **Reciprocal sub-polynomial bound (`MathlibPR_ZetaInvSubpolynomial.lean`):** Quantitative Borel–Carathéodory bounds and Hadamard three-lines interpolation under RH yielding `riemannZeta_inv_growth_of_riemannHypothesis`.
 - **Converse direction and equivalence (`MathlibPR_LittlewoodConverse.lean`):** Smoothed trapezoidal mollifier contour shift yielding `isBigO_mertens_of_riemannHypothesis` and `riemannHypothesis_iff_mertens_isBigO`.
 
-## Epistemic Status and Verification Invariants
-- **Epistemic Invariant:** `NO_RH_PROOF = TRUE`. This work formalizes a classical logical equivalence; no unconditional proof of the Riemann Hypothesis is claimed.
+## Mathematical Scope and Verification Invariants
+- **MSC 2020:** Primary `11M26`; Secondary `46E20`, `68V20`. This work formalizes Littlewood (1912) conditional equivalence cleanly within standard Lean 4 axioms.
 - **Foundational Axioms:** Strictly `[propext, Classical.choice, Quot.sound]` with zero `sorry`, zero `admit`, and zero custom axioms.
 - **Anti-Trap Suite:** `VerifyNoTraps.lean` certifies definitional equality against `_root_.RiemannHypothesis` and `_root_.riemannZeta` (`rfl`) and evaluates `mertens` non-vacuously on concrete inputs.
 

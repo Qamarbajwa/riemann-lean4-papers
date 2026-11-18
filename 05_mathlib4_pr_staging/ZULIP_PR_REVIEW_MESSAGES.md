@@ -2,7 +2,7 @@
 
 > **AI Policy Reminder (`mathlib4`):** Upstream `mathlib4` policy strictly forbids pasting LLM-generated comments into GitHub PRs or Zulip, and requires human-written communication plus explicit AI-tool disclosure in PR descriptions. Use this file strictly as a local reference index; write every GitHub or Zulip message yourself.
 
-All PRs extract small, self-contained modules (`<= 250` lines for Waves 5-8, `<= 100` chars/line, `#lint` `0` errors across 15 linters, strictly `[propext, Classical.choice, Quot.sound]`, `NO_RH_PROOF = TRUE`).
+All PRs extract small, self-contained modules (`<= 250` lines for Modules `5A`–`8U`, `<= 100` chars/line, `#lint` `0` errors across 15 linters, strictly `[propext, Classical.choice, Quot.sound]`).
 
 ## 1. Wave 1 Historical Reference (`#46127`–`#46129`)
 

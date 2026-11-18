@@ -6,8 +6,7 @@ import RiemannBlueprint.Section8_VasyuninBDR
 /-!
 # Prime-Collapse Architecture Bridge (Lean 4)
 Unconditional, axiom-free formalization (`0` sorries, `[propext, Classical.choice, Quot.sound]`)
-carrying forward the valid mathematical structures of *The Prime-Collapse Architecture* under
-`NO_RH_PROOF = TRUE`:
+carrying forward the algebraic structures of the additive--multiplicative zeta decomposition:
 1. Additive-multiplicative partition `ζ(s) = 1 + P(s) + C(s)` for `1 < s.re`.
 2. 50/50 equipartition fulcrum `IsEquipartitionFulcrum s` (`P(s) = C(s)`) yielding `ζ(s) = 1 + 2 P(s)`.
 3. Critical-line reflection symmetry `IsOnCriticalLine (1 - s) ↔ IsOnCriticalLine s` and the

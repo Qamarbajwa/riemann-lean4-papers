@@ -1,8 +1,8 @@
-<!-- Zenodo DOI: 10.5281/zenodo.24328045 | Epistemic Status: NO_RH_PROOF = TRUE -->
+<!-- Zenodo DOI: 10.5281/zenodo.24353575 -->
 # Paper D: Formalizing Hardy (1914) Unconditional Theorem on Critical-Line Zeros of the Riemann Zeta Function in Lean 4
 
-- **Zenodo DOI:** [10.5281/zenodo.24328045](https://doi.org/10.5281/zenodo.24328045)
-- **Epistemic Invariant:** NO_RH_PROOF = TRUE
+- **Zenodo DOI:** [`10.5281/zenodo.24353575`](https://doi.org/10.5281/zenodo.24353575) (prev `10.5281/zenodo.24328045`)
+- **MSC 2020:** Primary 11M26; Secondary 46E20, 68V20
 
 # Submission Package: Hardy's (1914) Unconditional Critical-Line Zeros Theorem
 
@@ -19,8 +19,8 @@ This package contains the complete LaTeX source, compiled 6-page manuscript, and
 3. **Boundary Vanishing of Even Theta Derivatives & $6\pi$ Ceiling:** Proves `tendsto_iteratedDeriv_hardyThetaTerm` as $\alpha \to (\pi/4)^-$ so all even moments remain uniformly bounded by $6\pi$.
 4. **Geometric Moment Contradiction & Unconditional Main Theorems:** Rules out eventual constant sign (`hardyZ_unbounded_sign_changes`), proving `infinite_criticalLine_zeros` and `infinite_hardyZ_zeros` unconditionally.
 
-## Epistemic Status and Verification Invariants
-- **Epistemic Invariant:** `NO_RH_PROOF = TRUE`. Hardy's theorem proves unconditionally that infinitely many non-trivial zeros lie on $\operatorname{Re}(s) = 1/2$; it does not establish that all non-trivial zeros lie on the critical line.
+## Mathematical Scope and Verification Invariants
+- **MSC 2020:** Primary `11M26`; Secondary `46E20`, `68V20`. Hardy (1914) proves unconditionally that infinitely many non-trivial zeros lie on $\operatorname{Re}(s) = 1/2$.
 - **Foundational Axioms:** Strictly `[propext, Classical.choice, Quot.sound]` with zero `sorry`, zero `admit`, and zero custom axioms.
 
 ## Package File Manifest

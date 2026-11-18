@@ -86,6 +86,15 @@ def floor_cell_residual(c: List[mp.mpf], N: int, n: int) -> mp.mpf:
     return acc
 
 
+def harmonic_cell_l2_partial_sum(c: List[mp.mpf], N: int, M: int) -> mp.mpf:
+    """Compute sum_{n=1}^M D_cell(n)^2 / (n * (n + 1)) at 85-digit precision."""
+    acc = ZERO
+    for n in range(1, M + 1):
+        d = floor_cell_residual(c, N, n)
+        acc += (d * d) / mp.mpf(n * (n + 1))
+    return acc
+
+
 def verify_profile(name: str, N: int, c: List[mp.mpf]) -> Dict:
     L = lcm_one_to(N)
     D1 = sum(c[k] / mp.mpf(k) for k in range(1, N + 1))
@@ -100,6 +109,17 @@ def verify_profile(name: str, N: int, c: List[mp.mpf]) -> Dict:
     dyadic_err = abs(A_vals[2] - (c[2] - ONE))
     ternary_err = abs(A_vals[3] - (c[2] + c[3] - mp.mpf(2)))
     jump3_err = abs((A_vals[3] - A_vals[2]) - (c[3] - ONE))
+    l2_m2 = harmonic_cell_l2_partial_sum(c, N, 2)
+    l2_m3 = harmonic_cell_l2_partial_sum(c, N, 3)
+    l2_head = harmonic_cell_l2_partial_sum(c, N, L - 1)
+    l2_m2_err = abs(l2_m2 - ((c[2] - ONE) ** 2) / mp.mpf(6))
+    l2_m3_err = abs(
+        l2_m3
+        - (
+            ((c[2] - ONE) ** 2) / mp.mpf(6)
+            + ((c[2] + c[3] - mp.mpf(2)) ** 2) / mp.mpf(12)
+        )
+    )
 
     return {
         "profile": name,
@@ -112,6 +132,11 @@ def verify_profile(name: str, N: int, c: List[mp.mpf]) -> Dict:
         "dyadic_A2_abs_err": mp.nstr(dyadic_err, 15),
         "ternary_A3_abs_err": mp.nstr(ternary_err, 15),
         "prime3_jump_abs_err": mp.nstr(jump3_err, 15),
+        "l2_partial_M2": mp.nstr(l2_m2, 20),
+        "l2_partial_M3": mp.nstr(l2_m3, 20),
+        "l2_partial_head_L_sub_1": mp.nstr(l2_head, 20),
+        "l2_partial_M2_abs_err": mp.nstr(l2_m2_err, 15),
+        "l2_partial_M3_abs_err": mp.nstr(l2_m3_err, 15),
         "max_floor_mod_duality_abs_err": mp.nstr(max_dual_err, 15),
         "max_palindromic_reflection_abs_err": mp.nstr(max_pal_err, 15),
         "period_sum_abs_err": mp.nstr(period_sum, 15),
@@ -154,9 +179,11 @@ def main() -> int:
     max_pal = max(mp.mpf(r["max_palindromic_reflection_abs_err"]) for r in records)
     max_sum = max(mp.mpf(r["period_sum_abs_err"]) for r in records)
     max_dual = max(mp.mpf(r["max_floor_mod_duality_abs_err"]) for r in records)
+    max_quad = max(mp.mpf(r["l2_partial_M3_abs_err"]) for r in records)
     assert max_pal < mp.mpf("1e-80"), f"Palindromic error too large: {max_pal}"
     assert max_sum < mp.mpf("1e-80"), f"Period sum error too large: {max_sum}"
     assert max_dual < mp.mpf("1e-80"), f"Duality error too large: {max_dual}"
+    assert max_quad < mp.mpf("1e-80"), f"L2 quadrature error too large: {max_quad}"
 
     out = {
         "no_rh_proof": True,
@@ -164,6 +191,7 @@ def main() -> int:
         "max_palindromic_reflection_abs_err": mp.nstr(max_pal, 15),
         "max_period_sum_abs_err": mp.nstr(max_sum, 15),
         "max_floor_mod_duality_abs_err": mp.nstr(max_dual, 15),
+        "max_l2_quadrature_M3_abs_err": mp.nstr(max_quad, 15),
         "profiles": records,
     }
     out_path = ROOT_DIR / "palindromic_period_certificates.json"

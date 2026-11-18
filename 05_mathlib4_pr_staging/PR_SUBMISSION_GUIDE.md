@@ -321,4 +321,20 @@ Wave 5 covers Papers F & G:
 - **PR-8K** (`Mathlib/NumberTheory/LSeries/BaezDuarteSuperdiagonalOrthogonalTriple.lean`, `feat/baez-duarte-superdiagonal-orthogonal-triple`, stacked on `PR-8J`, 188 lines, max 100 chars): `vasyuninCotSum_le_nine_fold`, `dipoleGramEntry_self_succ_eq_zero`, `dipolePlaqueEntry_self_succ_eq`, `unitDefectEntry_self_succ_eq`, `dipoleGramEntry_orthogonal_triple_two_three_four`, `QCot_span_two_three_four_eq_sum_sq`, `dipoleGramEntry_four_four_eq`, `dipoleGramEntry_three_three_add_four_four_eq`, `unitDefectEntry_one_one_add_two_two_eq`, `unitDefectEntry_three_three_add_four_four_eq`.
 - **PR-8L** (`Mathlib/NumberTheory/LSeries/BaezDuartePlaqueRowTelescoping.lean`, `feat/baez-duarte-plaque-row-telescoping`, stacked on `PR-8K`, 133 lines, max 100 chars): `sum_Icc_deltaCot_diff_eq`, `sum_Icc_dipolePlaqueEntry_right_eq`, `sum_Icc_dipolePlaqueEntry_self_eq`, `sum_Icc_unitDefectEntry_right_eq`, `sum_mul_mul_eq_row_sum_sub_half_sq_sub`, `one_sub_SCot_eq_row_sum_sub_half_sq_sub_of_isDirichletAnchored`.
 - **PR-8M** (`Mathlib/NumberTheory/LSeries/BaezDuartePointwiseContinuity.lean`, `feat/baez-duarte-pointwise-continuity`, stacked on `PR-8L`, 232 lines, max 99 chars): `continuousNymanResidual`, `discreteCellResidual`, `modularCellResidual`, `fract_nat_div_eq_sub_nat_div`, `discreteCellResidual_eq_modularCellResidual_of_D1_eq_zero`, `floor_one_div_mul_eq_nat_div`, `continuousNymanResidual_eq_discreteCellResidual`, `continuousNymanResidual_eq_modularCellResidual`, `discreteCellResidual_one_eq`, `continuousNymanResidual_eq_zero_on_top_half`, `modularCellResidual_periodic`, `fract_palindromic_add_eq`, `modularCellResidual_palindromic_neg`, `sum_Ico_modularCellResidual_eq_zero`.
-- **PR-8N** (`Mathlib/NumberTheory/LSeries/BaezDuarteSelbergMobiusCells.lean`, `feat/baez-duarte-selberg-mobius-cells`, stacked on `PR-8M`, 171 lines, max 99 chars): `rawSelbergMobiusWeight`, `rawSelbergMobiusWeight_one`, `rawSelbergMobiusWeight_succ_self`, `divisorStepJump`, `filter_dvd_prime_eq_pair`, `divisorStepJump_prime`, `divisorStepJump_prime_of_anchored`, `discreteCellResidual_two_eq`, `continuousNymanResidual_eq_c_two_on_dyadic_cell`, `discreteCellResidual_three_eq`, `discreteCellResidual_three_sub_two_eq_divisorStepJump`, `modularCellResidual_palindromic_two_eq_neg_c_two`, `modularCellResidual_palindromic_three_eq`, `selberg_continuousNymanResidual_palindromic_bridge`.
+- **PR-8N** (`Mathlib/NumberTheory/LSeries/BaezDuarteHarmonicCellQuadrature.lean`, `feat/baez-duarte-harmonic-cell-quadrature`, stacked on `PR-8M`, 207 lines, max 99 chars): `harmonicCellWidth`, `harmonicCellL2PartialSum`, `divisorStepJump`, `rawSelbergMobiusWeight`, `harmonicCellWidth_eq_sub`, `sum_Icc_harmonicCellWidth`, `continuousNymanResidual_sq_mul_width_eq`, `harmonicCellL2PartialSum_eq_sum_Icc_two`, `discreteCellResidual_two_eq`, `harmonicCellL2PartialSum_two_eq`, `discreteCellResidual_three_eq`, `harmonicCellL2PartialSum_three_eq`, `divisorStepJump_prime_of_anchored`, `discreteCellResidual_three_sub_two_eq_divisorStepJump`, `rawSelbergMobiusWeight_succ_self`.
+- **PR-8O** (`Mathlib/NumberTheory/LSeries/BaezDuartePeriodicQuadrature.lean`, `feat/baez-duarte-periodic-quadrature`, stacked on `PR-8N`, 114 lines, max 100 chars): `f_add_mul_period_eq`, `sum_range_mul_chunk`, `sum_range_mul_period_eq_mul_sum_range`, `sum_Ico_mul_period_eq_mul_sum_Ico`, `modularCellResidual_periodic_iter`, `modularCellResidual_sum_multi_period`, `discreteCellResidual_sq_width_sum_Ico`.
+
+Total modular units: `58` (`Waves 1–8`, `UpstreamPR_1A`–`8O`, keeping `57` prior milestone compatibility).
+
+Human-letter format enforced by `verify_human_letter_and_size` (`letters/micro_pr_01.txt`..`micro_pr_05.txt`):
+
+```text
+Hello everyone,
+
+This small pull request adds one self-contained lemma to close a gap in Mathlib.
+
+Step 1: Write down the division identity or finite sum by hand.
+Step 2: Simplify both sides cleanly without extra hypotheses.
+
+ai is being used as a tool
+```

@@ -1,4 +1,4 @@
-# Upstream `mathlib4` PR Submission Guide — Waves 1, 2, 3 & 4
+# Upstream `mathlib4` PR Submission Guide — Waves 1–6 (39 Carved Modules)
 
 **Author / Contributor:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Staging Directory:** `MATHLIB4_PR_STAGING/`  
@@ -273,3 +273,11 @@ Wave 5 covers Papers F & G:
 - **PR-5A** (`Mathlib/NumberTheory/LSeries/ZetaInvHolomorphy.lean`, `feat/zeta-inv-holomorphy`): `analyticAt_inv_riemannZeta_of_ne_zero`, `analyticAt_neg_deriv_div_riemannZeta_of_ne_zero`, `differentiableOn_logDeriv_riemannZeta_of_riemannHypothesis`, `riemannHypothesis_iff_analyticAt_inv_riemannZeta`.
 - **PR-5B** (`Mathlib/NumberTheory/LSeries/VonKochChebyshevPsi.lean`, `feat/von-koch-chebyshev-psi`): `chebyshevPsi`, `VonKochRemainderBound`, `chebyshevPsiRemainder`, `mellinVonKochRemainder`, `mellinVonKochRemainder_analyticOnNhd`, `neg_deriv_riemannZeta_div_eq_pole_add_mellinVonKochRemainder`, `zero_free_re_gt_half_of_vonKoch`, `vonKoch_implies_rh`, `RiemannHypothesis.of_chebyshevPsi_sub_self_isBigO`.
 - **PR-5C** (`Mathlib/NumberTheory/LSeries/MellinNymanBeurlingConverse.lean`, `feat/mellin-nyman-beurling-iff`): `TitchmarshMellinProperty`, `integral_Ioc_recipFractScaled_cpow_of_unit`, `integral_Ioo_moebius_recipFract_eq`, `tendsto_mellin_moebius_recipFract_of_riemannHypothesis`, `riemannHypothesis_iff_mellin_recipFract_approx`.
+
+---
+
+## Wave 6 Dependency Stack (`PR-6A`–`PR-6C`, Papers F & I)
+
+- **PR-6A** (`Mathlib/NumberTheory/LSeries/CompletedZetaDerivSymmetry.lean`, `feat/completed-zeta-deriv-symmetry`, root `master`, 202 lines, max 100 chars): `IsOnCriticalLine`, `reflection_preserves_critical_line`, `PrimeZeta`, `CompositeZeta`, `IsEquipartitionFulcrum`, `riemannZeta_eq_one_add_primeZeta_add_compositeZeta`, `zeta_at_equipartition_fulcrum`, `equipartition_fifty_fifty_split`, `zero_reflection_dichotomy`, `completedRiemannZeta_deriv_one_sub`, `completedRiemannZeta_deriv_at_half`, `completedRiemannZeta_deriv_critical_line_antisymm`.
+- **PR-6B** (`Mathlib/NumberTheory/LSeries/CriticalLinePenetrationBarrier.lean`, `feat/critical-line-penetration-barrier`, stacked on `PR-4A` + `PR-5C`, 250 lines, max 100 chars): `dirichletPoly`, `stripDefect`, `analyticOnNhd_dirichletPoly`, `analyticOnNhd_zeta_mul_dirichletPoly`, `ne_zero_of_norm_one_add_mul_lt_one`, `stripDefect_norm_lt_one_implies_ne_zero`, `inv_zeta_approx_error_eq`, `critical_line_penetration_lower_bound`, `stripDefect_eq_mul_mellin_residual`.
+- **PR-6C** (`Mathlib/NumberTheory/LSeries/PrimeCompositeDirichletSplit.lean`, `feat/prime-composite-dirichlet-split`, root `master`, 210 lines, max 100 chars): `natPrimes`, `natUnits`, `natComposites`, `nat_partition_dichotomy`, `bezout_identity`, `euclid_lemma`, `modulo_6_sieve_confinement`, `fermats_little_theorem`, `wilsons_theorem`, `InCriticalStrip`, `RiemannHypothesisStrip`, `zetaZeroReflectionSymmetry_unconditional`, `riemannHypothesis_iff_strip`.

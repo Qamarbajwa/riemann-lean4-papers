@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use these papers, numerical benchmarks, or staged Lean 4 PRs, please cite this repository."
+title: "Riemann-Lean4-Papers: Thematic Companion Suite and Mathlib4 PR Staging (Papers 0 and A-I)"
+version: "3.0.0"
+date-released: "2026-11-18"
+license: "Apache-2.0"
+doi: "10.5281/zenodo.24329861"
+url: "https://github.com/Qamarbajwa/riemann-lean4-papers"
+repository-code: "https://github.com/Qamarbajwa/riemann-lean4-papers"
+authors:
+  - family-names: Munawer
+    given-names: Qamar
+    affiliation: "Brandenburg University of Technology Cottbus–Senftenberg"
+keywords:
+  - riemann-hypothesis
+  - riemann-zeta-function
+  - lean4
+  - mathlib4
+  - analytic-number-theory
+  - nyman-beurling
+abstract: >-
+  Thematic micro-paper suite (Papers 0 and A through I) and staged Wave 1-6 mathlib4
+  pull requests (39 extracted modules) verified in Lean 4.35.0 with zero custom axioms
+  and zero sorry. Maintains NO_RH_PROOF = TRUE.
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24329861"
+    description: "Master Zenodo Hub 07 Software DOI"
+  - type: doi
+    value: "10.5281/zenodo.24150107"
+    description: "Zenodo Hub 07 Concept DOI"

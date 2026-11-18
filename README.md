@@ -20,9 +20,10 @@
    - [`paper_h_gram_indefiniteness_arb512`](./04_spectral_diagnostics_and_audits/paper_h_gram_indefiniteness_arb512/) — Zenodo DOI: [`10.5281/zenodo.24328927`](https://doi.org/10.5281/zenodo.24328927)
    - [`paper_i_prime_composite_partition`](./04_spectral_diagnostics_and_audits/paper_i_prime_composite_partition/) — Zenodo DOI: [`10.5281/zenodo.24328929`](https://doi.org/10.5281/zenodo.24328929)
 5. **[`05_mathlib4_pr_staging`](./05_mathlib4_pr_staging/)**
-   - 36 atomic `UpstreamPR_1A`–`5C` modules (Waves 1–5), [`PR_SUBMISSION_GUIDE.md`](./05_mathlib4_pr_staging/PR_SUBMISSION_GUIDE.md), and [`push_carved_prs_to_mathlib4.py`](./05_mathlib4_pr_staging/push_carved_prs_to_mathlib4.py)
-   - **Master Lean 4 Hub 07 DOIs:** [`10.5281/zenodo.24328027`](https://doi.org/10.5281/zenodo.24328027) (v3.0.0) / [`10.5281/zenodo.24329861`](https://doi.org/10.5281/zenodo.24329861) (v3.0.1, Concept DOI `10.5281/zenodo.24150107`)
+   - 39 atomic `UpstreamPR_1A`–`6C` modules (Waves 1–6), [`PR_SUBMISSION_GUIDE.md`](./05_mathlib4_pr_staging/PR_SUBMISSION_GUIDE.md), and [`push_carved_prs_to_mathlib4.py`](./05_mathlib4_pr_staging/push_carved_prs_to_mathlib4.py)
+   - **Master Lean 4 Hub 07 DOI:** [`10.5281/zenodo.24329861`](https://doi.org/10.5281/zenodo.24329861) (Concept DOI [`10.5281/zenodo.24150107`](https://doi.org/10.5281/zenodo.24150107))
    - **Lean 4 Repository:** https://github.com/Qamarbajwa/RiemannBlueprint
+   - **Citation Metadata:** [`CITATION.cff`](./CITATION.cff)
 
 ## Open Upstream `mathlib4` Pull Requests (Wave 1)
 - **PR-1A** (`feat/critical-line-zeros`): [#46127](https://github.com/leanprover-community/mathlib4/pull/46127)

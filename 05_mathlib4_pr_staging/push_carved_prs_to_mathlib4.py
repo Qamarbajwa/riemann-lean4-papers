@@ -488,6 +488,44 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): bidirectional Mellin-space Nyman-Beurling equivalence in the critical strip",
         commit_msg="feat(NumberTheory/LSeries): prove bidirectional Mellin Nyman-Beurling equivalence",
     ),
+    # Wave 6: Papers F & I (Completed Zeta Deriv Symmetry, Penetration Barrier, Prime-Composite Split)
+    PRSpec(
+        pr_id="PR-6A",
+        wave=6,
+        staged_file="UpstreamPR_6A_CompletedZetaDerivSymmetry.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_6A_CompletedZetaDerivSymmetry",
+        target_relpath="Mathlib/NumberTheory/LSeries/CompletedZetaDerivSymmetry.lean",
+        target_module="Mathlib.NumberTheory.LSeries.CompletedZetaDerivSymmetry",
+        branch="feat/completed-zeta-deriv-symmetry",
+        base_branch="master",
+        pr_title="feat(NumberTheory/LSeries): completed zeta derivative antisymmetry, equipartition fulcrum, and zero dichotomy",
+        commit_msg="feat(NumberTheory/LSeries): add CompletedZetaDerivSymmetry and equipartition partition",
+    ),
+    PRSpec(
+        pr_id="PR-6B",
+        wave=6,
+        staged_file="UpstreamPR_6B_CriticalLinePenetrationBarrier.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_6B_CriticalLinePenetrationBarrier",
+        target_relpath="Mathlib/NumberTheory/LSeries/CriticalLinePenetrationBarrier.lean",
+        target_module="Mathlib.NumberTheory.LSeries.CriticalLinePenetrationBarrier",
+        branch="feat/critical-line-penetration-barrier",
+        base_branch="feat/baez-duarte-projection",
+        merge_branches=("feat/vasyunin-integral", "feat/mellin-nyman-beurling-iff"),
+        pr_title="feat(NumberTheory/LSeries): strip defect Mellin coupling and critical-line penetration lower bound",
+        commit_msg="feat(NumberTheory/LSeries): add CriticalLinePenetrationBarrier and strip defect coupling",
+    ),
+    PRSpec(
+        pr_id="PR-6C",
+        wave=6,
+        staged_file="UpstreamPR_6C_PrimeCompositeDirichletSplit.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_6C_PrimeCompositeDirichletSplit",
+        target_relpath="Mathlib/NumberTheory/LSeries/PrimeCompositeDirichletSplit.lean",
+        target_module="Mathlib.NumberTheory.LSeries.PrimeCompositeDirichletSplit",
+        branch="feat/prime-composite-dirichlet-split",
+        base_branch="master",
+        pr_title="feat(NumberTheory/LSeries): natural prime-composite partition and critical-strip RH equivalence",
+        commit_msg="feat(NumberTheory/LSeries): add PrimeCompositeDirichletSplit and strip quantifier equivalence",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {
@@ -527,7 +565,7 @@ def check_status(mathlib_dir: Optional[pathlib.Path]) -> None:
             mr = run_cmd(["git", "remote", "-v"], cwd=mathlib_dir)
             print((mr.stdout + mr.stderr).strip())
 
-    print(f"\n=== Carved PR Registry ({len(PR_REGISTRY)} modules across Waves 1-5) ===")
+    print(f"\n=== Carved PR Registry ({len(PR_REGISTRY)} modules across Waves 1-6) ===")
     for spec in PR_REGISTRY:
         staged = STAGING_DIR / spec.staged_file
         lines = len(staged.read_text(encoding="utf-8").splitlines()) if staged.is_file() else -1
@@ -686,7 +724,7 @@ def git_checked(cmd: List[str], cwd: pathlib.Path) -> subprocess.CompletedProces
 def main() -> int:
     parser = argparse.ArgumentParser(description="Stage, rewrite imports, and push carved PRs to mathlib4.")
     parser.add_argument("--mathlib-dir", type=pathlib.Path, default=None, help="Path to local mathlib4 clone.")
-    parser.add_argument("--wave", choices=["1", "2", "3", "4", "5", "all"], default="1", help="Wave to process (default: 1).")
+    parser.add_argument("--wave", choices=["1", "2", "3", "4", "5", "6", "all"], default="1", help="Wave to process (default: 1).")
     parser.add_argument("--pr", default=None, help="Optional comma-separated PR IDs (e.g. PR-3H) to filter.")
     parser.add_argument("--remote", default="origin", help="Git remote to push branches to (default: origin).")
     parser.add_argument("--repo-slug", default="Qamarbajwa/mathlib4", help="Fork owner/repo for --check-remote-ci / --check-ci.")

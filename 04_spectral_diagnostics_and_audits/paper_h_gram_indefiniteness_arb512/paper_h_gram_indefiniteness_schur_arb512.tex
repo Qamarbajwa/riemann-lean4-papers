@@ -1,0 +1,174 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=red!70!black,
+    urlcolor=blue!70!black,
+    pdftitle={Isolated Gram Indefiniteness, Sparse Cardinality Obstructions, and 512-Bit Arb Unwrapped Schur Diagnosis in Finite-Section BNBD and Weil Operators},
+    pdfauthor={Qamar Munawer}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\dee}{\mathrm{d}}
+\newcommand{\Nset}{\mathbb{N}}
+\newcommand{\Rset}{\mathbb{R}}
+
+\title{\textbf{Isolated Gram Indefiniteness, Sparse Cardinality Obstructions,\\
+and 512-Bit \texttt{flint.arb} Unwrapped Schur Diagnosis in\\
+Finite-Section BNBD and Weil Operators}}
+
+\author{\textbf{Qamar Munawer}\\[0.3em]
+\small Brandenburg University of Technology Cottbus--Senftenberg, Cottbus, Germany}
+
+\date{November 18, 2026}
+
+\begin{document}
+\linespread{1.15}\selectfont
+\emergencystretch=2.5em
+
+\maketitle
+
+\begin{abstract}
+Two distinct finite-section obstruction mechanisms govern computational studies of the Riemann Hypothesis: (1) slow logarithmic $O(1/\ln N)$ decay combined with kernel indefiniteness in rational-dilation B\'aez-Duarte (BNBD) approximations, and (2) severe Rayleigh--Ritz ill-conditioning and interval-wrapping pathologies in smooth non-dilation Legendre truncations of Weil's quadratic functional on $L^2([-L, L])$. Neither body of certified computational evidence appeared in Papers~0 or~A--E. This paper consolidates the verified computational and algebraic findings from five audited Python and \texttt{flint.arb} modules ($39$ passing automated tests). On the BNBD side, $50$-digit and $192$-bit \texttt{flint.arb} spectra prove that isolated $G_{\mathrm{smooth}}$ ($24/50$ negative eigenvalues at $N = 50$) and isolated $G_{\mathrm{cot}}$ ($2/50$ negative eigenvalues, $\lambda_{\min} = -9.8002$ on \texttt{omp\_plus\_swap\_50}) are both indefinite, while greedy cardinality compression cuts $d_S^2$ to $0.00973769$ ($2.33\times$ compression) yet stays strictly above the B\'aez-Duarte--Balazard--Landreau--Saias (BBLR) floor $0.00850088$. On the boundary-locked subspace $\mathcal{A}_N$ ($N \le 100$), $100$-digit KKT verification matches $1 + Q_N^{(\mathrm{cot})}$ to $1.474 \times 10^{-110}$. On the Weil operator side ($L = 1, T = 400$), $\lambda_{\min}(H^{(N)})$ plunges from $1.8157 \times 10^{-4}$ ($N=4$) to $4.3430 \times 10^{-26}$ ($N=50$), and $512$-bit \texttt{flint.arb} unwrapped congruence resolves both historical negative witnesses in $P_{650}$ as IEEE \texttt{float64} roundoff and $11.96\times$ interval box wrapping, certifying $12/12$ positive $LDL^T$ pivots across $750$-mode true-integral $L = 1$ Schur elimination. In accordance with \texttt{NO\_RH\_PROOF = TRUE} and \texttt{FULL\_POINT\_L1 = NOT\_ISSUED}, these finite-section and banded certificates do not assert full infinite-operator Weil positivity.
+\end{abstract}
+
+\noindent\textbf{Keywords:} Vasyunin Gram matrix, Nyman--Beurling sparse compression, Weil positivity finite sections, \texttt{flint.arb} interval arithmetic, Schur complement wrapping, $LDL^T$ certification.
+
+\section{Introduction and Epistemic Scope}
+
+Empirical and rigorous-numeric probes of the Nyman--Beurling--B\'aez-Duarte (BNBD) space and Weil's explicit-formula quadratic form encounter opposite numerical bottlenecks. Consecutive rational dilations $\rho_k(x) = \{1/(kx)\}$ remain moderately conditioned at low $N$ ($d_{50}^2 = 0.01165042$, $\lambda_{\min}(G_{50}) = +4.3481 \times 10^{-4}$), yet converge slowly at the logarithmic BBLR barrier $O(1/\ln N)$~\cite{BaezDuarte2000}. Conversely, shifted Legendre bases on $L^2([-L, L])$ suppress high-frequency leakage rapidly but suffer super-exponential eigenvalue decay across $N \le 50$, exposing finite-precision and interval-arithmetic computations to catastrophic cancellation and box-wrapping false negatives.
+
+\paragraph{Epistemic Demarcation (\texttt{NO\_RH\_PROOF = TRUE}).}
+All results reported here govern verified finite-dimensional subspaces, boundary-locked algebraic identities, or banded exterior coercivity diagnostics ($39$ passing tests across seven test suites). Following repository certification gates, full continuum operator positivity remains open (\texttt{FULL\_POINT\_L1 = NOT\_ISSUED}), and no resolution of the Riemann Hypothesis is claimed.
+
+\section{Indefiniteness of Isolated Vasyunin Components and Sparse BNBD No-Go}\label{sec:sparse_bnbd}
+
+Evaluating $G_{\mathrm{total}} = G_{\mathrm{smooth}} + G_{\mathrm{cot}}$ at $50$-digit precision and $192$-bit \texttt{flint.arb} arithmetic (\texttt{sparse\_\allowbreak bnbd\_\allowbreak compression\_\allowbreak study.py}, $\max \operatorname{rad}_{\mathrm{cot}} = 8.752 \times 10^{-47}$, agreement with exact rational/Arb cross-checks to $1.738 \times 10^{-57}$) reveals that positive definiteness belongs strictly to the sum $G_{\mathrm{total}}$, never to either separated piece (Table~\ref{tab:gram_indef}).
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Basis Slice} & $|S|$ & $\max S$ & $\lambda_{\min}(G_{\mathrm{total}})$ & $\lambda_{\min}(G_{\mathrm{smooth}})$ (\texttt{neg}) & $\lambda_{\min}(G_{\mathrm{cot}})$ (\texttt{neg}) & $Q_{\mathrm{cot}}(100\,v_{\min})$ \\
+\midrule
+\texttt{consecutive\_10} & 10 & 10 & $+9.1569\times 10^{-3}$ & $-0.48922$ (6) & $-1.17615$ (2) & $-11{,}812.89$ \\
+\texttt{consecutive\_20} & 20 & 20 & $+2.5950\times 10^{-3}$ & $-1.69854$ (10) & $-2.82248$ (2) & $-28{,}268.32$ \\
+\texttt{consecutive\_50} & 50 & 50 & $+4.3481\times 10^{-4}$ & $-5.89842$ (24) & $-7.39927$ (2) & $-74{,}016.00$ \\
+\texttt{p7\_smooth\_50} & 50 & 68 & $+2.6531\times 10^{-4}$ & $-6.62773$ (24) & $-7.90768$ (2) & $-79{,}082.80$ \\
+\texttt{omp\_plus\_swap\_50} & 50 & 229 & $+1.2659\times 10^{-4}$ & $-9.02160$ (24) & $-9.80021$ (2) & $-97{,}967.07$ \\
+\bottomrule
+\end{tabular}
+\caption{Exact eigenvalue spectra isolating indefiniteness of $G_{\mathrm{smooth}}$ and $G_{\mathrm{cot}}$.}
+\label{tab:gram_indef}
+\end{table}
+
+Minimizing $Q_{\mathrm{cot}}(c)$ unconditionally over unconstrained vectors is therefore unbounded below ($Q_{\mathrm{cot}}(100\,v_{\min}) = -97{,}967.07$), and only enforcing the affine boundary constraint $c \in \mathcal{A}_N$ ($D_1 = 0, D_0 = 2$) restores $1 + Q_{\mathrm{cot}}(c) = E_N(c) \ge 0$. Across $|S| = 50$ subset selection benchmarks (Table~\ref{tab:sparse_bnbd}), greedy Orthogonal Matching Pursuit with swaps (\texttt{omp\_plus\_swap}) lowers $d_S^2$ from $0.01165042$ (\texttt{consecutive\_50}) to $0.00973769$ ($2.33\times$ cardinality compression relative to $N_{\mathrm{eq}} = 116.29$), yet remains strictly bounded below by the unconditional BBLR lower limit $\mathrm{BBLR}(229) = 0.00850088$. Selective arithmetic subsets perform dramatically worse: \texttt{primes\_with\_1} ($\max = 227$) stalls at $0.02725386$, and $P_7$ sparse divisors ($\max = 510{,}510$) degrade to $0.31287861$.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Basis Family ($|S|=50$)} & $\max(S)$ & \textbf{Exact} $d_S^2$ & $N_{\mathrm{eq}}$ & \textbf{Compression} & $\mathrm{BBLR}(\max S)$ \\
+\midrule
+\texttt{omp\_plus\_swap} & 229 & $0.00973769$ & $116.29$ & $2.33\times$ & $0.00850088$ \\
+\texttt{omp\_greedy} & 229 & $0.00977017$ & $115.59$ & $2.31\times$ & $0.00850088$ \\
+\texttt{omp40\_plus\_10\_wide\_primes} & $99{,}991$ & $0.01056936$ & $84.85$ & $1.70\times$ & $0.00401217$ \\
+\texttt{squarefree} & 79 & $0.01120914$ & $62.94$ & $1.26\times$ & $0.01057145$ \\
+\texttt{consecutive} ($1..50$) & 50 & $0.01165042$ & $50.00$ & $1.00\times$ & $0.01180755$ \\
+\texttt{primes\_with\_1} & 227 & $0.02725386$ & $6.61$ & $0.13\times$ & $0.00851463$ \\
+\texttt{coprime\_6\_free} & 149 & $0.16239906$ & $2.11$ & $0.04\times$ & $0.00923100$ \\
+\texttt{p7\_divisors\_largest\_50} & $510{,}510$ & $0.31287861$ & $1.01$ & $0.02\times$ & $0.00351448$ \\
+\bottomrule
+\end{tabular}
+\caption{Fixed-cardinality ($|S| = 50$) sparse BNBD compression against the $\mathrm{BBLR}(\max S)$ floor.}
+\label{tab:sparse_bnbd}
+\end{table}
+
+\section{Boundary-Locked Affine KKT Verification ($N = 2 \dots 100$)}\label{sec:boundary_kkt}
+
+Evaluating the boundary-locked affine KKT optimum and two-sparse corrector $w_{\mathrm{corr}}^{(N)}$ across $N \in \{2, \dots, 100\}$ at $100$-digit \texttt{mpmath} and $192$-bit \texttt{flint.arb} (\texttt{boundary\_\allowbreak locked\_\allowbreak cotangent\_\allowbreak study.py}) confirms all five invariants to sub-$10^{-100}$ accuracy:
+\begin{itemize}[noitemsep]
+  \item Maximum identity defect $|\mathcal{E}_N - (1 + Q_{\mathrm{cot}})|$: $1.4736 \times 10^{-110}$; affine constraint residuals: $2.0943 \times 10^{-115}$ ($D_1$) and $2.2841 \times 10^{-115}$ ($D_0 - 2$); KKT gradient residual: $9.4212 \times 10^{-116}$.
+  \item $192$-bit \texttt{flint.arb} Gram and cotangent radii: $\le 2.3473 \times 10^{-56}$ and $\le 1.1149 \times 10^{-104}$.
+  \item At $N = 100$, constrained affine optimality pays a penalty of only $2.2665 \times 10^{-6}$ over unconstrained BNBD ($E_{\mathrm{aff},\min} = 0.01020419$ vs.\ $d_{\mathrm{NB}}^2 = 0.01020192$ and $d_{\mathrm{unc}}^2 = 0.01002779$), while $N\|w_{\mathrm{corr}}^{(N)}\|_2^2 = 1.229040$ approaches $\ln(2\pi) - \gamma = 1.260661$ within $0.031621$.
+\end{itemize}
+
+Across $N \in [10, 200]$ in \texttt{constructive\_\allowbreak affine\_\allowbreak cotangent\_\allowbreak study.py} ($80$-dps, $\max|\mathcal{E}_N - (1+Q_{\mathrm{cot}})| = 3.795 \times 10^{-80}$), the decoupled \texttt{affineLock} family~D decays monotonically from $\mathcal{E}_{10} = 0.032638$ to $\mathcal{E}_{200} = 0.011180$ ($\mathcal{E}_{200}\ln 200 = 0.05924$), with Bettin--Conrey decomposition isolating a stabilizing smooth-canceling channel ($-1.971813$) against a bounded reciprocity remainder ($+0.982993$).
+
+\section{Non-Dilation Legendre/Weil Operators and 512-Bit Schur Diagnosis}\label{sec:weil_schur}
+
+In \texttt{non\_\allowbreak dilation\_\allowbreak hilbert\_\allowbreak comparison.py}, the shifted Legendre/Weil operator $H^{(N)}(L, T)$ ($L = 1.0, T = 400$) matches independent $4$-mode pilot receipts to $1.090 \times 10^{-18}$ and maintains $256$-bit \texttt{flint.arb} quadrature-doubling stability at $N = 50$ ($3{,}904$ vs.\ $7{,}808$ nodes) within $5.316 \times 10^{-43}$ ($\operatorname{rad} \le 7.639 \times 10^{-58}$). Across $N \in \{4, \dots, 50\}$, every finite truncation exhibits zero negative eigenvalues (\texttt{neg\_even = neg\_odd = 0}), while $\lambda_{\min}(H^{(N)})$ decays over $21$ orders of magnitude: $1.8157 \times 10^{-4}$ ($N=4$, $\kappa = 2.370 \times 10^3$), $8.4106 \times 10^{-8}$ ($N=8$), $9.5320 \times 10^{-13}$ ($N=16$), $3.9712 \times 10^{-20}$ ($N=30$), $1.0221 \times 10^{-23}$ ($N=40$), and $4.3430 \times 10^{-26}$ ($N=50$, $\kappa = 9.413 \times 10^{25}$).
+
+\subsection{Resolution of Two Frozen \texttt{p650} / Critical-Subspace False Negatives}
+Auditing the $650 \times 650$ assembly and $12 \times 12$ critical subspace (\texttt{certify\_\allowbreak p650\_\allowbreak and\_\allowbreak critical\_\allowbreak schur\_\allowbreak arb512.py}) resolves two historical obstructions:
+\begin{enumerate}[label=(\arabic*),noitemsep]
+  \item \textbf{Roundoff \& Interval-Box Wrapping in \texttt{p650\_\allowbreak stable\_\allowbreak assembly}:} True $256$-bit \texttt{flint.arb} midpoints on \texttt{FINITE\_LOWER} ($+1.8160 \times 10^{-15}$) and \texttt{SCHUR\_LOWER} ($+4.3186 \times 10^{-16}$) are strictly positive; earlier negative signs ($-1.7460 \times 10^{-15}$ and $-2.0846 \times 10^{-15}$) were IEEE \texttt{float64} artifacts. Moreover, entrywise interval wrapping inflated the box penalty by $11.96\times$ (to $2.6464 \times 10^{-15}$), pushing the worst box corner negative ($-2.2146 \times 10^{-15}$). Rewriting via the exact \textbf{Quadratic Residual Schur Congruence Identity},
+  \begin{equation}
+  z^T S z = \begin{pmatrix} z \\ -w \end{pmatrix}^T \begin{pmatrix} A_{CC} & A_{CB} \\ A_{BC} & A_{BB} \end{pmatrix} \begin{pmatrix} z \\ -w \end{pmatrix} - r^T A_{BB}^{-1} r, \qquad r = A_{BB}w - A_{BC}z,
+  \end{equation}
+  removes wrapping inflation and certifies $z_{\mathrm{schur}}^T S z_{\mathrm{schur}}/\|z_{\mathrm{schur}}\|^2 > +2.10 \times 10^{-16} > 0$.
+  \item \textbf{$12/12$ Critical Schur $LDL^T$ Positivity:} Subtracting the true $512$-bit bulk solve action $G_{\mathrm{bulk}} = X^T M_{\mathrm{bulk}}^{-1} X$ (error radius $\pm 8.15 \times 10^{-183}$) and quadratic solve penalty $\delta_{\mathrm{quad}} \le 6.6 \times 10^{-326}$ (in place of the uniform scalar penalty $1.1876 \times 10^{-23}$, which exceeded the smallest eigenvalue $9.6096 \times 10^{-30}$) certifies \textbf{$12/12$ strictly positive pivots} (min even pivot $+2.5371 \times 10^{-22}$, min odd pivot $+1.6826 \times 10^{-20}$).
+\end{enumerate}
+
+\subsection{512-Bit Exterior Coupling, Banded $[650, 749]$ Coercivity, and $750$-Mode Closure}
+In \texttt{certify\_\allowbreak l1\_\allowbreak exterior\_\allowbreak schur\_\allowbreak coupling\_\allowbreak arb512.py}, decomposing exterior leakage $Q_{650}(K_{400} + V + W)\widetilde{Z}_{\mathrm{crit}}$ on the $738$-mode elimination space $X_{\mathrm{bulk}} \oplus P_{[650, 749]}$ yields:
+\begin{itemize}[noitemsep]
+  \item \textbf{Pole and Archimedean Channels ($c = 0.20$):} Schur penalties $\le 2.1048 \times 10^{-3875}$ (pole) and $\le 2.1772 \times 10^{-116}$ (directed Bessel $j_n$), $71$--$86$ orders of magnitude below $\lambda_{\min}(S_{\mathrm{crit}}) = 5.2420 \times 10^{-30}$.
+  \item \textbf{Two-Tier Banded Coercivity ($[650, 749]$ + $Q_{750}$):} Direct $512$-bit \texttt{GL750} + $50 \times 50$ interval $LDL^T$ on $[650, 749]$ certifies $100/100$ positive pivots and coercivity $\lambda_{\min} \ge 3.521050 > 0.90$, lowering the $Q_{750}$ critical threshold from $c_{\mathrm{crit}}^* = 0.211054$ to $c_{\mathrm{tail},750}^* = 0.191801 < 0.20$.
+  \item \textbf{End-to-End $750 \times 750$ True-Integral $L = 1$ Schur Enclosure:} Incorporating exact analytic $32$-node quadrature remainder $\epsilon_{32} \approx 2.5428 \times 10^{-32}$ and $c_{\mathrm{tail},750} = 0.20$ preserves $12/12$ strictly positive $LDL^T$ pivots ($\min_k \underline{D}_k = +2.3269 \times 10^{-22}$).
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1.0cm, y=0.22cm]
+  \draw[->] (0, -28) -- (10.5, -28) node[right, font=\small] {Basis dimension $N$};
+  \draw[->] (0, -28) -- (0, 2) node[above, font=\small] {$\log_{10}(\cdot)$};
+  \foreach \x/\lab in {0.8/4, 1.6/8, 3.2/16, 6.0/30, 8.0/40, 10.0/50} {
+    \draw (\x, -28) -- (\x, -28.6) node[below, font=\scriptsize] {\lab};
+  }
+  \foreach \y in {-25, -20, -15, -10, -5, 0} {
+    \draw (0, \y) -- (-0.15, \y) node[left, font=\scriptsize] {\y};
+  }
+  % Legendre Weil lambda_min (log10)
+  \draw[red!75!black, very thick, mark=*]
+    (0.8, -3.74) -- (1.6, -7.08) -- (3.2, -12.02) -- (6.0, -19.40) -- (8.0, -22.99) -- (10.0, -25.36);
+  \node[red!75!black, font=\scriptsize, right] at (6.2, -23.5) {Legendre/Weil $\log_{10}\lambda_{\min}(H^{(N)})$};
+  % BNBD d_N^2 (log10)
+  \draw[blue!75!black, very thick, dashed]
+    (0.8, -1.25) -- (1.6, -1.63) -- (3.2, -1.76) -- (6.0, -1.85) -- (8.0, -1.90) -- (10.0, -1.93);
+  \node[blue!75!black, font=\scriptsize, right] at (4.5, -4.0) {Consecutive BNBD $\log_{10} d_N^2$};
+\end{tikzpicture}
+\caption{Dual bottleneck contrast ($N \in [4, 50]$): BNBD squared distance decays slowly as $O(1/\ln N)$ ($0.056463$ to $0.011650$), whereas Legendre/Weil eigenvalues plunge $>21$ orders of magnitude ($1.8157 \times 10^{-4}$ to $4.3430 \times 10^{-26}$).}
+\label{fig:dual_bottleneck}
+\end{figure}
+
+\begin{thebibliography}{9}
+\bibitem{BaezDuarte2000} L.~B\'aez-Duarte, M.~Balazard, B.~Landreau, and \'E.~Saias, Notes sur la fonction $\zeta$ de Riemann, III, \emph{Adv.\ Math.} \textbf{149} (2000), 130--144.
+\bibitem{JohanssonArb} F.~Johansson, Arb: efficient arbitrary-precision midpoint-radius interval arithmetic, \emph{IEEE Trans.\ Comput.} \textbf{66} (2017), 1281--1292.
+\end{thebibliography}
+
+\end{document}

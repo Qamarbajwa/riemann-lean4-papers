@@ -1,0 +1,269 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=red!70!black,
+    urlcolor=blue!70!black
+}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    numbers=none,
+    mathescape=true,
+    backgroundcolor=\color{gray!5}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\dee}{\mathrm{d}}
+\newcommand{\Nset}{\mathbb{N}}
+\newcommand{\Zset}{\mathbb{Z}}
+\newcommand{\Rset}{\mathbb{R}}
+\newcommand{\Cfield}{\mathbb{C}}
+
+\title{\textbf{Formalizing Hardy's (1914) Unconditional Theorem\\on Critical-Line Zeros of the Riemann Zeta Function in Lean~4}}
+
+\author{\textbf{Qamar Munawer}\\[0.3em]
+\small Brandenburg University of Technology Cottbus--Senftenberg}
+
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present a complete, unconditional formalization in Lean~4 of G.~H.~Hardy's 1914 theorem asserting that the Riemann zeta function $\zeta(s)$ vanishes at infinitely many points on the critical line $\operatorname{Re}(s) = 1/2$. Moving beyond a conditional sign-change reduction, our module \texttt{MathlibPR\_\allowbreak HardyZeros.lean} mechanizes the full classical analytic proof and proves the hypothesis-free theorems \texttt{infinite\_\allowbreak criticalLine\_\allowbreak zeros} and \texttt{infinite\_\allowbreak hardyZ\_\allowbreak zeros}. The proof links Mathlib's real-valued Hardy $Z$-function to the completed zeta function $\Lambda(1/2+it)$ via an Intermediate Value Theorem sign-change detector, identifies the Fourier transform $G(z)$ of $\Lambda(1/2+it)$ with the Jacobi theta kernel $\Psi(z)$ on the strip $|\operatorname{Im}(z)| < \pi/4$ using modular inversion, rectangular contour shifting, and Fourier inversion, shows that all even derivatives of the theta term vanish at the strip boundary $\pi/4$ so that every even moment remains bounded by $6\pi$, and rules out eventual constant sign by a geometric blowup contradiction on compact intervals. All proofs compile with zero \texttt{sorry} gaps using strictly Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]}.
+\end{abstract}
+
+\paragraph{Epistemic Status.}
+The Riemann Hypothesis remains an open mathematical conjecture (\texttt{NO\_RH\_PROOF = TRUE}). Hardy's theorem proves unconditionally that \emph{infinitely many} non-trivial zeros lie on $\operatorname{Re}(s) = 1/2$; it neither proves nor implies that \emph{all} non-trivial zeros lie on the critical line.
+
+\section{Introduction}
+
+In 1914, G.~H.~Hardy~\cite{hardy1914} proved the first unconditional result placing infinitely many non-trivial zeros of $\zeta(s)$ directly on the critical line $\operatorname{Re}(s) = 1/2$. The starting point is the phase-normalized real function
+\begin{equation}\label{eq:hardy_z_def}
+Z(t) = e^{i\theta(t)} \zeta\!\left(\frac{1}{2} + it\right) \in \Rset, \qquad |Z(t)| = \left|\zeta\!\left(\frac{1}{2} + it\right)\right|,
+\end{equation}
+so that real roots of $Z(t)$ coincide with critical-line zeros of $\zeta$. Rather than bounding $L^1$ and $L^2$ averages of $Z(t)$ directly, our formalization in \texttt{MathlibPR\_\allowbreak HardyZeros.lean} (building on \texttt{MathlibPR\_\allowbreak CriticalLineZeros.lean}) mechanizes Hardy's original Jacobi-theta moment method~\cite{hardy1914, titchmarsh1986}:
+\begin{enumerate}[noitemsep]
+\item \textbf{Topological Sign-Change Bridge (Section~\ref{sec:bridge}):} By the Intermediate Value Theorem (\texttt{exists\_\allowbreak criticalLine\_\allowbreak zero\_\allowbreak of\_sign\_\allowbreak change}), unbounded sign changes of \texttt{hardyZ} imply infinitely many zeros on $\operatorname{Re}(s)=1/2$ (\texttt{infinite\_\allowbreak criticalLine\_\allowbreak zeros\_\allowbreak of\_sign\_\allowbreak changes}). Moreover, on the critical line the completed zeta function $\Lambda(1/2+it)$ is real and differs from $Z(t)$ by the strictly positive Gamma factor $\|\Gamma_{\Rset}(1/2+it)\| > 0$.
+\item \textbf{Fourier--Mellin Identity on the Strip (Section~\ref{sec:strip}):} We construct the strip integral $G(z)$ (\texttt{hardyG}) and the Jacobi theta kernel $\Psi(z)$ (\texttt{hardyPsi}), proving $G(z) = \Psi(z)$ (\texttt{hardyG\_\allowbreak eq\_\allowbreak hardyPsi}) on $|\operatorname{Im}(z)| < \pi/4$ via modular inversion (\texttt{jacobiTheta\_\allowbreak S\_smul}), rectangular contour shifting (\texttt{integral\_\allowbreak boundary\_\allowbreak rect\_\allowbreak eq\_zero\_\allowbreak of\_\allowbreak differentiableOn}), and Fourier inversion.
+\item \textbf{Boundary Vanishing of Theta Derivatives (Section~\ref{sec:moments}):} Approaching the singular ray $\alpha \to (\pi/4)^-$, all even derivatives of the theta term tend to $0$ (\texttt{tendsto\_\allowbreak iteratedDeriv\_\allowbreak hardyThetaTerm}), forcing the weighted $2k$-th moment $\int_0^\infty t^{2k}(e^{\alpha t} + e^{-\alpha t}) \operatorname{Re}\Lambda(1/2+it)\,\dee t$ to stay bounded by $6\pi$.
+\item \textbf{Geometric Moment Contradiction (Section~\ref{sec:main}):} If $Z(t)$ kept constant sign for $t \ge a_0 > 1$, the positive contribution over $[a_0+1, a_0+2]$ would grow at least as $m_{\text{pos}}(a_0+1)^{2k}$ while the prefix over $[0, a_0]$ is bounded in magnitude by $C_{\text{low}} a_0^{2k}$, contradicting the uniform $6\pi$ bound for large $k$ (\texttt{hardyZ\_\allowbreak unbounded\_\allowbreak sign\_\allowbreak changes}) and yielding \texttt{infinite\_\allowbreak criticalLine\_\allowbreak zeros} and \texttt{infinite\_\allowbreak hardyZ\_\allowbreak zeros}.
+\end{enumerate}
+
+\paragraph{Geometric Intuition.}
+Across the critical strip $0 \le \operatorname{Re}(s) \le 1$, the functional equation $\xi(1 - s) = \xi(s)$ joins two mirror-image cones---the forward Euler/Dirichlet landscape from $\operatorname{Re}(s) > 1/2$ and its reflected dual from $\operatorname{Re}(s) < 1/2$---along a central bilateral waist at $\operatorname{Re}(s) = 1/2$ (\texttt{one\_sub\_criticalLine}). Along this joined waist, the phase normalization in~\eqref{eq:hardy_z_def} collapses complex rotation onto the real detector $Z(t)$, forcing every sign change of $Z(t)$ to pinch $|\zeta(1/2 + it)|$ onto the zero axis infinitely often.
+
+\section{Critical-Line Sign Changes and Completed Zeta}\label{sec:bridge}
+
+In \texttt{MathlibPR\_\allowbreak CriticalLineZeros.lean}, the critical line is parametrized by \texttt{criticalLine (t : $\Rset$) : $\Cfield$ := 1 / 2 + Complex.I * (t : $\Cfield$)}. Whenever a continuous real function $Z$ changes sign on $[a,b]$ ($Z(a)Z(b) \le 0$) and its zeros certify zeros of $\zeta(\operatorname{criticalLine}(t))$, the Intermediate Value Theorem produces a critical-line zero in $[a,b]$:
+\begin{lstlisting}
+theorem exists_criticalLine_zero_of_sign_change {Z : $\Rset \to \Rset$} {a b : $\Rset$}
+    (hab : a $\le$ b) (hcont : ContinuousOn Z (Set.Icc a b))
+    (hzero : $\forall$ t $\in$ Set.Icc a b, Z t = 0 $\to$ riemannZeta (criticalLine t) = 0)
+    (hsign : Z a * Z b $\le$ 0) :
+    $\exists$ t$_0$ $\in$ Set.Icc a b, (criticalLine t$_0$).re = 1 / 2 $\land$
+      riemannZeta (criticalLine t$_0$) = 0
+\end{lstlisting}
+Combined with \texttt{infinite\_\allowbreak of\_\allowbreak forall\_\allowbreak exists\_gt} (stating that any subset of $\Rset$ unbounded above is \texttt{Set.Infinite}) together with Mathlib's \texttt{continuous\_hardyZ} and \texttt{hardyZ\_\allowbreak eq\_\allowbreak zero\_\allowbreak iff}, the module \texttt{MathlibPR\_\allowbreak HardyZeros.lean} proves the conditional reductions:
+\begin{lstlisting}
+theorem infinite_criticalLine_zeros_of_sign_changes
+    (h_sign : $\forall$ T : $\Rset$, $\exists$ a b : $\Rset$,
+      T < a $\land$ a $\le$ b $\land$ hardyZ a * hardyZ b $\le$ 0) :
+    {t : $\Rset$ | riemannZeta (criticalLine t) = 0}.Infinite
+
+theorem infinite_hardyZ_zeros_of_sign_changes
+    (h_sign : $\forall$ T : $\Rset$, $\exists$ a b : $\Rset$,
+      T < a $\land$ a $\le$ b $\land$ hardyZ a * hardyZ b $\le$ 0) :
+    {t : $\Rset$ | hardyZ t = 0}.Infinite
+\end{lstlisting}
+
+To connect sign changes of \texttt{hardyZ} with analytic integrals, recall that Mathlib defines \texttt{hardyZ t} using the normalized completed zeta function $\Lambda(s) = \text{\texttt{completedRiemannZeta}}\, s$: on $\operatorname{Re}(s) = 1/2$, $\Lambda(1/2 + it)$ is purely real (\texttt{completedRiemannZeta\_\allowbreak half\_\allowbreak add\_\allowbreak mul\_I\_im}), and
+\begin{equation}\label{eq:lambda_hardyZ}
+\operatorname{Re}\Lambda\!\left(\frac{1}{2} + it\right) = Z(t) \cdot \left\|\Gamma_{\Rset}\!\left(\frac{1}{2} + it\right)\right\|,
+\end{equation}
+where $\|\Gamma_{\Rset}(1/2 + it)\| > 0$ unconditionally by \texttt{Gamma$\Rset$\_ne\_zero\_of\_re\_pos}. Thus $\operatorname{Re}\Lambda(1/2+it)$ has the exact same sign as $Z(t)$ for every $t \in \Rset$.
+
+\section{Fourier--Mellin Identity on the Analytic Strip}\label{sec:strip}
+
+On the open strip $S = \{z \in \Cfield : |\operatorname{Im}(z)| < \pi/4\}$, notice that $\operatorname{Im}(i e^{2z}) = e^{2\operatorname{Re}(z)}\cos(2\operatorname{Im}(z)) > 0$, so $i e^{2z}$ lies in the upper half-plane $\mathbb{H}$. We define the theta kernel \texttt{hardyPsi} and the Fourier--Mellin integral \texttt{hardyG} by:
+\begin{equation}
+\Psi(z) = e^{z/2} \theta\!\left(i e^{2z}\right) - \left(e^{z/2} + e^{-z/2}\right), \qquad
+G(z) = \frac{1}{2\pi} \int_{-\infty}^{\infty} e^{-i z t} \Lambda\!\left(\frac{1}{2} + it\right)\dee t,
+\end{equation}
+formalized verbatim in \texttt{MathlibPR\_\allowbreak HardyZeros.lean} as:
+\begin{lstlisting}
+noncomputable def hardyPsi (z : $\Cfield$) : $\Cfield$ :=
+  Complex.exp (z / 2) * jacobiTheta (I * Complex.exp (2 * z)) -
+    (Complex.exp (z / 2) + Complex.exp (-z / 2))
+
+noncomputable def hardyG (z : $\Cfield$) : $\Cfield$ :=
+  ((2 * Real.pi : $\Rset$) : $\Cfield$)$^{-1}$ *
+    $\int$ t : $\Rset$, Complex.exp (-z * (t : $\Cfield$) * I) * completedRiemannZeta (1 / 2 + (t : $\Cfield$) * I)
+\end{lstlisting}
+
+Three steps establish the fundamental identity $G(z) = \Psi(z)$ throughout the strip $S$:
+\begin{enumerate}[noitemsep]
+\item \textbf{Modular symmetry of $\Psi$:} Using Mathlib's modular inversion law \texttt{jacobiTheta\_S\_smul} ($\theta(-1/\tau) = (-i\tau)^{1/2}\theta(\tau)$) at $\tau = i e^{2z}$, lemma \texttt{hardyPsi\_neg} proves $\Psi(-z) = \Psi(z)$ on $S$, which implies exponential decay $\|\Psi(z)\| \le M e^{-|\operatorname{Re}(z)|/2}$ on every compact sub-strip $|\operatorname{Im}(z)| \le \alpha_0 < \pi/4$ (\texttt{norm\_hardyPsi\_le}).
+\item \textbf{Mellin representation and rectangular contour shift:} From Mathlib's identity \texttt{completedRiemannZeta\_eq} and the Mellin representation of \texttt{hurwitzEvenFEPair}, substituting $y = e^{2u}$ writes $\Lambda(1/2 + it) = \int_{\Rset} \Psi(u) e^{itu}\,\dee u$ (\texttt{completedRiemannZeta\_\allowbreak half\_\allowbreak add\_\allowbreak mul\_I\_\allowbreak eq\_\allowbreak fourier}). Applying Cauchy's rectangular boundary theorem (\texttt{Complex.\allowbreak integral\_\allowbreak boundary\_\allowbreak rect\_\allowbreak eq\_\allowbreak zero\_\allowbreak of\_\allowbreak differentiableOn}) on $[-R,R] \times [0,\alpha]$ ($|\alpha| < \pi/4$) and letting $R \to \infty$ (where vertical sides decay as $e^{-R/2}$) shifts the contour to $\operatorname{Im}(z) = \alpha$ (\texttt{completedRiemannZeta\_\allowbreak half\_\allowbreak add\_\allowbreak mul\_I\_\allowbreak eq\_\allowbreak shift}). Hence $|\Lambda(1/2+it)| \le C(\alpha_0)e^{-\alpha_0|t|}$ for every $\alpha_0 < \pi/4$, making $G(z)$ and all its moments holomorphic on $S$ (\texttt{hasDerivAt\_\allowbreak hardyG}).
+\item \textbf{Fourier inversion and analytic continuation:} On the real axis ($z = u \in \Rset$), Fourier inversion (\texttt{fourierInv\_fourier\_eq}) yields $G(u) = \Psi(u)$ (\texttt{hardyG\_ofReal}). Since $S$ is convex and hence connected, uniqueness of analytic functions (\texttt{AnalyticOnNhd.\allowbreak eqOn\_\allowbreak of\_\allowbreak preconnected\_\allowbreak of\_\allowbreak frequently\_eq}) extends the identity to the entire strip:
+\begin{lstlisting}
+private lemma hardyG_eq_hardyPsi {z : $\Cfield$} (hz : |z.im| < Real.pi / 4) :
+    hardyG z = hardyPsi z
+\end{lstlisting}
+\end{enumerate}
+
+\section{Boundary Vanishing of Even Theta Derivatives and the \texorpdfstring{$6\pi$}{6pi} Moment Ceiling}\label{sec:moments}
+
+Rotating variables by $z = i w$ splits $\Psi(i w)$ into its theta component \texttt{hardyThetaTerm (i * w) := exp(i w / 2) * jacobiTheta(i * exp(2 i w))} minus the elementary exponential pair $e^{iw/2} + e^{-iw/2}$. On real $w = \alpha$, every $n$-th derivative of $e^{i\alpha/2} + e^{-i\alpha/2}$ has norm at most $2(1/2)^n \le 2$ (\texttt{norm\_\allowbreak iteratedDeriv\_\allowbreak hardyCoshTerm\_le}).
+
+The critical analytic step shows that as $\alpha = \pi/4 - \delta \to (\pi/4)^-$ (where $i e^{2i\alpha} = -e^{-2i\delta} \to -1$ along the boundary of the upper half-plane), \emph{every} $2k$-th derivative of \texttt{hardyThetaTerm (i * w)} vanishes. Expanding at $-1 + \eta$ ($\operatorname{Im}(\eta) > 0$), separating even and odd indices gives $\theta(-1 + \eta) = 2\theta(4\eta) - \theta(\eta)$ (\texttt{jacobiTheta\_\allowbreak neg\_\allowbreak one\_add}). Applying \texttt{jacobiTheta\_S\_smul} twice (at $-\eta^{-1}$ and $-(4\eta)^{-1}$) cancels the constant terms of $\theta$, leaving the super-exponential bound (\texttt{norm\_\allowbreak jacobiTheta\_\allowbreak neg\_\allowbreak one\_\allowbreak add\_le}):
+\begin{equation}
+\left\|\theta(-1 + \eta)\right\| \le 8 \sqrt{(\operatorname{Im}\eta)^{-1}} \, \exp\!\left(-\frac{\pi \operatorname{Im}\eta}{4\|\eta\|^2}\right).
+\end{equation}
+On a Cauchy disk of radius $\delta/2$ around $\pi/4 - \delta$, $\operatorname{Im}(\eta)$ scales like $\delta$ while $\|\eta\| \lesssim \delta$, so the exponent $-\pi\operatorname{Im}(\eta)/(4\|\eta\|^2)$ decays as $\exp(-c_{\text{decay}}/\delta)$ and beats the polynomial Cauchy factor $\delta^{-(2k+1)}$ as $\delta \to 0^+$:
+\begin{lstlisting}
+private lemma tendsto_iteratedDeriv_hardyThetaTerm (k : $\Nset$) :
+    Tendsto (fun $\delta$ : $\Rset$ =>
+      $\|$iteratedDeriv (2 * k) (fun w : $\Cfield$ => hardyThetaTerm (I * w))
+        ((Real.pi / 4 - $\delta$ : $\Rset$) : $\Cfield$)$\|$)
+      ($\mathcal{N}$[>] (0 : $\Rset$)) (nhds 0)
+\end{lstlisting}
+
+Meanwhile, differentiating the integral representation $G(iw)$ under the integral sign $2k$ times (\texttt{iteratedDeriv\_\allowbreak hardyG\_\allowbreak mul\_I}), substituting $G = \Psi$ (\texttt{iteratedDeriv\_\allowbreak hardyPsi\_\allowbreak mul\_I\_eq}), and folding $t \mapsto -t$ by evenness $\Lambda(1/2-it) = \Lambda(1/2+it)$ (\texttt{hardyGn\_\allowbreak even\_re}) yields the exact moment identity for $|\alpha| < \pi/4$:
+\begin{equation}\label{eq:even_moment}
+2\pi \operatorname{Re}\!\left[\frac{\dee^{2k}}{\dee w^{2k}} G(iw)\Big|_{w=\alpha}\right]
+= \int_0^\infty t^{2k}\left(e^{\alpha t} + e^{-\alpha t}\right) \operatorname{Re}\Lambda\!\left(\frac{1}{2} + it\right)\dee t.
+\end{equation}
+In Lean~4, this real-part moment formula is formalized as:
+\begin{lstlisting}
+private lemma hardyGn_even_re (k : $\Nset$) {$\alpha$ : $\Rset$} (h$\alpha$ : |$\alpha$| < Real.pi / 4) :
+    (2 * Real.pi) * (hardyGn (2 * k) ($\alpha$ : $\Cfield$)).re =
+      $\int$ t in Ioi (0 : $\Rset$),
+        t ^ (2 * k) * (Real.exp ($\alpha$ * t) + Real.exp (-$\alpha$ * t)) *
+          (completedRiemannZeta (1 / 2 + (t : $\Cfield$) * I)).re
+\end{lstlisting}
+For any fixed $k \in \Nset$, \texttt{tendsto\_\allowbreak iteratedDeriv\_\allowbreak hardyThetaTerm} supplies $\delta \in (0, \pi/8)$ such that the $(2k)$-th derivative of \texttt{hardyThetaTerm (i * w)} at $\alpha = \pi/4 - \delta$ has norm strictly less than $1$. Adding the bound $\le 2$ for the $e^{\pm iw/2}$ terms bounds the $(2k)$-th derivative of $G(iw)$ in norm by $3$, so~\eqref{eq:even_moment} satisfies the \emph{uniform ceiling} $2\pi \cdot 3 = 6\pi$ independent of $k$.
+
+\section{Geometric Blowup Contradiction and Unconditional Theorems}\label{sec:main}
+
+We can now prove that \texttt{hardyZ} changes sign beyond every real threshold $T$. Suppose for contradiction that beyond some $T_0 \in \Rset$ no sign change occurs. Put $a_0 = \max(T_0, 1) + 1 > 1$ and choose $\operatorname{sgn} \in \{+1, -1\}$ matching the sign of $Z(a_0)$, so that $\operatorname{sgn} \cdot Z(t) > 0$ for all $t \ge a_0$. By~\eqref{eq:lambda_hardyZ}, $\operatorname{sgn} \cdot \operatorname{Re}\Lambda(1/2 + it) > 0$ for all $t \ge a_0$ as well.
+
+By continuity of $\operatorname{Re}\Lambda(1/2+it)$ on compact intervals:
+\begin{itemize}[noitemsep]
+\item on $[a_0 + 1, a_0 + 2]$, $\operatorname{sgn} \cdot \operatorname{Re}\Lambda(1/2 + it)$ attains a strictly positive minimum $m_{\text{pos}} > 0$;
+\item on $[0, a_0]$, $|\operatorname{Re}\Lambda(1/2 + it)|$ is bounded above by a constant $M_{\text{abs}} \ge 0$, so setting $C_{\text{low}} = a_0 \cdot 2 e^{(\pi/4)a_0} M_{\text{abs}}$ bounds the prefix integral on $(0, a_0]$ from below by $-C_{\text{low}} a_0^{2k}$.
+\end{itemize}
+Splitting the positive half-line moment integral~\eqref{eq:even_moment} at $a_0$ for any $k \in \Nset$ (using the $\alpha = \pi/4 - \delta$ chosen for that $k$ where $e^{\alpha t} + e^{-\alpha t} \ge 1$) gives:
+\begin{equation}
+m_{\text{pos}} (a_0 + 1)^{2k} - C_{\text{low}} a_0^{2k}
+\le \int_{a_0+1}^{a_0+2} F_k(t)\,\dee t + \int_0^{a_0} F_k(t)\,\dee t
+\le \int_0^\infty F_k(t)\,\dee t \le 6\pi,
+\end{equation}
+where $F_k(t) = t^{2k}(e^{\alpha t} + e^{-\alpha t})\operatorname{sgn}\operatorname{Re}\Lambda(1/2+it) \ge 0$ for $t > a_0$. Dividing by $a_0^{2k} \ge 1$ forces
+\begin{equation}
+m_{\text{pos}} \left(\frac{a_0 + 1}{a_0}\right)^{2k} \le C_{\text{low}} + 6\pi \qquad (\forall k \in \Nset),
+\end{equation}
+an immediate contradiction since $m_{\text{pos}} > 0$ and $(a_0+1)/a_0 > 1$ imply the left-hand side diverges geometrically as $k \to \infty$.
+
+\begin{theorem}[Unconditional Sign Changes and Hardy's 1914 Theorem]\label{thm:hardy_unconditional}
+Hardy's function \texttt{hardyZ} changes sign arbitrarily far out on $\Rset$, and both $\{t \in \Rset : \zeta(1/2 + it) = 0\}$ and $\{t \in \Rset : Z(t) = 0\}$ are infinite.
+\end{theorem}
+
+In \texttt{MathlibPR\_\allowbreak HardyZeros.lean}, this yields the unconditional zero-hypothesis theorems:
+\begin{lstlisting}
+private lemma hardyZ_unbounded_sign_changes :
+    $\forall$ T : $\Rset$, $\exists$ a b : $\Rset$, T < a $\land$ a $\le$ b $\land$ hardyZ a * hardyZ b $\le$ 0
+
+theorem infinite_criticalLine_zeros :
+    {t : $\Rset$ | riemannZeta (criticalLine t) = 0}.Infinite :=
+  infinite_criticalLine_zeros_of_sign_changes hardyZ_unbounded_sign_changes
+
+theorem infinite_hardyZ_zeros :
+    {t : $\Rset$ | hardyZ t = 0}.Infinite :=
+  infinite_hardyZ_zeros_of_sign_changes hardyZ_unbounded_sign_changes
+\end{lstlisting}
+
+\section{Kernel Verification and Axiom Footprint}\label{sec:verification}
+
+Both \texttt{MathlibPR\_\allowbreak CriticalLineZeros.lean} ($80$ lines) and \texttt{MathlibPR\_\allowbreak HardyZeros.lean} ($1984$ lines) compile cleanly under \texttt{lake build} with zero \texttt{sorry} gaps and zero custom axioms. Table~\ref{tab:hardy_declarations} summarizes the key verified declarations across the two modules.
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\begin{tabular}{>{\raggedright\arraybackslash}p{6.2cm}p{6.0cm}c}
+\toprule
+\textbf{Declaration} & \textbf{Mathematical Role} & \textbf{Axioms} \\
+\midrule
+\texttt{criticalLine} & Canonical embedding $t \mapsto 1/2 + it$ & -- \\
+\texttt{exists\_\allowbreak criticalLine\_\allowbreak zero\_\allowbreak of\_\allowbreak sign\_\allowbreak change} & IVT zero detector for sign changes & \texttt{Standard} \\
+\texttt{infinite\_\allowbreak criticalLine\_\allowbreak zeros\_\allowbreak of\_\allowbreak sign\_\allowbreak changes} & Conditional critical-line infinitude & \texttt{Standard} \\
+\texttt{hardyPsi} & Theta strip kernel $\Psi(z)$ on $|\operatorname{Im}(z)|<\pi/4$ & -- \\
+\texttt{hardyG} & Fourier--Mellin transform $G(z)$ of $\Lambda(1/2+it)$ & -- \\
+\texttt{hardyG\_\allowbreak eq\_\allowbreak hardyPsi} & Analytic identity $G(z) = \Psi(z)$ on the strip & \texttt{Standard} \\
+\texttt{tendsto\_\allowbreak iteratedDeriv\_\allowbreak hardyThetaTerm} & Even theta derivatives vanish as $\alpha \to (\pi/4)^-$ & \texttt{Standard} \\
+\texttt{hardyZ\_\allowbreak unbounded\_\allowbreak sign\_\allowbreak changes} & Geometric contradiction ruling out constant sign & \texttt{Standard} \\
+\texttt{infinite\_\allowbreak criticalLine\_\allowbreak zeros} & Unconditional infinitude on $\operatorname{Re}(s)=1/2$ & \texttt{Standard} \\
+\texttt{infinite\_\allowbreak hardyZ\_\allowbreak zeros} & Unconditional infinitude of zeros of $Z(t)$ & \texttt{Standard} \\
+\bottomrule
+\end{tabular}
+\caption{Verified declarations across \texttt{MathlibPR\_CriticalLineZeros.lean} and \texttt{MathlibPR\_HardyZeros.lean}. Here \texttt{Standard} denotes \texttt{[propext, Classical.choice, Quot.sound]}.}
+\label{tab:hardy_declarations}
+\end{table}
+
+Executing \texttt{\#print axioms} directly on all public theorems confirms that each relies strictly on Lean~4's three foundational axioms \texttt{[propext, Classical.choice, Quot.sound]}:
+\begin{itemize}[noitemsep]
+\item \texttt{exists\_\allowbreak criticalLine\_\allowbreak zero\_\allowbreak of\_\allowbreak sign\_\allowbreak change}
+\item \texttt{infinite\_\allowbreak criticalLine\_\allowbreak zeros\_\allowbreak of\_\allowbreak sign\_\allowbreak changes}
+\item \texttt{infinite\_\allowbreak hardyZ\_\allowbreak zeros\_\allowbreak of\_\allowbreak sign\_\allowbreak changes}
+\item \texttt{infinite\_\allowbreak criticalLine\_\allowbreak zeros}
+\item \texttt{infinite\_\allowbreak hardyZ\_\allowbreak zeros}
+\end{itemize}
+Furthermore, \texttt{VerifyNoTraps.lean} certifies \texttt{riemannZeta = \_root\_.riemannZeta} by \texttt{rfl}. Together, these modules provide a complete, self-contained Lean~4 mechanization of Hardy's (1914) theorem ready for upstream Mathlib integration, while strictly respecting the boundary that proving all non-trivial zeros lie on $\operatorname{Re}(s)=1/2$ remains open.
+
+\begin{thebibliography}{9}
+\bibitem{hardy1914}
+G.~H.~Hardy,
+\emph{Sur les z\'eros de la fonction $\zeta(s)$ de Riemann},
+Comptes Rendus de l'Acad\'emie des Sciences Paris \textbf{158} (1914), 1012--1014.
+
+\bibitem{titchmarsh1986}
+E.~C.~Titchmarsh,
+\emph{The Theory of the Riemann Zeta-Function},
+2nd ed., revised by D.~R.~Heath-Brown, Oxford University Press, 1986.
+
+\bibitem{edwards1974}
+H.~M.~Edwards,
+\emph{Riemann's Zeta Function},
+Academic Press, New York, 1974.
+
+\bibitem{mathlib4}
+The Mathlib Community,
+\emph{The Lean Mathematical Library},
+Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs (CPP 2020), 367--381.
+\end{thebibliography}
+
+\end{document}

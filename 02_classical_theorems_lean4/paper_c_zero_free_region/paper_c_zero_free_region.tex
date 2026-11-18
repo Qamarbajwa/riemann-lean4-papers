@@ -1,0 +1,307 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=red!70!black,
+    urlcolor=blue!70!black
+}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    numbers=none,
+    mathescape=true,
+    backgroundcolor=\color{gray!5}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\dee}{\mathrm{d}}
+\newcommand{\Nset}{\mathbb{N}}
+\newcommand{\Zset}{\mathbb{Z}}
+\newcommand{\Rset}{\mathbb{R}}
+\newcommand{\Cfield}{\mathbb{C}}
+
+\title{\textbf{Formalizing De la Vall{\'e}e Poussin's (1899) Unconditional Zero-Free Region\\for the Riemann Zeta Function in Lean~4}}
+
+\author{\textbf{Qamar Munawer}\\[0.3em]
+\small Brandenburg University of Technology Cottbus--Senftenberg}
+
+\date{November 2026}
+
+\begin{document}
+\linespread{1.15}\selectfont
+\emergencystretch=2.5em
+
+\maketitle
+
+\begin{abstract}
+We present a complete, hypothesis-free formalization in Lean~4 of a polynomial-logarithmic zero-free region for the Riemann zeta function $\zeta(s)$ in the style of de la Vall{\'e}e Poussin (1899). Specifically, the main theorem \texttt{deLaValleePoussin\_\allowbreak zero\_\allowbreak free\_\allowbreak region\_\allowbreak unconditional} proves the existence of an explicit positive constant $c > 0$ such that $\zeta(\sigma + it) \ne 0$ whenever $|t| \ge 2$ and $\sigma > 1 - c / \ln^9(|t|+2)$. Rather than developing logarithmic-derivative machinery for $-\zeta'/\zeta$, the formalization works directly with $\zeta(s)$ via Mathlib's $L$-function $3$-$4$-$1$ product inequality \texttt{norm\_LFunction\_\allowbreak product\_ge\_one} at trivial character modulus $1$, and discharges all required local bounds unconditionally: a pole bound near $s = 1$ from the continuity of the regular part $\zeta_0$, a strip growth bound via Euler--Maclaurin summation, a horizontal Lipschitz bound via Cauchy's integral estimate on a shrinking disk, and the $\eta = 3\delta$ repulsion optimization. Every theorem is kernel-checked against Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]} with zero \texttt{sorry} gaps.
+\end{abstract}
+
+\paragraph{Epistemic Status.}
+The Riemann Hypothesis remains an open mathematical conjecture. This work mechanizes an unconditional classical zero-free boundary inside the critical strip together with its quantitative repulsion estimates; no unconditional proof of the Riemann Hypothesis is claimed or implied.
+
+\section{Introduction}
+
+The distribution of prime numbers is intimately linked to zero-free regions of the Riemann zeta function $\zeta(s)$ near the line $\operatorname{Re}(s) = 1$. In 1896, Hadamard~\cite{hadamard1896} and de la Vall{\'e}e Poussin~\cite{valleepoussin1896} independently proved $\zeta(1 + it) \ne 0$ for all $t \in \Rset$, yielding the Prime Number Theorem $\pi(x) \sim x / \ln x$. Three years later, de la Vall{\'e}e Poussin~\cite{valleepoussin1899} widened this boundary into the critical strip, showing that there exists an effective constant $c > 0$ such that
+\begin{equation}\label{eq:classical_zfr}
+\zeta(\sigma + it) \ne 0 \qquad \text{for} \quad \sigma \ge 1 - \frac{c}{\ln(|t|+2)} \quad (|t| \ge 2),
+\end{equation}
+which underpins the classical error term $\psi(x) - x = \mathcal{O}(x \exp(-c'\sqrt{\ln x}))$.
+
+While non-vanishing on $\operatorname{Re}(s) = 1$ has been mechanized in Isabelle/HOL~\cite{eberl2019} and in Lean~4~\cite{pnt2024}, extending a formalization strictly to the left of $\operatorname{Re}(s) = 1$ requires quantitative control over $\zeta$ in an explicit neighborhood of the $1$-line. In this paper we document a self-contained, completely unconditional Lean~4 formalization of the polynomial-logarithmic zero-free region
+\begin{equation}\label{eq:formal_zfr}
+\exists c > 0,\ \forall s \in \Cfield, \quad |{\operatorname{Im}}(s)| \ge 2 \ \text{and}\ \operatorname{Re}(s) > 1 - \frac{c}{\ln^9(|\operatorname{Im}(s)|+2)} \implies \zeta(s) \ne 0,
+\end{equation}
+implemented in \texttt{MathlibPR\_\allowbreak ZeroFreeRegion.lean}, extending the critical-line module \texttt{MathlibPR\_\allowbreak CriticalLineZeros.lean}.
+
+\paragraph{Mathematical Design Choice: Direct $\zeta(s)$ Product vs.\ $-\zeta'/\zeta$.}
+Classical textbook presentations (e.g.,~\cite{titchmarsh1986}) apply the trigonometric identity $3 + 4\cos\theta + \cos(2\theta) \ge 0$ to $-\operatorname{Re}(\zeta'/\zeta)$, giving the sharp exponent $\ln(|t|+2)$ in~\eqref{eq:classical_zfr}. Formalizing that route from scratch requires building the Dirichlet series $\sum_{n \ge 1} \Lambda(n) n^{-s}$, proving its analytic continuation and local Borel--Carath{\'e}odory or Mittag-Leffler estimates for $\zeta'/\zeta$. By contrast, Mathlib~4 already supplies \texttt{norm\_LFunction\_product\_ge\_one}, which gives the multiplicative $3$-$4$-$1$ inequality directly on Dirichlet $L$-functions. Specializing this theorem to $\zeta(s)$ avoids $-\zeta'/\zeta$ completely. The analytic prerequisites shrink to three elementary steps:
+\begin{enumerate}[noitemsep]
+\item bounding $\|\zeta(1+x)\|$ for $x \in (0,1]$ using Mathlib's entire regular part $\zeta_0(s)$;
+\item bounding $\|\zeta(s)\|$ in a logarithmic strip near $\operatorname{Re}(s)=1$ via first-order Euler--Maclaurin partial summation ($C_{\text{strip}} = 10e + 3$, \texttt{C\_strip = 10 * Real.exp 1 + 3});
+\item bounding $\|\zeta'(z)\|$ on the horizontal segment $[1-\delta+iy, 1+3\delta+iy]$ via Cauchy's integral estimate on a disk of radius $R = (8\ln(|y|+2))^{-1}$ ($C_{\text{lip}} = 16\,C_{\text{strip}}$, \texttt{C\_lip = 16 * C\_strip}), paired with the Mean Value Theorem from a hypothetical zero $1 - \delta + iy$.
+\end{enumerate}
+Because $\|\zeta'(z)\|$ enters to the fourth power with bound $\mathcal{O}(\ln^2|y|)$ while $\|\zeta(1+3\delta+2iy)\|$ enters linearly with bound $\mathcal{O}(\ln|y|)$, optimizing the repulsion parameter at $\eta = 3\delta$ produces $(4 \times 2) + 1 = 9$ factors of $\ln(|y|+2)$. Trading exponent $1$ for exponent $9$ keeps the proof compact, completely elementary, and unconditional.
+
+\paragraph{Geometric Intuition.}
+Spatially, the classical $3$-$4$-$1$ inequality acts as a polar positivity cone guarding the right boundary $\operatorname{Re}(s) = 1$ of the critical strip: the Fourier kernel $K(\theta) = 3 + 4\cos\theta + \cos(2\theta) = 2(1+\cos\theta)^2$ traces a strictly non-negative lobe in polar angle $\theta$ that touches zero only tangentially at $\theta = \pi$. Exponentiating against $\operatorname{Re}\ln\zeta(\sigma + it)$ keeps the weighted product $\zeta(1+x)^3 \zeta(1+x+iy)^4 \zeta(1+x+2iy)$ uniformly bounded away from zero ($1 \le \|\cdots\|$), geometrically preventing any zero from touching the $1$-line or breaching the logarithmic repulsion barrier to its left.
+
+The remainder of the paper follows the Lean~4 module structure: Section~\ref{sec:trig} covers the direct $3$-$4$-$1$ product inequality; Section~\ref{sec:bounds} details the constructive pole bound, Euler--Maclaurin strip bound, and Cauchy Lipschitz estimate; Section~\ref{sec:repulsion} presents the $\eta = 3\delta$ optimization and the unconditional main theorem; and Section~\ref{sec:verification} gives verification receipts and axiom checks.
+
+\section{Trigonometric Positivity and the Direct Zeta Product}\label{sec:trig}
+
+The algebraic seed is the classical trigonometric identity
+\begin{equation}\label{eq:trig_identity}
+3 + 4\cos\theta + \cos(2\theta) = 2(1 + \cos\theta)^2 \ge 0 \qquad (\forall \theta \in \Rset),
+\end{equation}
+proved in \texttt{MathlibPR\_\allowbreak CriticalLineZeros.lean} via the declarations \texttt{deLaValleePoussin\_\allowbreak trig\_eq} and \texttt{deLaValleePoussin\_\allowbreak trig\_\allowbreak nonneg}. Over the Euler product region $\operatorname{Re}(s) > 1$, taking logarithms and exponentiating gives
+\begin{equation}\label{eq:product_ge_one}
+\left|\zeta(1 + x)^3 \, \zeta(1 + x + i y)^4 \, \zeta(1 + x + 2 i y)\right| \ge 1 \qquad (\forall x > 0,\; y \in \Rset).
+\end{equation}
+Mathlib's \texttt{Mathlib.NumberTheory.LSeries.Nonvanishing} establishes this inequality for arbitrary Dirichlet characters via \texttt{norm\_LFunction\_product\_ge\_one}. Specializing to modulus $N = 1$ and the trivial character $\chi = 1$ yields the direct $\zeta$-product theorem without invoking logarithmic derivatives:
+\begin{lstlisting}
+theorem norm_riemannZeta_product_ge_one {x : $\Rset$} (hx : 0 < x) (y : $\Rset$) :
+    $\|$riemannZeta (1 + x) ^ 3 * riemannZeta (1 + x + I * y) ^ 4 *
+      riemannZeta (1 + x + 2 * I * y)$\|$ $\ge$ 1 := by
+  have h := norm_LFunction_product_ge_one (N := 1) (1 : DirichletCharacter $\Cfield$ 1) hx y
+  simp only [LFunctionTrivChar, LFunction_modOne_eq, one_pow] at h
+  exact h
+
+theorem riemannZeta_norm_cubed_fourth_mul_ge_one {x : $\Rset$} (hx : 0 < x) (y : $\Rset$) :
+    1 $\le$ $\|$riemannZeta (1 + x)$\|$ ^ 3 * $\|$riemannZeta (1 + x + I * y)$\|$ ^ 4 *
+      $\|$riemannZeta (1 + x + 2 * I * y)$\|$ := by
+  have h := norm_riemannZeta_product_ge_one hx y
+  simpa only [norm_mul, norm_pow] using h
+\end{lstlisting}
+
+\section{Unconditional Analytic Bounds Near \texorpdfstring{$\operatorname{Re}(s) = 1$}{Re(s) = 1}}\label{sec:bounds}
+
+To turn~\eqref{eq:product_ge_one} into a zero-free region at a hypothetical zero $s_0 = 1 - \delta + iy$ (setting $x = \eta > 0$), we need unconditional upper bounds on the three factors $|\zeta(1+\eta)|$, $|\zeta(1+\eta+iy)|$, and $|\zeta(1+\eta+2iy)|$.
+
+\subsection{Laurent Decomposition and Constructive Pole Bound}
+
+Mathlib's \texttt{Mathlib.NumberTheory.Harmonic.ZetaAsymp} defines the entire regular part $\zeta_0(s)$ equal to $\gamma$ at $s = 1$ and $\zeta(s) - (s-1)^{-1}$ for $s \ne 1$. For $x \ne 0$, \texttt{riemannZeta\_one\_add\_eq} states $\zeta(1+x) = x^{-1} + \zeta_0(1+x)$. On $(0, 1]$, if $\|\zeta_0(1+x)\| \le M$ with $M \ge 0$, the triangle inequality gives $\|\zeta(1+x)\| \le 1/x + M \le (1+M)/x$ (\texttt{norm\_riemannZeta\_one\_add\_le}). Because $\zeta_0$ is differentiable everywhere (\texttt{differentiable\_riemannZeta$_0$}), the continuous function $x \mapsto \|\zeta_0(1+x)\|$ attains a maximum $M = \|\zeta_0(1+x_{\max})\|$ on the compact interval $[0, 1]$, discharging the pole bound unconditionally with $C_{\text{pole}} = 1 + M$:
+\begin{lstlisting}
+theorem exists_pole_bound_one_add :
+    $\exists$ C_pole > 0, $\forall$ x : $\Rset$, 0 < x $\to$ x $\le$ 1 $\to$
+      $\|$riemannZeta (1 + (x : $\Cfield$))$\|$ $\le$ C_pole / x := by
+  have hcont : ContinuousOn (fun x : $\Rset$ => $\|$riemannZeta$_0$ (1 + (x : $\Cfield$))$\|$) (Icc (0 : $\Rset$) 1) :=
+    ((differentiable_riemannZeta$_0$.continuous.comp
+      (continuous_const.add Complex.continuous_ofReal)).norm).continuousOn
+  obtain $\langle$x_max, _, hx_max$\rangle$ :=
+    isCompact_Icc.exists_isMaxOn $\langle$(0 : $\Rset$), left_mem_Icc.mpr zero_le_one$\rangle$ hcont
+  let M : $\Rset$ := $\|$riemannZeta$_0$ (1 + (x_max : $\Cfield$))$\|$
+  refine $\langle$1 + M, by linarith, fun x hx_pos hx_le => ?_$\rangle$
+  exact norm_riemannZeta_one_add_le x hx_pos hx_le M (norm_nonneg _) (hx_max $\langle$hx_pos.le, hx_le$\rangle$)
+\end{lstlisting}
+
+\subsection{Euler--Maclaurin Growth in a Logarithmic Boundary Strip}
+
+To bound $\zeta(s)$ on the strip $1 - (2\ln(|t|+2))^{-1} \le \sigma \le 2$ for $|t| \ge 3/2$, the formalization defines the remainder term on $[n+1, n+2]$:
+\begin{equation}
+\text{\texttt{zetaRemainderTerm}}(s, n) = -s \int_{n+1}^{n+2} (u - \lfloor u \rfloor) u^{-s-1}\,\dee u,
+\end{equation}
+and proves the identity $\zeta(s) = (s-1)^{-1} + \sum_{n=0}^{\infty} \text{\texttt{zetaRemainderTerm}}(s, n)$ on $\{\operatorname{Re}(s) > 0, \operatorname{Im}(s) \ne 0\}$ by uniqueness of analytic continuation from $\operatorname{Re}(s) > 1$ across the upper and lower half-strips. Separating the first $M = \lfloor |t| \rfloor + 1$ terms (\texttt{riemannZeta\_partial\_summation}) yields
+\begin{equation}
+\zeta(s) = \sum_{n=0}^{M-1} (n+1)^{-s} + \frac{(M+1)^{1-s}}{s-1} + \sum_{n=0}^{\infty} \text{\texttt{zetaRemainderTerm}}(s, n + M).
+\end{equation}
+
+In \texttt{norm\_riemannZeta\_le\_of\_log\_strip}, each piece is estimated cleanly using only $M \le |t|+1$, $M+1 \le |t|+2$, and $\sigma > 1/2$ (which holds since $\ln(|t|+2) > 1$ for $|t| \ge 3/2$):
+\begin{itemize}[noitemsep]
+\item For every $x \in [1, |t|+2]$, $1 - \sigma \le (2\ln(|t|+2))^{-1} \le (\ln(|t|+2))^{-1}$ implies $x^{1-\sigma} \le e$. Thus each summand has norm $(n+1)^{-\sigma} = (n+1)^{1-\sigma}/(n+1) \le e/(n+1)$, and Mathlib's \texttt{harmonic\_le\_one\_add\_log} bounds the finite sum by $e(1 + \ln M) \le 2e\ln(|t|+2)$.
+\item Since $|s-1| \ge |t| \ge 3/2 \ge 1$, the boundary term is bounded by $(M+1)^{1-\sigma} \le e$.
+\item Each remainder term satisfies $|\text{\texttt{zetaRemainderTerm}}(s, k)| \le |s|(k+1)^{-\sigma-1}$, and summing the tail from $M$ using $|s| \le 3(M+1)$ and $1/\sigma < 2$ gives $\le 3 + 6e$.
+\end{itemize}
+Combining $2e\ln(|t|+2) + (7e+3)$ with $1 < \ln(|t|+2)$ yields the explicit strip constant $C_{\text{strip}} = 10e + 3$:
+\begin{lstlisting}
+theorem norm_riemannZeta_le_of_log_strip {s : $\Cfield$} (ht : 3 / 2 $\le$ |s.im|)
+    (hre_lo : 1 - 1 / (2 * Real.log (|s.im| + 2)) $\le$ s.re) (hre_hi : s.re $\le$ 2) :
+    $\|$riemannZeta s$\|$ $\le$ (10 * Real.exp 1 + 3) * Real.log (|s.im| + 2)
+\end{lstlisting}
+Note also that when $w = 1 + 3\delta + 2iy$ with $|y| \ge 2$ and $3\delta \le 1$, $\ln(2|y|+2) \le \ln(2(|y|+2)) = \ln 2 + \ln(|y|+2) \le 2\ln(|y|+2)$, so the third factor in~\eqref{eq:product_ge_one} immediately satisfies $\|\zeta(1+3\delta+2iy)\| \le C_{\text{growth}} \ln(|y|+2)$ with $C_{\text{growth}} = 2 C_{\text{strip}}$.
+
+\subsection{Cauchy Disk Derivative and Horizontal Lipschitz Bound}
+
+Suppose $\zeta(1 - \delta + iy) = 0$ with $|y| \ge 2$ and $0 < \delta \le R$, where
+\begin{equation}
+R = \frac{1}{8\ln(|y|+2)} < \frac{1}{8}.
+\end{equation}
+Consider the horizontal segment $S_{\text{seg}} = \{z \in \Cfield : 1 - \delta \le \operatorname{Re}(z) \le 1 + 3\delta,\; \operatorname{Im}(z) = y\}$. For every $z \in S_{\text{seg}}$ and every point $w \in \overline{B}(z, R)$, the triangle inequality shows $|{\operatorname{Im}}(w)| \ge |y| - R \ge 2 - 1/8 > 3/2$, $\operatorname{Re}(w) \le 1 + 3\delta + R \le 2$, and $\ln(|{\operatorname{Im}}(w)|+2) \le 2\ln(|y|+2)$, as well as
+\begin{equation}
+\operatorname{Re}(w) \ge 1 - \delta - R \ge 1 - \frac{1}{4\ln(|y|+2)} \ge 1 - \frac{1}{2\ln(|{\operatorname{Im}}(w)|+2)}.
+\end{equation}
+Hence $\overline{B}(z, R)$ lies inside the strip covered by \texttt{norm\_\allowbreak riemannZeta\_\allowbreak le\_of\_log\_strip}, giving $\|\zeta(w)\| \le 2 C_{\text{strip}} \ln(|y|+2)$ on $\partial B(z, R)$. Applying Mathlib's Cauchy integral estimate \texttt{norm\_deriv\_\allowbreak le\_of\_forall\_\allowbreak mem\_sphere\_\allowbreak norm\_le} on $B(z, R)$ divides by $R$, giving
+\begin{equation}
+\|\zeta'(z)\| \le \frac{2 C_{\text{strip}} \ln(|y|+2)}{R} = 16 C_{\text{strip}} \ln^2(|y|+2) = C_{\text{lip}} \ln^2(|y|+2) \qquad (\forall z \in S_{\text{seg}}),
+\end{equation}
+with $C_{\text{lip}} = 16 C_{\text{strip}}$. Integrating along the convex segment $S_{\text{seg}}$ from $z_1 = 1 - \delta + iy$ (where $\zeta(z_1) = 0$) to $z_2 = 1 + 3\delta + iy$ via the Mean Value Theorem (\texttt{Convex.\allowbreak norm\_\allowbreak image\_sub\_\allowbreak le\_of\_norm\_\allowbreak deriv\_le}) produces the horizontal Lipschitz bound:
+\begin{lstlisting}
+theorem riemannZeta_horizontal_lipschitz_of_zero {$\delta$ y : $\Rset$} (hy : 2 $\le$ |y|)
+    (h$\delta$_pos : 0 < $\delta$) (h$\delta$_le : $\delta$ $\le$ 1 / (8 * Real.log (|y| + 2)))
+    (hz : riemannZeta (1 - ($\delta$ : $\Cfield$) + I * (y : $\Cfield$)) = 0) :
+    $\|$riemannZeta (1 + (3 * $\delta$ : $\Cfield$) + I * (y : $\Cfield$))$\|$ $\le$
+      (16 * (10 * Real.exp 1 + 3)) * Real.log (|y| + 2) ^ 2 * (4 * $\delta$)
+\end{lstlisting}
+
+\section{Cubic Optimization and the Unconditional Zero-Free Region}\label{sec:repulsion}
+
+Assume $s_0 = 1 - \delta + iy$ is a zero with $\delta > 0$, $|y| \ge 2$, and $\delta \le R = (8\ln(|y|+2))^{-1}$. Evaluating the product inequality~\eqref{eq:product_ge_one} at $x = \eta \in (0, 1]$ and substituting the three unconditional estimates gives
+\begin{equation}
+1 \le \left(\frac{C_{\text{pole}}}{\eta}\right)^3 \cdot \left(C_{\text{lip}} \ln^2(|y|+2) (\eta + \delta)\right)^4 \cdot \left(C_{\text{growth}} \ln(|y|+2)\right),
+\end{equation}
+which rearranges to
+\begin{equation}\label{eq:cubic_ratio}
+\frac{(\eta + \delta)^4}{\eta^3} \ge \frac{1}{C_{\text{pole}}^3 \, C_{\text{lip}}^4 \, C_{\text{growth}} \, \ln^9(|y|+2)}.
+\end{equation}
+
+\begin{proposition}[De la Vall{\'e}e Poussin's Cubic Minimum]\label{prop:cubic_opt}
+For $\delta > 0$, $f(\eta) = (\eta+\delta)^4/\eta^3$ attains its global minimum on $(0,\infty)$ at $\eta = 3\delta$, with
+\begin{equation}
+f(3\delta) = \frac{(3\delta+\delta)^4}{(3\delta)^3} = \frac{256}{27}\delta.
+\end{equation}
+\end{proposition}
+In Lean~4, \texttt{valleePoussin\_\allowbreak cubic\_opt\_identity} verifies $(3\delta + \delta)^4 / (3\delta)^3 = (256/27)\delta$ algebraically. Specializing $\eta = 3\delta$ in~\eqref{eq:cubic_ratio} yields the repulsion floor (\texttt{deLaValleePoussin\_\allowbreak zero\_repulsion}):
+\begin{equation}
+\delta \ge \frac{27}{256 \, C_{\text{pole}}^3 \, C_{\text{lip}}^4 \, C_{\text{growth}} \, \ln^9(|y|+2)}.
+\end{equation}
+Consequently, any assumption $\delta < 27 / (256\, C_{\text{pole}}^3 C_{\text{lip}}^4 C_{\text{growth}} \ln^9(|y|+2))$ forces the product strictly below $1$, contradicting~\eqref{eq:product_ge_one}:
+\begin{lstlisting}
+theorem deLaValleePoussin_contradiction {$\delta$ y C_pole C_lip C_growth : $\Rset$}
+    (h$\delta$_pos : 0 < $\delta$) (hy : 2 $\le$ |y|)
+    (hC_pole : 0 < C_pole) (hC_lip : 0 < C_lip) (hC_growth : 0 < C_growth)
+    (h_pole : $\|$riemannZeta (1 + (3 * $\delta$ : $\Cfield$))$\|$ $\le$ C_pole / (3 * $\delta$))
+    (h_lip : $\|$riemannZeta (1 + (3 * $\delta$ : $\Cfield$) + I * y)$\|$ $\le$ C_lip * Real.log (|y| + 2) ^ 2 * (4 * $\delta$))
+    (h_growth : $\|$riemannZeta (1 + (3 * $\delta$ : $\Cfield$) + 2 * I * y)$\|$ $\le$ C_growth * Real.log (|y| + 2))
+    (h$\delta$_lt : $\delta$ < (27 : $\Rset$) / (256 * C_pole ^ 3 * C_lip ^ 4 * C_growth * Real.log (|y| + 2) ^ 9)) :
+    False
+\end{lstlisting}
+
+\subsection{The Unconditional Main Theorem}
+
+Putting everything together, for $\operatorname{Re}(s) \ge 1$ Mathlib's \texttt{riemannZeta\_ne\_zero\_of\_one\_le\_re} already guarantees $\zeta(s) \ne 0$. For $\operatorname{Re}(s) < 1$ with $|{\operatorname{Im}}(s)| \ge 2$, define
+\begin{equation}
+C_{\text{strip}} = 10e + 3, \qquad C_{\text{lip}} = 16\,C_{\text{strip}}, \qquad C_{\text{growth}} = 2\,C_{\text{strip}},
+\end{equation}
+take $C_{\text{pole}} > 0$ from \texttt{exists\_pole\_bound\_one\_add}, and set
+\begin{equation}
+c_0 = \frac{27}{256 \, C_{\text{pole}}^3 \, C_{\text{lip}}^4 \, C_{\text{growth}}}, \qquad c = \min\!\left(\frac{1}{8},\; c_0\right) > 0.
+\end{equation}
+Whenever $\delta = 1 - \operatorname{Re}(s) < c / \ln^9(|{\operatorname{Im}}(s)| + 2)$, the choice $c \le 1/8$ together with $\ln(|{\operatorname{Im}}(s)|+2) > 1$ implies $\delta \le (8\ln(|{\operatorname{Im}}(s)|+2))^{-1} = R$ (and hence $3\delta \le 1$), validating the Cauchy disk and pole hypotheses unconditionally, while $c \le c_0$ gives $\delta < c_0 / \ln^9(|{\operatorname{Im}}(s)|+2)$ and triggers \texttt{deLaValleePoussin\_contradiction}.
+
+\begin{theorem}[Unconditional Polynomial-Logarithmic Zero-Free Region]\label{thm:unconditional_zfr}
+There exists an explicit constant $c > 0$ such that for all $s \in \Cfield$ with $|{\operatorname{Im}}(s)| \ge 2$ and $\operatorname{Re}(s) > 1 - c / \ln^9(|{\operatorname{Im}}(s)|+2)$, we have $\zeta(s) \ne 0$.
+\end{theorem}
+
+In Lean~4, this theorem carries zero external analytic hypotheses:
+\begin{lstlisting}
+theorem deLaValleePoussin_zero_free_region_unconditional :
+    $\exists$ c > 0, $\forall$ s : $\Cfield$, 2 $\le$ |s.im| $\to$
+      1 - c / Real.log (|s.im| + 2) ^ 9 < s.re $\to$ riemannZeta s $\ne$ 0 := by
+  obtain $\langle$C_pole, hC_pole, h_pole_all$\rangle$ := exists_pole_bound_one_add
+  let C_strip : $\Rset$ := 10 * Real.exp 1 + 3
+  let C_lip : $\Rset$ := 16 * C_strip
+  let C_growth : $\Rset$ := 2 * C_strip
+  ...
+  let c$_0$ : $\Rset$ := 27 / (256 * C_pole ^ 3 * C_lip ^ 4 * C_growth)
+  let c : $\Rset$ := min (1 / 8) c$_0$
+  ...
+  exact deLaValleePoussin_contradiction h$\delta$_pos ht hC_pole hC_lip hC_growth
+    h_pole h_lip h_growth h$\delta$_lt_full
+\end{lstlisting}
+
+\section{Kernel Verification, Axiom Footprint, and Conclusion}\label{sec:verification}
+
+Every declaration in \texttt{MathlibPR\_ZeroFreeRegion.lean} has been verified with \texttt{lake build} and audited via \texttt{\#check} and \texttt{\#print axioms} in Lean~4. Table~\ref{tab:declarations} lists the core declarations and their axiom footprints.
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\begin{tabular}{>{\raggedright\arraybackslash}p{6.1cm}p{5.8cm}c}
+\toprule
+\textbf{Declaration} & \textbf{Mathematical Role} & \textbf{Axioms} \\
+\midrule
+\texttt{norm\_riemannZeta\_\allowbreak product\_ge\_one} & Direct $3$-$4$-$1$ product inequality $\ge 1$ & \texttt{Standard} \\
+\texttt{riemannZeta\_one\_add\_eq} & Laurent identity $\zeta(1+x) = x^{-1} + \zeta_0(1+x)$ & \texttt{Standard} \\
+\texttt{norm\_riemannZeta\_one\_add\_le} & Quantitative pole bound $(1+M)/x$ & \texttt{Standard} \\
+\texttt{exists\_pole\_bound\_one\_add} & Unconditional pole constant $C_{\text{pole}} = 1+M$ & \texttt{Standard} \\
+\texttt{norm\_riemannZeta\_le\_of\_log\_strip} & Euler--Maclaurin strip bound $C_{\text{strip}} = 10e+3$ & \texttt{Standard} \\
+\texttt{riemannZeta\_horizontal\_\allowbreak lipschitz\_of\_zero} & Cauchy disk Lipschitz bound $C_{\text{lip}} = 16\,C_{\text{strip}}$ & \texttt{Standard} \\
+\texttt{valleePoussin\_cubic\_\allowbreak opt\_identity} & Cubic minimum $(3\delta+\delta)^4/(3\delta)^3 = \frac{256}{27}\delta$ & \texttt{Standard} \\
+\texttt{deLaValleePoussin\_\allowbreak zero\_repulsion} & Repulsion floor $\delta \ge c_0 / \ln^9(|y|+2)$ & \texttt{Standard} \\
+\texttt{deLaValleePoussin\_\allowbreak contradiction} & Product contradiction for $\delta < c_0/\ln^9(|y|+2)$ & \texttt{Standard} \\
+\texttt{deLaValleePoussin\_\allowbreak zero\_free\_region\_\allowbreak unconditional} & Unconditional boundary $\sigma > 1 - c/\ln^9(|t|+2)$ & \texttt{Standard} \\
+\bottomrule
+\end{tabular}
+\caption{Kernel-checked declarations in \texttt{MathlibPR\_ZeroFreeRegion.lean}. Here \texttt{Standard} denotes strictly \texttt{[propext, Classical.choice, Quot.sound]}.}
+\label{tab:declarations}
+\end{table}
+
+Across the entire module, \texttt{riemannZeta} binds definitionally to Mathlib's \texttt{\_root\_.riemannZeta} (\texttt{rfl}), zero custom axioms or \texttt{opaque} definitions are introduced, and zero occurrences of \texttt{sorry} or \texttt{admit} appear. By routing through Mathlib's \texttt{norm\_LFunction\_\allowbreak product\_ge\_one} directly on $\zeta(s)$ together with elementary Euler--Maclaurin and Cauchy bounds, the formalization isolates a compact, upstream-ready proof of an unconditional zero-free region inside the critical strip. Improving the logarithmic exponent from $9$ to $1$ via $-\zeta'/\zeta$ remains a natural direction for future Mathlib work.
+
+\begin{thebibliography}{99}
+\raggedright
+
+\bibitem{eberl2019}
+M.~Eberl, \emph{A formal proof of the Prime Number Theorem}, Archive of Formal Proofs (2019).
+
+\bibitem{hadamard1896}
+J.~Hadamard, \emph{Sur la distribution des z{\'e}ros de la fonction $\zeta(s)$ et ses cons{\'e}quences arithm{\'e}tiques}, Bull. Soc. Math. France \textbf{24} (1896), 199--220.
+
+\bibitem{pnt2024}
+A.~Kontorovich, T.~Tao, et~al., \emph{PrimeNumberTheoremAnd: An axiom-free formalization of the Prime Number Theorem in Lean~4}, GitHub repository (2024). \url{https://github.com/AlexKontorovich/PrimeNumberTheoremAnd}
+
+\bibitem{titchmarsh1986}
+E.~C.~Titchmarsh, \emph{The Theory of the Riemann Zeta-Function}, 2nd ed., revised by D.~R.~Heath-Brown, Oxford University Press, 1986.
+
+\bibitem{valleepoussin1896}
+C.-J.~de~la~Vall{\'e}e~Poussin, \emph{Recherches analytiques sur la th{\'e}orie des nombres premiers}, Ann. Soc. Sci. Bruxelles \textbf{20} (1896), 183--397.
+
+\bibitem{valleepoussin1899}
+C.-J.~de~la~Vall{\'e}e~Poussin, \emph{Sur la fonction $\zeta(s)$ de Riemann et le nombre des nombres premiers inf{\'e}rieurs {\`a} une limite donn{\'e}e}, M{\'e}m. Couronn{\'e}s Acad. Roy. Sci. Lettres Beaux-Arts Belg. \textbf{59} (1899), 1--74.
+
+\end{thebibliography}
+
+\end{document}

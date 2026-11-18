@@ -1,0 +1,411 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=red!70!black,
+    urlcolor=blue!70!black
+}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    numbers=none,
+    mathescape=true,
+    backgroundcolor=\color{gray!5}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\dee}{\mathrm{d}}
+\newcommand{\Nset}{\mathbb{N}}
+\newcommand{\Zset}{\mathbb{Z}}
+\newcommand{\Rset}{\mathbb{R}}
+\newcommand{\Cfield}{\mathbb{C}}
+
+\title{\textbf{Formalizing Littlewood's Equivalence for the Riemann Hypothesis in Lean~4}}
+
+\author{\textbf{Qamar Munawer}\\[0.3em]
+\small Brandenburg University of Technology Cottbus--Senftenberg}
+
+\date{November 2026}
+
+\begin{document}
+\linespread{1.15}\selectfont
+
+\maketitle
+
+\begin{abstract}
+This paper presents the machine-checked formalization in Lean~4 of Littlewood's (1912) classical equivalence theorem connecting the Riemann Hypothesis (RH) to the asymptotic growth of the Mertens summatory function: RH holds if and only if $M(x) = \mathcal{O}(x^{1/2+\varepsilon})$ for every $\varepsilon > 0$. The equivalence itself is a foundational result of classical analytic number theory; no new mathematics and no unconditional progress on the truth of the Riemann Hypothesis are claimed. The formal contribution consists of providing an end-to-end, machine-checked verification of both implications against the official Mathlib definition of the Riemann Hypothesis (\texttt{\_root\_.RiemannHypothesis}), operating strictly within standard core axioms (\texttt{[propext, Classical.choice, Quot.sound]}) with zero custom axioms and zero \texttt{sorry} placeholders. The proof is structured into three self-contained stages designed for upstream integration into Mathlib: (i)~the forward direction via discrete Abel summation and Mellin transform inversion of the reciprocal zeta function; (ii)~a sub-polynomial growth bound on $\zeta(s)^{-1}$ on half-planes $\operatorname{Re}(s) \ge \sigma_0 > 1/2$ under RH via the Borel--Carath\'eodory lemma and Hadamard three-lines interpolation; and (iii)~the converse direction via a continuous trapezoidal mollifier contour shift that circumvents the conditional convergence of classical discontinuous Perron inversion.
+\end{abstract}
+
+% ===========================================================================
+% SECTION 1
+% ===========================================================================
+\section{Introduction and Prior Work}
+\label{sec:intro}
+
+The Riemann Hypothesis (RH), formulated by Bernhard Riemann in 1859~\cite{Riemann1859}, conjectures that all non-trivial zeros of the Riemann zeta function $\zeta(s)$ lie on the critical line $\operatorname{Re}(s) = 1/2$. For $\operatorname{Re}(s) > 1$, $\zeta(s)$ is defined by the absolutely convergent Dirichlet series $\sum_{n=1}^\infty n^{-s}$, and the classical identity
+\begin{equation}
+\label{eq:zeta_inv_euler}
+\frac{1}{\zeta(s)} = \sum_{n=1}^\infty \frac{\mu(n)}{n^s} \qquad (\operatorname{Re}(s) > 1)
+\end{equation}
+expresses the reciprocal zeta function in terms of the M\"obius function $\mu(n)$. The fluctuations of $\mu(n)$ are measured by the Mertens summatory function
+\begin{equation}
+\label{eq:mertens_def}
+M(x) \coloneqq \sum_{1 \le n \le x} \mu(n).
+\end{equation}
+
+In 1912, J.~E.~Littlewood~\cite{Littlewood1912} proved that the analytic continuation of Eq.~\eqref{eq:zeta_inv_euler} across the critical strip is governed by the growth rate of $M(x)$:
+\begin{theorem}[Littlewood 1912]
+\label{thm:littlewood_classical}
+The Riemann Hypothesis is equivalent to the statement that for every $\varepsilon > 0$,
+\begin{equation}
+\label{eq:littlewood_bound}
+M(x) = \mathcal{O}\bigl(x^{1/2+\varepsilon}\bigr) \qquad \text{as } x \to \infty.
+\end{equation}
+\end{theorem}
+
+Theorem~\ref{thm:littlewood_classical} is an established landmark in analytic number theory (see, e.g., Titchmarsh~\cite[\S14.25--14.26]{Titchmarsh1986} and Davenport~\cite{Davenport1980}). However, formalizing both directions in an interactive theorem prover presents substantial analytical challenges:
+\begin{enumerate}[label=(\roman*)]
+  \item \textbf{Forward Direction:} One must demonstrate that the growth bound $M(x) = \mathcal{O}(x^{1/2+\varepsilon})$ guarantees the existence of a holomorphic reciprocal $\mathcal{M}(s) = s \int_1^\infty M(x) x^{-(s+1)}\,\dee x$ on the half-plane $\operatorname{Re}(s) > 1/2$, prove by dominated differentiation that $\zeta(s)\mathcal{M}(s) = 1$, and invoke the functional equation and reflection to exclude zeros in $\operatorname{Re}(s) < 1/2$.
+  \item \textbf{Converse Direction (Growth of $\zeta(s)^{-1}$):} Assuming RH, $\zeta(s)$ has no zeros for $\operatorname{Re}(s) > 1/2$. However, deriving $M(x) = \mathcal{O}(x^{1/2+\varepsilon})$ requires bounding the growth of $\zeta(s)^{-1}$ along vertical lines inside the critical strip. In classical analysis, this relies on the Borel--Carath\'eodory lemma and the Phragm\'en--Lindel\"of / Hadamard three-lines theorem to establish that $|\zeta(s)^{-1}| \le C_\varepsilon (1 + |t|)^\varepsilon$ for $\operatorname{Re}(s) \ge \sigma_0 > 1/2$.
+  \item \textbf{Converse Direction (Contour Inversion):} Recovering $M(x)$ from $\zeta(s)^{-1}$ via standard Perron inversion requires integrating discontinuous jump functions along vertical lines, which converges only conditionally. In a formal proof assistant, conditional contour integrals demand laborious principal-value estimates. This difficulty is resolved here by employing a continuous trapezoidal mollifier whose Mellin transform decays quadratically as $|t|^{-2}$, rendering all contour integrals unconditionally Lebesgue integrable.
+\end{enumerate}
+
+\subsection{Prior Formalization Work}
+\label{subsec:prior_work}
+
+Several projects have formalized related aspects of analytic number theory in Lean~4:
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Mathlib~4}~\cite{Mathlib}: Mathlib formalizes the definition of the Riemann zeta function $\zeta(s)$ on $\Cfield$, its analytic continuation to $\Cfield \setminus \{1\}$, its Euler product on $\operatorname{Re}(s) > 1$, and the official conjecture statement \texttt{\_root\_.RiemannHypothesis}.
+  \item \textbf{PrimeNumberTheoremAnd}~\cite{PNT}: Kontorovich, Tao, and collaborators formalized the Prime Number Theorem ($\psi(x) \sim x$) in Lean~4 using contour integration and the non-vanishing of $\zeta(1 + it)$. Their library provides machinery for vertical contour integration, but does not formalize Littlewood's equivalence for the Mertens function.
+  \item \textbf{Mathlib PR~\#46028}~\cite{MathlibPR46028}: Opened on 14 November 2026 (unmerged at the time of writing), this PR formalizes that a one-sided lower bound on Chebyshev's function $\psi(x) - x$ implies RH. It addresses prime-counting error bounds rather than the multiplicative M\"obius sum $M(x)$, and proves a one-sided implication rather than a bidirectional equivalence.
+  \item \textbf{DeepMind's \texttt{formal-conjectures}}~\cite{FormalConjectures}: This repository includes formal statements of several known RH equivalences in \texttt{RiemannHypothesisEquivalents.lean} (specifically, the criteria of Robin, Lagarias, Li, Beurling--Nyman, and Weil). It contains no formal statement or proof of Littlewood's Mertens criterion.
+\end{itemize}
+
+To the author's knowledge, the present formalization provides the first complete, bidirectional, machine-checked proof of Littlewood's theorem in any interactive theorem prover.
+
+% ===========================================================================
+% SECTION 2
+% ===========================================================================
+\section{The Formal Statement in Lean~4}
+\label{sec:formal_statement}
+
+In Mathlib, the Mertens function is defined over $\Rset$ by evaluating the M\"obius arithmetic function on the floor of $x$:
+\begin{lstlisting}
+noncomputable def mertens (x : $\mathbb{R}$) : $\mathbb{Z}$ :=
+  $\sum$ n $\in$ Finset.Iic $\lfloor$x$\rfloor_+$, ArithmeticFunction.moebius n
+\end{lstlisting}
+The official Mathlib definition of the Riemann Hypothesis is:
+\begin{lstlisting}
+def RiemannHypothesis : Prop :=
+  $\forall$ (s : $\mathbb{C}$), riemannZeta s = 0 $\to$ 0 < s.re $\to$ s.re < 1 $\to$ s.re = 1 / 2
+\end{lstlisting}
+
+Littlewood's equivalence is formalized as the bidirectional proposition:
+\begin{lstlisting}
+theorem riemannHypothesis_iff_mertens_isBigO :
+    _root_.RiemannHypothesis $\leftrightarrow$
+      $\forall\ \varepsilon$ : $\mathbb{R}$, 0 < $\varepsilon\ \to$
+        (fun x : $\mathbb{R} \to$ (mertens x : $\mathbb{R}$)) =O[Filter.atTop]
+          fun x $\to$ x ^ ((1 / 2 : $\mathbb{R}$) + $\varepsilon$) :=
+  $\langle$fun hRH $\varepsilon$ h$\varepsilon$ $\to$ isBigO_mertens_of_riemannHypothesis hRH $\varepsilon$ h$\varepsilon$,
+   fun hO $\to$ RiemannHypothesis.of_mertens_isBigO hO$\rangle$
+\end{lstlisting}
+
+The equivalence connects Mathlib's root definition \texttt{\_root\_.RiemannHypothesis} directly to asymptotic dominance in Mathlib's filter topology (\texttt{Filter.atTop}). The proof splits into two headline lemmas:
+\begin{lstlisting}
+theorem RiemannHypothesis.of_mertens_isBigO
+    (hO : $\forall\ \varepsilon$ : $\mathbb{R}$, 0 < $\varepsilon\ \to$
+      (fun x : $\mathbb{R} \to$ (mertens x : $\mathbb{R}$)) =O[Filter.atTop]
+        fun x $\to$ x ^ ((1 / 2 : $\mathbb{R}$) + $\varepsilon$)) :
+    _root_.RiemannHypothesis
+
+theorem isBigO_mertens_of_riemannHypothesis
+    (hRH : _root_.RiemannHypothesis) ($\varepsilon$ : $\mathbb{R}$) (h$\varepsilon$ : 0 < $\varepsilon$) :
+    (fun x : $\mathbb{R} \to$ (mertens x : $\mathbb{R}$)) =O[Filter.atTop]
+      fun x $\to$ x ^ ((1 / 2 : $\mathbb{R}$) + $\varepsilon$)
+\end{lstlisting}
+
+% ===========================================================================
+% SECTION 3
+% ===========================================================================
+\section{Stage 1: Forward Direction (\texorpdfstring{$M(x) = \mathcal{O}(x^{1/2+\varepsilon}) \implies \mathrm{RH}$}{M(x) = O(x**(1/2+epsilon)) => RH})}
+\label{sec:forward}
+
+The forward direction is formalized in the module \texttt{MathlibPR\_LittlewoodMertens.lean} (342 lines). The proof proceeds in four mathematical steps:
+
+\subsection{Discrete Abel Summation and Mellin--Mertens Representation}
+For $\operatorname{Re}(s) > 1$, partial summation transforms the Dirichlet series of $\mu(n)$ into an improper Riemann integral:
+\begin{equation}
+\label{eq:abel_sum}
+\sum_{n=1}^N \frac{\mu(n)}{n^s} = \frac{M(N)}{N^s} + s \int_1^N \frac{M(u)}{u^{s+1}}\,\dee u.
+\end{equation}
+Under the hypothesis that $M(x) = \mathcal{O}(x^{1/2+\varepsilon})$ for all $\varepsilon > 0$, the boundary term $M(N) N^{-s}$ decays as $N^{(1/2+\varepsilon) - \operatorname{Re}(s)}$, which vanishes as $N \to \infty$ whenever $\operatorname{Re}(s) > 1/2$. Taking limits yields the Mellin--Mertens transform:
+\begin{lstlisting}
+noncomputable def mellinMertens (s : $\mathbb{C}$) : $\mathbb{C}$ :=
+  s * $\int$ x in Set.Ioi (1 : $\mathbb{R}$), (mertens x : $\mathbb{C}$) * (x : $\mathbb{C}$) ^ (-(s + 1))
+\end{lstlisting}
+
+\subsection{Holomorphic Extension via Dominated Differentiation}
+The integrand is bounded by $|M(u) u^{-(s+1)}| \le C u^{(1/2+\varepsilon) - \operatorname{Re}(s) - 1}$. For any $\sigma_0 > 1/2$, choosing $\varepsilon = (\sigma_0 - 1/2)/2 > 0$ yields an integrable majorant $u^{-1 - \varepsilon}$ on $[1, \infty)$. Applying the dominated differentiation theorem under the integral sign proves that \texttt{mellinMertens} is complex-differentiable at every $s$ with $\operatorname{Re}(s) > 1/2$:
+\begin{lstlisting}
+theorem mellinMertens_differentiableAt_of_isBigO
+    (hO : $\forall\ \varepsilon$ : $\mathbb{R}$, 0 < $\varepsilon\ \to$
+      (fun x : $\mathbb{R} \to$ (mertens x : $\mathbb{R}$)) =O[Filter.atTop]
+        fun x $\to$ x ^ ((1 / 2 : $\mathbb{R}$) + $\varepsilon$))
+    {s : $\mathbb{C}$} (hs : 1 / 2 < s.re) :
+    DifferentiableAt $\mathbb{C}$ mellinMertens s
+\end{lstlisting}
+
+\subsection{Reciprocal Product Identity on \texorpdfstring{$\operatorname{Re}(s) > 1/2$}{Re(s) > 1/2}}
+For $\operatorname{Re}(s) > 1$, Eq.~\eqref{eq:zeta_inv_euler} and Eq.~\eqref{eq:abel_sum} imply that $\zeta(s) \cdot \operatorname{mellinMertens}(s) = 1$. Since both $\zeta(s)$ and \texttt{mellinMertens(s)} are holomorphic on the connected domain $U = \{s \in \Cfield \mid \operatorname{Re}(s) > 1/2\} \setminus \{1\}$, the identity theorem for analytic functions forces $\zeta(s) \cdot \operatorname{mellinMertens}(s) = 1$ everywhere on $U$:
+\begin{lstlisting}
+theorem riemannZeta_mul_mellinMertens_eq_one_of_isBigO
+    (hO : $\forall\ \varepsilon$ : $\mathbb{R}$, 0 < $\varepsilon\ \to$
+      (fun x : $\mathbb{R} \to$ (mertens x : $\mathbb{R}$)) =O[Filter.atTop]
+        fun x $\to$ x ^ ((1 / 2 : $\mathbb{R}$) + $\varepsilon$))
+    {s : $\mathbb{C}$} (hs : 1 / 2 < s.re) (hs1 : s $\ne$ 1) :
+    riemannZeta s * mellinMertens s = 1
+\end{lstlisting}
+Consequently, if $\zeta(s) = 0$ for some $s$ with $\operatorname{Re}(s) > 1/2$, the identity yields $0 \cdot \operatorname{mellinMertens}(s) = 1$, a contradiction ($0 = 1$). Thus, $\zeta(s)$ has no zeros in the half-plane $\operatorname{Re}(s) > 1/2$.
+
+\subsection{Functional Equation and Zero Reflection}
+Riemann's functional equation relates $\zeta(s)$ to $\zeta(1-s)$:
+\begin{equation}
+\label{eq:functional_eq}
+\zeta(s) = 2^s \pi^{s-1} \sin\Bigl(\frac{\pi s}{2}\Bigr) \Gamma(1-s) \zeta(1-s).
+\end{equation}
+The Gamma factor $\Gamma(1-s)$ has poles at positive integers, and the sine factor $\sin(\pi s / 2)$ vanishes at even integers. For any zero $s$ in the critical strip $0 < \operatorname{Re}(s) < 1$, the prefactor is non-zero, implying that $\zeta(s) = 0 \iff \zeta(1-s) = 0$. If $s$ were a zero with $\operatorname{Re}(s) < 1/2$, then $1-s$ would be a zero with $\operatorname{Re}(1-s) > 1/2$, contradicting zero exclusion in the right half-plane:
+\begin{lstlisting}
+theorem riemannZeta_zero_reflection {s : $\mathbb{C}$} (hz : riemannZeta s = 0)
+    (h_strip : 0 < s.re $\wedge$ s.re < 1)
+    (h_no_gt : $\forall$ w : $\mathbb{C}$, 1 / 2 < w.re $\to$ riemannZeta w $\ne$ 0) :
+    s.re = 1 / 2
+\end{lstlisting}
+This completes the formal proof of \texttt{RiemannHypothesis.of\_mertens\_isBigO}.
+
+% ===========================================================================
+% SECTION 4
+% ===========================================================================
+\section{Stage 2: Sub-Polynomial Growth of \texorpdfstring{$\zeta(s)^{-1}$}{1/zeta(s)} under RH}
+\label{sec:zeta_inv_growth}
+
+The converse direction requires bounding $\zeta(s)^{-1}$ inside the critical strip under the hypothesis that RH holds. This is formalized in \texttt{MathlibPR\_ZetaInvSubpolynomial.lean} (1,622 lines).
+
+\subsection{The Analytic Obstacle}
+Under RH, $\zeta(s) \ne 0$ for all $\operatorname{Re}(s) > 1/2$. Therefore, the function $f(s) = \log \zeta(s)$ is holomorphic on any simply connected sub-domain of $\operatorname{Re}(s) > 1/2$. However, Cauchy's estimate alone does not control $|f(s)|$ near the critical line $\operatorname{Re}(s) = 1/2$, because $|t|$ can be arbitrarily large. One must establish that $\zeta(s)^{-1}$ grows slower than any polynomial in $|t|$:
+\begin{equation}
+\label{eq:zeta_inv_bound}
+\bigl\|\zeta(\sigma + it)^{-1}\bigr\| \le C_{\sigma_0, \varepsilon} (1 + |t|)^\varepsilon \qquad (\forall \sigma \ge \sigma_0 > 1/2,\ |t| \ge 2).
+\end{equation}
+
+\subsection{Borel--Carath\'eodory Lemma and Three-Lines Interpolation}
+The proof proceeds by two classical steps:
+\begin{enumerate}[label=(\alph*)]
+  \item \textbf{Borel--Carath\'eodory Bound:} For an analytic function $g(z)$ on the disc $B(0, R)$ with $g(0) = 0$, if $\operatorname{Re}(g(z)) \le M$, then for all $r < R$,
+  \begin{equation}
+  \label{eq:borel_caratheodory}
+  |g(z)| \le \frac{2r}{R - r} M \qquad (|z| \le r).
+  \end{equation}
+  Applying this to $g(z) = \log \zeta(s_0 + z)$ centered at $s_0 = 2 + it$ (where $|\zeta(s_0)| \ge 1/2$ by the Euler product) with $R = 2 - \sigma_0$ bounds $|\log \zeta(s)|$ by $\mathcal{O}(\log |t|)$.
+  \item \textbf{Hadamard Three-Lines Theorem:} The function $\zeta(s)^{-1}$ is holomorphic on the strip $\sigma_0 \le \operatorname{Re}(s) \le 2$. On the right edge $\operatorname{Re}(s) = 2$, $|\zeta(2 + it)^{-1}| \le \sum n^{-2} = \pi^2/6 = \mathcal{O}(1)$. On the interior, the Borel--Carath\'eodory estimate guarantees finite order $\mathcal{O}(|t|^A)$. Applying Hadamard's three-lines interpolation to $F(s) = \zeta(s)^{-1} (s-1)^\varepsilon$ transfers the polynomial decay of $\varepsilon$ into the sub-polynomial bound Eq.~\eqref{eq:zeta_inv_bound}.
+\end{enumerate}
+
+The formalized theorem in Lean~4 reads:
+\begin{lstlisting}
+theorem riemannZeta_inv_growth_of_riemannHypothesis
+    (hRH : _root_.RiemannHypothesis)
+    {$\sigma_0\ \varepsilon$ : $\mathbb{R}$} (h$\sigma_0$ : 1 / 2 < $\sigma_0$) (h$\varepsilon$ : 0 < $\varepsilon$) :
+    $\exists$ C > 0, $\forall$ s : $\mathbb{C}$, $\sigma_0 \le$ s.re $\to$ 2 $\le$ |s.im| $\to$
+      $\|$ (riemannZeta s)$^{-1}$ $\|$ $\le$ C * (1 + |s.im|) ^ $\varepsilon$
+\end{lstlisting}
+
+% ===========================================================================
+% SECTION 5
+% ===========================================================================
+\section{Stage 3: Converse Direction via Smoothed Contour Shift}
+\label{sec:converse}
+
+The converse theorem is formalized in \texttt{MathlibPR\_LittlewoodConverse.lean} (1,790 lines).
+
+\subsection{Smoothed Trapezoidal Kernel}
+Classical Perron inversion recovers the step function $\mathbf{1}_{[1, X]}(u)$ via the discontinuous vertical integral $\frac{1}{2\pi i} \int_{c - i\infty}^{c + i\infty} \frac{X^s}{s}\,\dee s$. Because this integral converges only conditionally, exchanging contour integrals in Lean~4 requires extensive delicate truncation estimates.
+
+To obtain unconditionally integrable expressions, a continuous piecewise-linear trapezoidal kernel is employed. For $X \ge 2$ and smoothing scale $H = \sqrt{X}$, the kernel is defined by:
+\begin{equation}
+\label{eq:trapezoid_kernel}
+\Phi_{X,H}(u) \coloneqq \begin{cases}
+1, & 0 \le u \le X, \\
+\frac{X+H-u}{H}, & X \le u \le X+H, \\
+0, & u \ge X+H.
+\end{cases}
+\end{equation}
+The Mellin transform of $\Phi_{X,H}$ evaluates in closed form:
+\begin{equation}
+\label{eq:mellin_phi}
+\widetilde{\Phi}_{X,H}(s) = \int_0^\infty \Phi_{X,H}(u) u^{s-1}\,\dee u = \frac{(X+H)^{s+1} - X^{s+1}}{H s (s+1)}.
+\end{equation}
+Crucially, the denominator contains the quadratic factor $s(s+1) = (\sigma + it)(\sigma + 1 + it)$, which provides decay of order $|t|^{-2}$ along every vertical line $\operatorname{Re}(s) = \sigma > 0$.
+
+\subsection{Contour Shift across the Critical Line}
+By Mellin inversion on the line $\operatorname{Re}(s) = 2$, the smoothed M\"obius sum is given by:
+\begin{equation}
+\label{eq:smoothed_sum}
+\sum_{n=1}^\infty \mu(n) \Phi_{X,H}(n) = \frac{1}{2\pi i} \int_{2 - i\infty}^{2 + i\infty} \frac{1}{\zeta(s)} \widetilde{\Phi}_{X,H}(s)\,\dee s.
+\end{equation}
+Under RH, $\zeta(s)^{-1}$ is holomorphic on the open half-plane $\operatorname{Re}(s) > 1/2$. By Cauchy's integral theorem, the line of integration is shifted from $\operatorname{Re}(s) = 2$ to $\operatorname{Re}(s) = 1/2 + \varepsilon$:
+\begin{equation}
+\label{eq:shifted_contour}
+\sum_{n=1}^\infty \mu(n) \Phi_{X,H}(n) = \frac{1}{2\pi i} \int_{1/2+\varepsilon - i\infty}^{1/2+\varepsilon + i\infty} \frac{1}{\zeta(s)} \frac{(X+H)^{s+1} - X^{s+1}}{H s (s+1)}\,\dee s.
+\end{equation}
+
+Along this shifted line, $|X^{s+1}| = X^{3/2+\varepsilon}$, while $H = X^{1/2}$ cancels one factor of $X^{1/2}$, leaving:
+\begin{equation}
+\label{eq:shifted_bound}
+\left|\widetilde{\Phi}_{X,H}(s)\right| \le \frac{2 (X+H)^{3/2+\varepsilon}}{H |t|^2} \le C X^{1/2+\varepsilon} \frac{1}{|t|^2}.
+\end{equation}
+Combining Eq.~\eqref{eq:shifted_bound} with the sub-polynomial bound $\|\zeta(s)^{-1}\| \le C (1 + |t|)^{\varepsilon/2}$ from Stage~2, the integrand decays as $|t|^{-2 + \varepsilon/2}$. For $\varepsilon < 1$, the integral is unconditionally convergent and bounded by:
+\begin{equation}
+\label{eq:contour_integral_bound}
+\left| \frac{1}{2\pi i} \int_{1/2+\varepsilon - i\infty}^{1/2+\varepsilon + i\infty} \frac{\widetilde{\Phi}_{X,H}(s)}{\zeta(s)}\,\dee s \right| \le C_\varepsilon X^{1/2+\varepsilon} \int_{-\infty}^\infty \frac{\dee t}{1 + t^2} = \mathcal{O}\bigl(X^{1/2+\varepsilon}\bigr).
+\end{equation}
+
+\subsection{Inverting the Mollifier Error}
+The difference between the exact Mertens sum $M(X)$ and the smoothed sum is bounded by the number of integers in the transition window $[X, X+H]$:
+\begin{equation}
+\label{eq:mollifier_error}
+\left| M(X) - \sum_{n=1}^\infty \mu(n) \Phi_{X,H}(n) \right| \le \sum_{X < n \le X+H} |\mu(n)| \le H + 1 = \sqrt{X} + 1.
+\end{equation}
+Since $\sqrt{X} \le X^{1/2+\varepsilon}$ for all $\varepsilon > 0$, the triangle inequality yields:
+\begin{equation}
+|M(X)| \le \left|\sum_{n=1}^\infty \mu(n) \Phi_{X,H}(n)\right| + \sqrt{X} + 1 = \mathcal{O}\bigl(X^{1/2+\varepsilon}\bigr).
+\end{equation}
+This establishes \texttt{isBigO\_mertens\_of\_riemannHypothesis} and completes the bidirectional proof of Theorem~\ref{thm:littlewood_classical}.
+
+% ===========================================================================
+% SECTION 6
+% ===========================================================================
+\section{Infrastructure Gaps in Mathlib and Upstream Strategy}
+\label{sec:upstream}
+
+Formalizing Theorem~\ref{thm:littlewood_classical} required filling three general infrastructure gaps in Mathlib:
+
+\begin{enumerate}[label=(\alph*),leftmargin=1.8em]
+  \item \textbf{Dirichlet Series Partial Summation:} While Mathlib contains summation by parts for sequences, general Abel summation with continuous integrators was not packaged for $L$-series. The lemma \texttt{abel\_summation\_moebius\_finset} was contributed to bridge finite M\"obius sums to continuous improper integrals.
+  \item \textbf{Quantitative Borel--Carath\'eodory Bounds:} Mathlib contains the qualitative statement of the maximum principle, but lacked the effective quantitative estimate Eq.~\eqref{eq:borel_caratheodory} relating disc suprema of real parts to function growth. This was proved from Cauchy's integral formula for circle boundaries.
+  \item \textbf{Mellin Transform Inversion with Smooth Cutoffs:} Mathlib's Fourier transform library currently focuses on Schwartz functions. The trapezoidal mollifier approach introduced here avoids the need for a general theory of distributionally convergent vertical integrals, providing an immediate template for other Perron-type inversion problems (such as $\psi(x)$ or Dirichlet $L$-functions).
+\end{enumerate}
+
+\subsection{Upstream PR Roadmap}
+The formalization is structured into three self-contained PRs for Mathlib review:
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{PR 1 (\texttt{MathlibPR\_LittlewoodMertens.lean}, 342 lines):} Forward direction. Depends only on existing Mathlib L-series primitives and dominated convergence. Introduces \texttt{mertens}, \texttt{mellinMertens}, and proves \texttt{RiemannHypothesis.of\_mertens\_isBigO}.
+  \item \textbf{PR 2 (\texttt{MathlibPR\_ZetaInvSubpolynomial.lean}, 1,622 lines):} Reciprocal growth bound. Proves the Borel--Carath\'eodory lemma and Hadamard three-lines interpolation, culminating in \texttt{riemannZeta\_inv\_growth\_of\_riemannHypothesis}.
+  \item \textbf{PR 3 (\texttt{MathlibPR\_LittlewoodConverse.lean}, 1,790 lines):} Converse direction and equivalence. Implements the trapezoidal kernel $\Phi_{X,H}$ and proves the headline theorem \texttt{riemannHypothesis\_iff\_mertens\_isBigO}.
+\end{itemize}
+
+% ===========================================================================
+% SECTION 7
+% ===========================================================================
+\section{AI-Assisted Proof Engineering Disclosure}
+\label{sec:ai_disclosure}
+
+In accordance with formalization venue disclosure policies, the author acknowledges the use of AI tools in this research:
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Tool Used:} Google Antigravity with Gemini~3.8.
+  \item \textbf{Role of AI:} Assistance in writing repetitive tactic proofs (such as \texttt{linarith}, \texttt{ring}, and \texttt{omega} steps), drafting Lean~4 theorem scaffolding, and generating LaTeX documentation from formal signatures.
+  \item \textbf{Human Verification:} Every formal definition, lemma statement, and theorem signature was checked by the author against classical mathematical literature (Titchmarsh~\cite{Titchmarsh1986}, Davenport~\cite{Davenport1980}). The Lean~4 kernel compiled every file with zero warnings or errors, and axiom dependencies were independently verified using \texttt{\#print axioms}.
+\end{itemize}
+
+% ===========================================================================
+% REFERENCES
+% ===========================================================================
+\begin{thebibliography}{99}
+
+\bibitem{Davenport1980}
+H.~Davenport, \emph{Multiplicative Number Theory}, 2nd~ed., Graduate Texts in Mathematics, vol.~74, Springer-Verlag, New York, 1980.
+
+\bibitem{FormalConjectures}
+Google DeepMind, \emph{formal-conjectures: Formal mathematical conjectures in Lean~4} (\texttt{RiemannHypothesisEquivalents.lean}), GitHub repository, accessed 15 November 2026.
+
+\bibitem{PNT}
+A.~Kontorovich, T.~Tao, et~al., \emph{PrimeNumberTheoremAnd: Formalizing the Prime Number Theorem in Lean~4}, GitHub repository, 2024--2026.
+
+\bibitem{Littlewood1912}
+J.~E.~Littlewood, \emph{Quelques cons\'equences de l'hypoth\`ese que la fonction $\zeta(s)$ n'a pas de z\'eros dans le demi-plan $\operatorname{Re}(s) > 1/2$}, C.~R. Acad. Sci. Paris \textbf{154} (1912), 263--266.
+
+\bibitem{Mathlib}
+The Mathlib Community, \emph{Mathlib4: The Lean~4 Mathematical Library}, 2024--2026. \url{https://github.com/leanprover-community/mathlib4}
+
+\bibitem{MathlibPR46028}
+The Mathlib Community, \emph{Mathlib4 PR \#46028: von Koch lower bound implies RH}, opened 14 November 2026.
+
+\bibitem{Riemann1859}
+B.~Riemann, \emph{\"Uber die Anzahl der Primzahlen unter einer gegebenen Gr\"osse}, Monatsberichte der K\"oniglich Preussischen Akademie der Wissenschaften zu Berlin (1859), 671--680.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh, \emph{The Theory of the Riemann Zeta-Function}, 2nd~ed., edited and revised by D.~R.~Heath-Brown, Oxford University Press, New York, 1986.
+
+\end{thebibliography}
+
+% ===========================================================================
+% APPENDIX
+% ===========================================================================
+\appendix
+\section{Raw Lean~4 Verification Receipts}
+\label{sec:raw_receipts}
+
+This appendix provides the exact, unedited raw output of the Lean~4 verification commands run on the codebase.
+
+\subsection{Raw Build Output (\texttt{lake build})}
+\begin{lstlisting}[mathescape=false]
+$ lake build
+Build completed successfully (3775 jobs).
+\end{lstlisting}
+
+\subsection{Raw Axiom Output for Headline Theorems (\texttt{\#print axioms})}
+\begin{lstlisting}[mathescape=false]
+#print axioms riemannHypothesis_iff_mertens_isBigO
+'riemannHypothesis_iff_mertens_isBigO' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+#print axioms isBigO_mertens_of_riemannHypothesis
+'isBigO_mertens_of_riemannHypothesis' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+#print axioms RiemannHypothesis.of_mertens_isBigO
+'RiemannHypothesis.of_mertens_isBigO' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+#print axioms riemannZeta_inv_growth_of_riemannHypothesis
+'riemannZeta_inv_growth_of_riemannHypothesis' depends on axioms: [propext, Classical.choice, Quot.sound]
+\end{lstlisting}
+
+Every headline theorem depends strictly on the standard foundational axioms of Lean~4:
+\begin{itemize}
+  \item \texttt{propext}: Propositional extensionality;
+  \item \texttt{Classical.choice}: The axiom of choice;
+  \item \texttt{Quot.sound}: Soundness of quotient types.
+\end{itemize}
+No custom axioms, no unproved \texttt{sorry} placeholders, and no \texttt{opaque} declarations are present.
+
+\end{document}

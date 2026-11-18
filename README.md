@@ -1,0 +1,30 @@
+# Riemann-Lean4-Papers: Thematic Companion Suite & Mathlib4 PRs
+
+**Author:** Qamar Munawer (Brandenburg University of Technology Cottbus-Senftenberg)  
+**Epistemic Invariant:** NO_RH_PROOF = TRUE — All Lean 4 formalizations verify classical equivalences, unconditional zero-free regions, critical-line zero theorems, exact constructive/variational identities on the Baez-Duarte manifold, and rigorous numerical obstruction audits. **No unconditional proof of the Riemann Hypothesis is claimed.**
+
+## Thematic Sub-Sections & Live Zenodo DOIs
+
+1. **[01_geometric_intuition](./01_geometric_intuition/)**
+   - paper_0_joined_cone_visualizations — Zenodo DOI: 10.5281/zenodo.24328033
+2. **[02_classical_theorems_lean4](./02_classical_theorems_lean4/)**
+   - paper_a_littlewood_tauberian — Zenodo DOI: 10.5281/zenodo.24328035
+   - paper_c_zero_free_region — Zenodo DOI: 10.5281/zenodo.24328039
+   - paper_d_hardy_critical_line_zeros — Zenodo DOI: 10.5281/zenodo.24328045
+   - paper_g_von_koch_spectral_closure — Zenodo DOI: 10.5281/zenodo.24328921
+3. **[03_nyman_beurling_baez_duarte_wavelets](./03_nyman_beurling_baez_duarte_wavelets/)**
+   - paper_b_titchmarsh_vasyunin_criterion — Zenodo DOI: 10.5281/zenodo.24328037
+   - paper_e_wavelet_dipole_rayleigh — Zenodo DOI: 10.5281/zenodo.24328047
+   - paper_f_mellin_converse_and_rouche — Zenodo DOI: 10.5281/zenodo.24328918
+4. **[04_spectral_diagnostics_and_audits](./04_spectral_diagnostics_and_audits/)**
+   - paper_h_gram_indefiniteness_arb512 — Zenodo DOI: 10.5281/zenodo.24328927
+   - paper_i_prime_composite_partition — Zenodo DOI: 10.5281/zenodo.24328929
+5. **[05_mathlib4_pr_staging](./05_mathlib4_pr_staging/)**
+   - 36 atomic UpstreamPR_1A..5C modules (Waves 1–5), PR_SUBMISSION_GUIDE.md, and push_carved_prs_to_mathlib4.py
+   - **Master Lean 4 Hub 07 DOIs:** 10.5281/zenodo.24328027 (v3.0.0) / 10.5281/zenodo.24329861 (v3.0.1, Concept DOI 10.5281/zenodo.24150107)
+   - **Lean 4 Repository:** https://github.com/Qamarbajwa/RiemannBlueprint
+
+## Open Upstream mathlib4 Pull Requests (Wave 1)
+- **PR-1A** (eat/critical-line-zeros): https://github.com/leanprover-community/mathlib4/pull/46127
+- **PR-3A** (eat/vasyunin-integral): https://github.com/leanprover-community/mathlib4/pull/46128
+- **PR-4A** (eat/baez-duarte-projection): https://github.com/leanprover-community/mathlib4/pull/46129

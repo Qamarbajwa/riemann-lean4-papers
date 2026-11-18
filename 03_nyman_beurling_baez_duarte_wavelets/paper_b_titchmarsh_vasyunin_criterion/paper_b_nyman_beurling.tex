@@ -1,0 +1,393 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=red!70!black,
+    urlcolor=blue!70!black
+}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    numbers=none,
+    mathescape=true,
+    backgroundcolor=\color{gray!5}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\dee}{\mathrm{d}}
+\newcommand{\Nset}{\mathbb{N}}
+\newcommand{\Zset}{\mathbb{Z}}
+\newcommand{\Rset}{\mathbb{R}}
+\newcommand{\Cfield}{\mathbb{C}}
+
+\title{\textbf{Formalizing Titchmarsh's Fractional-Part Identity and the Forward Nyman--Beurling Criterion in Lean~4}}
+
+\author{\textbf{Qamar Munawer}\\[0.3em]
+\small Brandenburg University of Technology Cottbus--Senftenberg}
+
+\date{November 2026}
+
+\begin{document}
+\linespread{1.15}\selectfont
+\emergencystretch=2.5em
+
+\maketitle
+
+\begin{abstract}
+This paper presents a complete, machine-checked formalization in Lean~4 of Titchmarsh's Mellin fractional-part identity $\zeta(s) = \frac{s}{s-1} - s\int_0^1 \{1/x\} x^{s-1}\,\dee x$ for $\operatorname{Re}(s) > 0$, the forward Nyman--Beurling and B\'aez-Duarte criteria for the Riemann Hypothesis, and the unconditional evaluation of all Vasyunin fractional-part inner products on $L^2(0, 1)$. Specifically, we prove without external analytic hypotheses: the forward approximation implications against Mathlib's \texttt{\_root\_.\allowbreak RiemannHypothesis} (\texttt{MathlibPR\_\allowbreak NymanBeurling.lean}), the base and diagonal fractional-part integrals (\texttt{MathlibPR\_\allowbreak VasyuninIntegral.lean}), the general unreduced Vasyunin cross-integral identity for all $j, k \ge 1$ (\texttt{MathlibPR\_\allowbreak VasyuninCrossIntegral.lean}), and the B\'aez-Duarte affine rank-4 collapse reducing the squared $L^2(0, 1)$ distance on $\mathcal{A}_N = \{c \mid D_1(c, N) = 0 \land D_0(c, N) = 2\}$ to $1 - S_{\mathrm{cot}}(c, N)$ (\texttt{Section8\_\allowbreak VasyuninBDR.lean}). All proofs comprise $6{,}951$ lines across five modules, contain zero \texttt{sorry} gaps, and depend solely on Lean~4's standard axioms \texttt{[propext, Classical.choice, Quot.sound]}. No unconditional resolution of the Riemann Hypothesis is claimed.
+\end{abstract}
+
+\vspace{0.5em}
+\noindent\textbf{Keywords:} Riemann zeta function, Nyman--Beurling criterion, B\'aez-Duarte criterion, Mellin transform, Lean~4, Mathlib, Vasyunin cotangent sums.
+
+\section{Introduction}
+
+The Hilbert-space approach to the Riemann Hypothesis was inaugurated by Nyman~\cite{Nyman1950} and Beurling~\cite{Beurling1955}, who showed that the Riemann Hypothesis is equivalent to the density of dilated fractional parts in $L^2(0, 1)$. Setting $\rho(x) = \{1/x\} = 1/x - \lfloor 1/x \rfloor$ and $\rho_\alpha(x) = \{\alpha/x\}$ for $\alpha \in (0, 1]$, Nyman and Beurling proved that $\zeta(s) \neq 0$ for $\operatorname{Re}(s) > 1/2$ if and only if the constant function $\mathbf{1}$ lies in the $L^2(0, 1)$-closure of finite linear combinations $\sum c_k \rho_{\alpha_k}(x)$ satisfying the pole-cancellation constraint $\sum c_k \alpha_k = 0$. B\'aez-Duarte~\cite{BaezDuarte1999,BaezDuarte2003} strengthened this criterion by restricting $\alpha_k$ to integer reciprocals $1/k$, introducing the sequence space spanned by $\rho_k(x) = \{1/(kx)\}$ ($k \in \Nset_{\ge 1}$), and showing that the linear constraint may even be dropped.
+
+At the core of the analytic bridge from $L^2(0, 1)$ approximation to non-vanishing of $\zeta(s)$ in $\operatorname{Re}(s) > 1/2$ lies Titchmarsh's classical Mellin transform identity~\cite[\S 2.1.5]{Titchmarsh1986}:
+\begin{equation}\label{eq:titchmarsh_identity}
+\zeta(s) = \frac{s}{s - 1} - s \int_0^1 \left\{ \frac{1}{x} \right\} x^{s - 1} \,\dee x \qquad (\operatorname{Re}(s) > 0, \; s \neq 1).
+\end{equation}
+Equation~\eqref{eq:titchmarsh_identity} gives an analytic continuation of $\zeta(s)$ into the critical strip $\operatorname{Re}(s) > 0$ directly as a bounded oscillatory Lebesgue integral.
+
+\subsection{Formalization Scope and Epistemic Demarcation}
+
+Building on earlier mathematical studies of the Nyman--Beurling Gram matrix~\cite{Burnol2002,Vasyunin1995,BettinBrowning2014}, our Lean~4 formalization mechanizes four connected layers completely unconditionally:
+\begin{enumerate}[label=(\roman*),noitemsep]
+  \item \textbf{Titchmarsh's Mellin Identity:} Proof of~\eqref{eq:titchmarsh_identity} for all $\operatorname{Re}(s) > 0$, $s \neq 1$, from Lebesgue integrability, harmonic cell decomposition, and locally uniform series continuation.
+  \item \textbf{Forward Criteria against Mathlib's Root RH:} Conditional proofs of \texttt{\_root\_.\allowbreak Riemann\allowbreak Hypothesis} from both constrained Nyman--Beurling approximation (\texttt{Riemann\allowbreak Hypothesis.\allowbreak of\_\allowbreak nyman\allowbreak Beurling\_\allowbreak approx}) and unconstrained B\'aez-Duarte approximation (\texttt{Riemann\allowbreak Hypothesis.\allowbreak of\_\allowbreak baez\allowbreak Duarte\_\allowbreak approx}), proved unconditionally in \texttt{MathlibPR\_\allowbreak Nyman\allowbreak Beurling.lean}.
+  \item \textbf{Unconditional Vasyunin Base, Diagonal, and Cross Integrals:} Exact closed-form evaluation of $\int_0^1 \{1/(kx)\}\,\dee x = b_k(\gamma)$, $\int_0^1 \{1/(kx)\}^2\,\dee x$, and the general cross-integral $\int_0^1 \{1/(jx)\}\{1/(kx)\}\,\dee x = G_{\mathrm{smooth}}(\gamma, j, k) + g_{j,k}^{\mathrm{cot}}$ for \emph{all} integers $j, k \ge 1$ using Mathlib's Euler--Mascheroni constant, Stirling asymptotics, and cotangent Mittag-Leffler series.
+  \item \textbf{Affine Rank-4 Boundary Reduction:} Exact algebraic factorization showing that on the affine subspace $\mathcal{A}_N = \{c \in \Rset^N : D_1(c, N) = 0 \land D_0(c, N) = 2\}$, all smooth logarithmic terms and linear target terms cancel identically, reducing the squared $L^2(0, 1)$ distance to $1 - S_{\mathrm{cot}}(c, N)$.
+\end{enumerate}
+
+\paragraph{Epistemic Demarcation.}
+The Riemann Hypothesis remains an open mathematical conjecture (\texttt{NO\_RH\_PROOF = TRUE}). Every theorem proved here establishes either an unconditional integral/matrix identity or a conditional implication toward \texttt{RiemannHypothesis}; no unconditional proof of the Riemann Hypothesis is claimed, and no sequence with $S_{\mathrm{cot}}(c^{(N)}, N) \to 1$ is asserted to exist.
+
+\subsection{Relation to Prior Formalization Libraries}
+
+The formalization coordinates cleanly with the existing Lean~4 mathematical ecosystem:
+\begin{itemize}[leftmargin=1.5em,noitemsep]
+  \item \textbf{Mathlib 4}~\cite{Mathlib}: Provides foundational complex analysis, Stirling's approximation (\texttt{Stirling.\allowbreak tendsto\_\allowbreak stirling\allowbreak Seq\_\allowbreak sqrt\_\allowbreak pi}), Euler--Mascheroni asymptotics (\texttt{Real.\allowbreak tendsto\_\allowbreak euler\allowbreak Mascheroni\allowbreak Seq'}), and the cotangent series (\texttt{cot\_\allowbreak series\_\allowbreak rep'}), together with $\zeta(s)$ on $\operatorname{Re}(s) > 1$ and $\operatorname{Re}(s) = 1$, but does not include~\eqref{eq:titchmarsh_identity} or the Nyman--Beurling--Vasyunin bridge.
+  \item \textbf{PrimeNumberTheoremAnd}~\cite{PNT}: Formalizes the Prime Number Theorem via contour integration rather than Hilbert-space fractional-part criteria.
+  \item \textbf{Google DeepMind's \texttt{formal-conjectures}}~\cite{FormalConjectures}: Records formal statements of RH equivalences in \texttt{RiemannHypothesisEquivalents.lean} without proofs of the forward implication or Vasyunin's Gram formula.
+\end{itemize}
+
+\section{Titchmarsh's Fractional-Part Mellin Identity}
+
+The formal proof of identity~\eqref{eq:titchmarsh_identity} is implemented in the module \texttt{MellinFracPart.lean} (1,366 lines). Let $\rho(x) = \operatorname{recipFract}(x) = \{1 / x\} = 1 / x - \lfloor 1 / x \rfloor$.
+
+\subsection{Measure-Theoretic Integrability}
+
+To establish the Lebesgue integral of $\rho(x) x^{s-1}$ over $(0, 1]$, the measurability and boundedness of $\rho$ are formalized:
+
+\begin{lemma}[Pointwise Bound and Measurability]
+For all $x \in \Rset$, $0 \le \operatorname{recipFract}(x) < 1$. In particular, $\operatorname{recipFract}$ is Borel measurable and bounded: $\|\operatorname{recipFract}(x)\|_{\Cfield} \le 1$.
+\end{lemma}
+
+\begin{lemma}[Critical-Strip Integrability]
+For any $s \in \Cfield$ with $\operatorname{Re}(s) > 0$, the function $x \mapsto \operatorname{recipFract}(x) x^{s-1}$ is Lebesgue integrable on $(0, 1]$:
+\begin{lstlisting}
+lemma integrableOn_Ioc_recipFract_cpow (s : $\Cfield$) (hs_pos : 0 < s.re) :
+    IntegrableOn (fun x : $\Rset$ => (recipFract x : $\Cfield$) * (x : $\Cfield$) ^ (s - 1)) (Ioc (0 : $\Rset$) 1)
+\end{lstlisting}
+\end{lemma}
+
+\begin{proof}
+Because $\|\operatorname{recipFract}(x)\|_{\Cfield} \le 1$, the integrand is dominated by $\|x^{s-1}\|_{\Cfield} = x^{\operatorname{Re}(s)-1}$. The improper integral $\int_0^1 x^{\sigma-1}\,\dee x$ converges for any $\sigma > 0$. By Mathlib's \texttt{IntervalIntegrable.mono'}, integrability follows.
+\end{proof}
+
+\subsection{Analytic Continuation via Locally Uniform Telescoping}
+
+To evaluate the integral, the interval $(0, 1]$ is decomposed into the harmonic cells $I_n = (1/(n+1), 1/n]$ for $n \in \Nset_{\ge 1}$. On each cell $I_n$, $\lfloor 1 / x \rfloor = n$ is constant, so that $\{1/x\} = 1/x - n$. 
+
+Integrating over $I_n$ yields the elementary integral:
+\begin{equation}
+\int_{1/(n+1)}^{1/n} \left( \frac{1}{x} - n \right) x^{s-1} \,\dee x = \int_{1/(n+1)}^{1/n} x^{s-2} \,\dee x - n \int_{1/(n+1)}^{1/n} x^{s-1} \,\dee x.
+\end{equation}
+For $s \neq 1$, direct antiderivatives yield the harmonic unit summand $u_n(s)$:
+\begin{equation}
+u_n(s) = \frac{1}{s - 1} \left( n^{1 - s} - (n + 1)^{1 - s} \right) - \frac{n}{s} \left( n^{-s} - (n + 1)^{-s} \right).
+\end{equation}
+
+\begin{theorem}[Harmonic Series Representation of the Integral]
+For all $s \in \Cfield$ with $\operatorname{Re}(s) > 0$ and $s \neq 1$, the improper integral equals the sum of the convergent series of harmonic summands:
+\begin{equation}
+\int_0^1 \left\{ \frac{1}{x} \right\} x^{s-1}\,\dee x = \sum_{n=1}^\infty u_n(s).
+\end{equation}
+\end{theorem}
+
+On the half-plane $\operatorname{Re}(s) > 1$, the series $\sum_{n=1}^\infty u_n(s)$ telescopes algebraically into Dirichlet series components:
+\begin{equation}
+\sum_{n=1}^\infty u_n(s) = \frac{1}{s - 1} - \frac{\zeta(s)}{s}.
+\end{equation}
+The formalization proves that $\sum_{n=1}^\infty u_n(s)$ converges locally uniformly on the domain $\Omega = \{s \in \Cfield : \operatorname{Re}(s) > 0, \; s \neq 1\}$ using the bound $\|u_n(s)\| \le C(\sigma) n^{-\sigma-1}$. By the uniqueness of analytic continuation (\texttt{Mathlib.Analysis.Analytic.Uniqueness}), the identity extends to all of $\operatorname{Re}(s) > 0$:
+
+\begin{theorem}[Formalized Titchmarsh Identity]\label{thm:formal_titchmarsh}
+The Lean~4 theorem \texttt{mellin\_recipFract\_}\allowbreak\texttt{unit\_interval\_of\_pos\_re} states:
+\begin{lstlisting}
+theorem mellin_recipFract_unit_interval_of_pos_re (s : $\Cfield$) (hs_pos : 0 < s.re) (hs_ne_one : s $\neq$ 1) :
+    $\int$ x in Ioc (0 : $\Rset$) 1, (recipFract x : $\Cfield$) * (x : $\Cfield$) ^ (s - 1) =
+      1 / (s - 1) - riemannZeta s / s
+\end{lstlisting}
+\end{theorem}
+
+\section{The Forward Nyman--Beurling and B\'aez-Duarte Criteria}
+
+Let $H = L^2(0, 1)$ denote the real Hilbert space of square-integrable functions with inner product $\langle f, g \rangle = \int_0^1 f(x)g(x)\,\dee x$ and norm $\|f\|_{L^2} = \sqrt{\langle f, f \rangle}$. For each $k \in \Nset_{\ge 1}$, let $\rho_k(x) = \{ 1 / (kx) \}$ denote the scaled fractional-part basis function.
+
+\subsection{The Analytic Kernel Pairing}
+
+For any $s \in \Cfield$ with $\operatorname{Re}(s) > 1/2$, the test function $k_s(x) = (s - 1) x^{-s}$ belongs to $L^2(0, 1)$:
+\begin{equation}
+\int_0^1 |k_s(x)|^2 \,\dee x = |s - 1|^2 \int_0^1 x^{-2\operatorname{Re}(s)}\,\dee x = \frac{|s - 1|^2}{1 - 2\operatorname{Re}(s)} < \infty \quad \Longleftrightarrow \quad \operatorname{Re}(s) < \frac{1}{2}.
+\end{equation}
+By conjugating the exponent, for $\operatorname{Re}(s) > 1/2$ the dual pairing against $x^{s-1}$ yields:
+\begin{equation}
+\langle \mathbf{1}, x^{\bar{s}-1} \rangle_{L^2(0, 1)} = \int_0^1 x^{s-1}\,\dee x = \frac{1}{s}.
+\end{equation}
+Applying Theorem~\ref{thm:formal_titchmarsh} to the dilated basis functions $\rho_k(x)$, a change of variables demonstrates:
+\begin{equation}\label{eq:dilated_pairing}
+\int_0^1 \rho_k(x) x^{s-1}\,\dee x = k^{-s} \left( \frac{1}{s - 1} - \frac{\zeta(s)}{s} \right) + \frac{k^{-s} - 1}{s(s - 1)}.
+\end{equation}
+
+When coefficients $c_1, \dots, c_N$ satisfy the linear moment constraint $D_1(c, N) = \sum_{k=1}^N c_k / k = 0$, the polar term $1/(s-1)$ cancels, producing the exact representation:
+\begin{equation}\label{eq:residual_inner_product}
+\int_0^1 \left( \mathbf{1} - \sum_{k=1}^N c_k \rho_k(x) \right) x^{s-1}\,\dee x = \frac{\zeta(s)}{s} \sum_{k=1}^N c_k k^{-s}.
+\end{equation}
+
+\subsection{The Forward Implication}
+
+By the Cauchy--Schwarz inequality on $L^2(0, 1)$:
+\begin{equation}\label{eq:cauchy_schwarz_zeta}
+\left| \frac{\zeta(s)}{s} \sum_{k=1}^N c_k k^{-s} \right| \le \left\| \mathbf{1} - \sum_{k=1}^N c_k \rho_k \right\|_{L^2(0, 1)} \cdot \left\| x^{\bar{s}-1} \right\|_{L^2(0, 1)}.
+\end{equation}
+
+\begin{theorem}[Forward Nyman--Beurling Approximation]\label{thm:forward_nb}
+If for every $\varepsilon > 0$ there exist $N \in \Nset$ and coefficients $c_1, \dots, c_N \in \Cfield$ such that $\sum_{k=1}^N c_k / k = 0$ and $\|\mathbf{1} - \sum_{k=1}^N c_k \rho_k\|_{L^2(0, 1)} < \varepsilon$, then $\zeta(s) \neq 0$ for all $\operatorname{Re}(s) > 1/2$. In particular, the Riemann Hypothesis holds:
+\begin{lstlisting}
+theorem RiemannHypothesis.of_nymanBeurling_approx :
+    ($\forall$ ($\varepsilon$ : $\Rset$), 0 < $\varepsilon$ $\to$
+      $\exists$ (N : $\Nset$) (c : $\Nset$ $\to$ $\Cfield$),
+        ($\sum$ k $\in$ Finset.Icc 1 N, c k / (k : $\Cfield$) = 0) $\wedge$
+        ($\int$ (x : $\Rset$) in Set.Ioo (0 : $\Rset$) 1,
+          $\|$1 - $\sum$ k $\in$ Finset.Icc 1 N, c k * (recipFractScaled k x : $\Cfield$)$\|^2$) < $\varepsilon$) $\to$
+    _root_.RiemannHypothesis
+\end{lstlisting}
+\end{theorem}
+
+\begin{theorem}[B\'aez-Duarte Unconstrained Implication]
+The unconstrained approximation without the linear moment condition also implies RH:
+\begin{lstlisting}
+theorem RiemannHypothesis.of_baezDuarte_approx :
+    ($\forall$ ($\varepsilon$ : $\Rset$), 0 < $\varepsilon$ $\to$
+      $\exists$ (N : $\Nset$) (c : $\Nset$ $\to$ $\Cfield$),
+        ($\int$ (x : $\Rset$) in Set.Ioo (0 : $\Rset$) 1,
+          $\|$1 - $\sum$ k $\in$ Finset.Icc 1 N, c k * (recipFractScaled k x : $\Cfield$)$\|^2$) < $\varepsilon$) $\to$
+    _root_.RiemannHypothesis
+\end{lstlisting}
+\end{theorem}
+
+\section{Unconditional Vasyunin Cross-Integrals and Affine Cotangent Reduction}
+
+In \texttt{MathlibPR\_\allowbreak VasyuninIntegral.lean} ($207$ lines), \texttt{MathlibPR\_\allowbreak VasyuninCrossIntegral.lean} ($1{,}454$ lines), and \texttt{Section8\_\allowbreak VasyuninBDR.lean} ($2{,}463$ lines), all $L^2(0, 1)$ inner products against $\mathbf{1}$ and between dilations $\rho_j, \rho_k$ are evaluated in closed form using Mathlib's Euler--Mascheroni constant $\gamma = \texttt{Real.eulerMascheroniConstant}$.
+
+\subsection{Base, Target, Diagonal, and Unreduced Cross-Integrals}
+
+For the single sawtooth $\rho(x) = \texttt{recipFract}\, x = \{1/x\}$, truncating $(0, 1]$ at $1/(M+1)$ on harmonic cells and taking $M \to \infty$ via Mathlib's \texttt{Real.\allowbreak tendsto\_\allowbreak euler\allowbreak Mascheroni\allowbreak Seq'} proves \texttt{interval\allowbreak Integral\_\allowbreak recip\allowbreak Fract\_\allowbreak zero\_\allowbreak to\_\allowbreak one}: $\int_0^1 \{1/x\}\,\dee x = 1 - \gamma$. Scaling $\rho_k(x) = \texttt{recip\allowbreak Fract\allowbreak Scaled}\, k\, x = \{1/(kx)\}$ splits $[0, 1]$ at $1/k$, establishing the unconditional target projection for all $k \ge 1$ (\texttt{interval\allowbreak Integral\_\allowbreak recip\allowbreak Fract\allowbreak Scaled\_\allowbreak eq\_\allowbreak bVasyunin}):
+\begin{equation}
+\int_0^1 \left\{ \frac{1}{k x} \right\} \dee x = \frac{\ln k + 1 - \gamma}{k} = \text{\texttt{bVasyunin}}\, k\, \gamma.
+\end{equation}
+
+For general pairs $j, k \ge 1$, the continuous Gram matrix entry $K(j, k) = \int_0^1 \{1/(jx)\}\{1/(kx)\}\,\dee x$ satisfies Vasyunin's exact unreduced decomposition~\cite{Vasyunin1995}:
+\begin{equation}\label{eq:vasyunin_decomposition}
+\int_0^1 \left\{ \frac{1}{j x} \right\} \left\{ \frac{1}{k x} \right\} \dee x = G_{\mathrm{smooth}}(\gamma, j, k) + g_{j, k}^{\mathrm{cot}},
+\end{equation}
+where the unreduced smooth kernel \texttt{GSmooth} and cotangent component \texttt{vasyuninGCot} are given for \emph{all} $j, k \ge 1$ by:
+\begin{align}
+G_{\mathrm{smooth}}(\gamma, j, k) &= \frac{(\ln(2\pi) - \gamma)(j + k) + (j - k)\ln(k / j) - 2}{2 j k}, \label{eq:gsmooth_unreduced} \\
+g_{j, k}^{\mathrm{cot}} &= -\frac{\pi}{2 j k} \left( V(j, k) + V(k, j) \right), \qquad V(a, b) = \sum_{m=1}^{a-1} \left\{ \frac{m b}{a} \right\} \cot\!\left( \frac{\pi m}{a} \right). \label{eq:gcot_unreduced}
+\end{align}
+
+\paragraph{Why the Unreduced Formula Requires No Coprime Split.}
+Unlike formulations written after dividing $j, k$ by $\gcd(j, k)$, the unreduced definitions~\eqref{eq:gsmooth_unreduced}--\eqref{eq:gcot_unreduced} hold identically for \emph{every} pair $j, k \ge 1$, whether coprime or not, avoiding case splits on common divisors. On the diagonal $j = k$, every summand in $V(k, k) = \text{\texttt{vasyuninCotSum}}\, k\, k$ has $\{mk/k\} = 0$ (\texttt{vasyuninCotSum\_diag}, \texttt{vasyuninGCot\_diag}), while $(k - k)\ln(k/k) = 0$ reduces~\eqref{eq:gsmooth_unreduced} directly to $(\ln(2\pi) - \gamma)/k - 1/k^2$ (\texttt{GSmooth\_diag}, \texttt{vasyuninGram\_diag}). For instance, at $j = k = 2$, $V(2, 2) = \{2/2\}\cot(\pi/2) = 0$ gives $g_{2,2}^{\mathrm{cot}} = 0$, and both the integral $\int_0^1 \{1/(2x)\}^2\,\dee x$ and $G_{\mathrm{smooth}}(\gamma, 2, 2)$ equal
+\begin{equation}
+\frac{(\ln(2\pi) - \gamma)(2 + 2) + 0 - 2}{8} = \frac{\ln(2\pi) - \gamma}{2} - \frac{1}{4},
+\end{equation}
+consistent with \texttt{intervalIntegral\_\allowbreak sq\_\allowbreak recipFractScaled\_\allowbreak zero\_\allowbreak to\_\allowbreak one}. Moreover, both $G_{\mathrm{smooth}}$ (\texttt{GSmooth\_comm}) and $g^{\mathrm{cot}}$ (\texttt{vasyuninGCot\_comm}) are symmetric in $j, k$.
+
+\subsection{Proof Architecture of the Unconditional Cross-Integral}
+
+The unconditional theorem \texttt{interval\allowbreak Integral\_\allowbreak recip\allowbreak Fract\allowbreak Scaled\_\allowbreak cross} in \texttt{MathlibPR\_\allowbreak Vasyunin\allowbreak Cross\allowbreak Integral.lean} evaluates~\eqref{eq:vasyunin_decomposition} for all $j, k \ge 1$:
+\begin{lstlisting}
+theorem intervalIntegral_recipFractScaled_cross {j k : $\Nset$} (hj : 1 $\le$ j) (hk : 1 $\le$ k) :
+    ($\int$ x in (0 : $\Rset$)..1, recipFractScaled j x * recipFractScaled k x) =
+      GSmooth Real.eulerMascheroniConstant j k + vasyuninGCot j k
+\end{lstlisting}
+The mechanized proof proceeds in five clean steps:
+\begin{enumerate}[noitemsep]
+  \item \textbf{Harmonic Sub-Interval Truncation:} For $M \ge 1$, split $(0, 1]$ into $[0, 1/(Mjk)]$ (bounded in integral norm by $1/(Mjk) \to 0$) and $(1/(Mjk), 1]$, partitioned over cells $(1/(n+1), 1/n]$ for $1 \le n < Mjk$, where $\{1/(jx)\}\{1/(kx)\}$ integrates explicitly in terms of $\lfloor n/j \rfloor$, $\lfloor n/k \rfloor$, $\ln((n+1)/n)$, and $1/n - 1/(n+1)$.
+  \item \textbf{Finite Abel Summation:} Discrete summation by parts (\texttt{sum\_Ico\_abel}) transforms the logarithmic sums (\texttt{abel\_\allowbreak log\_\allowbreak sum\_\allowbreak exact}) and cross sums (\texttt{abel\_\allowbreak cross\_\allowbreak sum\_\allowbreak exact}) on $[1/(Mjk), 1]$ into an exact identity (\texttt{cross\_\allowbreak partial\_\allowbreak exact\_\allowbreak identity}) combining factorial logarithms, harmonic numbers, and finite cotangent approximants \texttt{cotApproxSum}.
+  \item \textbf{Stirling's Asymptotics:} Mathlib's \texttt{Stirling.\allowbreak tendsto\_\allowbreak stirlingSeq\_\allowbreak sqrt\_pi} evaluates $\ln((Mk)!) - Mk\ln(Mk) + Mk - \frac{1}{2}\ln(Mk) \to \frac{1}{2}\ln(2\pi)$ along $M \to \infty$ (\texttt{tendsto\_\allowbreak stirling\_\allowbreak log\_\allowbreak term}), producing $\ln(2\pi)$ in $G_{\mathrm{smooth}}$.
+  \item \textbf{Euler--Mascheroni Harmonic Asymptotics:} Composing Mathlib's \texttt{Real.\allowbreak tendsto\_\allowbreak eulerMascheroniSeq'} with dilation $M \mapsto Mk$ (\texttt{tendsto\_\allowbreak harmonic\_\allowbreak Ico\_\allowbreak sub\_\allowbreak log}) yields $\sum_{m=1}^{Mk-1} 1/m - \ln(Mk) \to \gamma$, supplying the $-\gamma$ coefficients.
+  \item \textbf{Cotangent Mittag-Leffler Series:} Splitting periodic fractional differences by residue classes $r \bmod b$ pairs terms of \texttt{cotApproxSum} into $\sum_{q=0}^{M-1}\big((qb+r)^{-1} - ((q+1)b-r)^{-1}\big)$, evaluated by Mathlib's \texttt{cot\_series\_rep'} (\texttt{tendsto\_\allowbreak cotApproxSum\_\allowbreak term}) to yield $\frac{\pi}{b}\cot(\pi r/b)$.
+\end{enumerate}
+
+\subsection{Rank-4 Factorization and B\'aez-Duarte Affine Collapse}
+
+Defining basis vectors $e_k = 1$, $l_k = \ln k$, $h_k = 1/k$, and $m_k = (\ln k)/k$, Lemma \texttt{GSmooth\_\allowbreak eq\_\allowbreak rank4} in \texttt{Section8\_\allowbreak VasyuninBDR.lean} expresses the unreduced kernel~\eqref{eq:gsmooth_unreduced} as an explicit symmetric rank-4 outer product (\texttt{GSmoothRank4}):
+\begin{equation}
+G_{\mathrm{smooth}}(\gamma, j, k) = \frac{\ln(2\pi)-\gamma}{2}(e_j h_k + h_j e_k) + \frac{1}{2}(e_j m_k + m_j e_k) - \frac{1}{2}(l_j h_k + h_j l_k) - h_j h_k.
+\end{equation}
+Consequently, for any vector $c \in \Rset^N$, the $O(N^2)$ smooth quadratic form collapses (\texttt{smooth\_\allowbreak vasyunin\_\allowbreak double\_\allowbreak sum\_\allowbreak eq\_\allowbreak boundary}) to finite Dirichlet polynomial evaluations at $s = 0$ and $s = 1$:
+\begin{equation}
+D_0(c, N) = \sum_{k=1}^N c_k, \quad D_1(c, N) = \sum_{k=1}^N \frac{c_k}{k}, \quad D_0'(c, N) = -\sum_{k=1}^N c_k \ln k, \quad D_1'(c, N) = -\sum_{k=1}^N \frac{c_k \ln k}{k}.
+\end{equation}
+Combining this smooth quadratic form with the linear target $-2\sum_{k=1}^N c_k b_k(\gamma) = -2\big((1-\gamma)D_1(c,N) - D_1'(c,N)\big)$ gives (\texttt{constrained\_\allowbreak nb\_\allowbreak bdr\_\allowbreak collapse}, \texttt{affine\_\allowbreak bdr\_\allowbreak pure\_\allowbreak cotangent\_\allowbreak identity}): whenever $D_1(c, N) = 0$ and $D_0(c, N) = 2$, \emph{all} $\gamma$, $\ln(2\pi)$, and $D_1'(c,N)$ terms cancel identically:
+\begin{equation}
+1 - 2\sum_{k=1}^N c_k b_k(\gamma) + \sum_{j,k=1}^N c_j c_k G_{\mathrm{smooth}}(\gamma, j, k) + Q_{\mathrm{cot}}(g^{\mathrm{cot}}, c, N) = 1 + Q_{\mathrm{cot}}(g^{\mathrm{cot}}, c, N).
+\end{equation}
+Letting $\mathcal{A}_N = \{c \in \Rset^N : D_1(c, N) = 0 \land D_0(c, N) = 2\}$, $Q_{\mathrm{cot}}(g^{\mathrm{cot}}, c, N) = \sum_{j,k=1}^N c_j c_k g_{j,k}^{\mathrm{cot}}$ (\texttt{QCot}), and $S_{\mathrm{cot}}(c, N) = -Q_{\mathrm{cot}}(g^{\mathrm{cot}}, c, N)$ (\texttt{SCot}), wiring \texttt{intervalIntegral\_\allowbreak recipFractScaled\_\allowbreak eq\_\allowbreak bVasyunin} and \texttt{intervalIntegral\_\allowbreak recipFractScaled\_\allowbreak cross} directly into the expanded $L^2$ norm (\texttt{intervalIntegral\_\allowbreak sq\_\allowbreak sub\_\allowbreak sum}) discharges all external integral assumptions unconditionally:
+
+\begin{theorem}[Unconditional Affine $L^2$ Pure Cotangent Distance]\label{thm:pure_cot_bridge}
+For any $N \in \Nset$ and $c : \Nset \to \Rset$ satisfying $D_1(c, N) = 0$ and $D_0(c, N) = 2$,
+\begin{equation}
+\int_0^1 \left( 1 - \sum_{k=1}^N c_k \left\{ \frac{1}{k x} \right\} \right)^2 \dee x = 1 - S_{\mathrm{cot}}(c, N).
+\end{equation}
+In Lean~4, the bridge and its resulting conditional RH criterion carry zero auxiliary hypotheses:
+\begin{lstlisting}
+theorem affine_l2_pure_cotangent_bridge {N : $\Nset$} (c : $\Nset \to \Rset$)
+    (hD1 : D1 c N = 0) (hD0 : D0 c N = 2) :
+    ($\int$ x in (0 : $\Rset$)..1, (1 - $\sum$ k $\in$ Finset.Icc 1 N, c k * recipFractScaled k x) ^ 2) =
+      1 + QCot vasyuninGCot c N
+
+theorem affine_l2_dist_eq_one_sub_scot {N : $\Nset$} (c : $\Nset \to \Rset$)
+    (hD1 : D1 c N = 0) (hD0 : D0 c N = 2) :
+    ($\int$ x in (0 : $\Rset$)..1, (1 - $\sum$ k $\in$ Finset.Icc 1 N, c k * recipFractScaled k x) ^ 2) =
+      1 - SCot vasyuninGCot c N
+
+theorem nymanBeurling_approx_iff_scot_gt {N : $\Nset$} (c : $\Nset \to \Rset$) ($\varepsilon$ : $\Rset$)
+    (hD1 : D1 c N = 0) (hD0 : D0 c N = 2) :
+    ($\int$ x in (0 : $\Rset$)..1, (1 - $\sum$ k $\in$ Finset.Icc 1 N, c k * recipFractScaled k x) ^ 2) < $\varepsilon$ $\leftrightarrow$
+      1 - $\varepsilon$ < SCot vasyuninGCot c N
+
+theorem riemannHypothesis_of_cotangent_limit
+    (h_limit : $\forall$ $\varepsilon$ > 0, $\exists$ (N : $\Nset$) (c : $\Nset \to \Rset$),
+      D1 c N = 0 $\land$ D0 c N = 2 $\land$ 1 - $\varepsilon$ < SCot vasyuninGCot c N) :
+    RiemannHypothesis
+\end{lstlisting}
+\end{theorem}
+
+\section{Lean~4 Formalization Architecture and Verification Audit}
+
+The complete formalization is contained in the \texttt{RiemannBlueprint} package, comprising $6{,}951$ lines and $305$ verified theorems and lemmas across five core modules (all with zero \texttt{sorry}):
+
+\begin{table}[ht]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrc>{\raggedright\arraybackslash}p{6.6cm}@{}}
+\toprule
+\textbf{Module} & \textbf{Lines} & \textbf{Theorems} & \textbf{Formalized Mathematical Content} \\
+\midrule
+\texttt{MellinFracPart} & 1,366 & 51 & Fractional-part Mellin identity~\eqref{eq:titchmarsh_identity} on $\operatorname{Re}(s) > 0$. \\
+\texttt{MathlibPR\_NymanBeurling} & 1,461 & 53 & Forward Nyman--Beurling and B\'aez-Duarte criteria. \\
+\texttt{MathlibPR\_VasyuninIntegral} & 207 & 10 & Base and diagonal dilation integrals on $(0, 1)$ and $(1/k, 1)$. \\
+\texttt{MathlibPR\_VasyuninCrossIntegral} & 1,454 & 38 & General Vasyunin cross-integrals and unconditional cotangent bridge. \\
+\texttt{Section8\_VasyuninBDR} & 2,463 & 153 & Unreduced rank-4 \texttt{GSmooth} factorization and affine collapse. \\
+\bottomrule
+\end{tabular}
+\caption{Module metrics for the Nyman--Beurling, Mellin, and Vasyunin formalization corpus.}
+\label{tab:module_metrics}
+\end{table}
+
+\subsection{Definitional Alignment and Non-Circularity}
+
+To certify that no local proxy definitions or vacuous wrappers are introduced, \texttt{VerifyNoTraps.lean} proves definitional identity against official Mathlib roots by \texttt{rfl}:
+\begin{lstlisting}
+theorem rh_eq_root_rh : RiemannHypothesis = _root_.RiemannHypothesis := rfl
+theorem zeta_eq_root_zeta : riemannZeta = _root_.riemannZeta := rfl
+\end{lstlisting}
+and evaluates \texttt{recipFract} on concrete rational inputs (\texttt{recipFract (2 / 5) = 1 / 2} and \texttt{recipFract (1 / 3) = 0}) to exclude definitional degeneracy.
+
+\subsection{Axiom Dependency Receipts}
+
+Executing \texttt{\#print axioms} confirms that every theorem relies strictly on Lean~4's three standard foundational axioms:
+\begin{lstlisting}
+#print axioms RiemannHypothesis.of_nymanBeurling_approx
+#print axioms RiemannHypothesis.of_baezDuarte_approx
+#print axioms intervalIntegral_recipFract_zero_to_one
+#print axioms intervalIntegral_recipFractScaled_eq_bVasyunin
+#print axioms intervalIntegral_recipFractScaled_cross
+#print axioms affine_l2_pure_cotangent_bridge
+#print axioms affine_l2_dist_eq_one_sub_scot
+#print axioms nymanBeurling_approx_iff_scot_gt
+#print axioms riemannHypothesis_of_cotangent_limit
+-- All depend strictly on: [propext, Classical.choice, Quot.sound]
+\end{lstlisting}
+Zero custom axioms, zero oracle tactics, and zero unverified hypotheses appear.
+
+\section{Conclusion}
+
+This paper has presented the complete Lean~4 formalization of Titchmarsh's Mellin fractional-part identity on $\operatorname{Re}(s) > 0$, the forward Nyman--Beurling and B\'aez-Duarte implications toward \texttt{\_root\_.RiemannHypothesis}, the unconditional evaluation of all Vasyunin base, diagonal, and cross-integrals for $j, k \ge 1$ via Stirling, Euler--Mascheroni, and cotangent series asymptotics, and the affine rank-4 collapse identifying $\|1 - \sum_{k=1}^N c_k \{1/(kx)\}\|_{L^2(0,1)}^2 = 1 - S_{\mathrm{cot}}(c, N)$ on $\mathcal{A}_N$. Together with upstream-ready components in \texttt{MellinFracPart.lean} and \texttt{MathlibPR\_\allowbreak VasyuninCrossIntegral.lean}, these results provide a certified foundation for Hilbert-space approaches to zeta-function approximation in Lean~4.
+
+\begin{thebibliography}{99}
+\raggedright
+
+\bibitem{BaezDuarte1999}
+L.~B\'aez-Duarte, \emph{A new necessary and sufficient condition for the Riemann hypothesis}, preprint, arXiv:math/9911225, 1999.
+
+\bibitem{BaezDuarte2003}
+L.~B\'aez-Duarte, \emph{A strengthening of the Nyman--Beurling criterion for the Riemann hypothesis}, Atti Accad. Naz. Lincei Cl. Sci. Fis. Mat. Natur. Rend. Lincei (9) Mat. Appl. \textbf{14} (2003), no.~1, 5--11.
+
+\bibitem{BettinBrowning2014}
+S.~Bettin and T.~D.~Browning, \emph{A note on the Nyman--Beurling criterion for the Riemann hypothesis}, Bull. London Math. Soc. \textbf{46} (2014), no.~5, 1076--1086.
+
+\bibitem{Beurling1955}
+A.~Beurling, \emph{A closure problem related to the Riemann Zeta-function}, Proc. Nat. Acad. Sci. U.S.A. \textbf{41} (1955), 312--314.
+
+\bibitem{Burnol2002}
+J.-F.~Burnol, \emph{A lower bound for the Nyman--Beurling quadratic form}, preprint, arXiv:math/0209218, 2002.
+
+\bibitem{FormalConjectures}
+Google DeepMind, \emph{formal-conjectures: Formal mathematical conjectures in Lean~4} (\texttt{RiemannHypothesisEquivalents.lean}), GitHub repository, accessed 15 November 2026.
+
+\bibitem{PNT}
+A.~Kontorovich, T.~Tao, et~al., \emph{PrimeNumberTheoremAnd: Formalizing the Prime Number Theorem in Lean~4}, GitHub repository, 2024--2026.
+
+\bibitem{Mathlib}
+The Mathlib Community, \emph{The Lean Mathematical Library}, \url{https://github.com/leanprover-community/mathlib4}, 2026.
+
+\bibitem{Nyman1950}
+B.~Nyman, \emph{On the One-Sided Harmonic Analysis of Certain Series of Functions}, Ph.D. thesis, University of Uppsala, 1950.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh, \emph{The Theory of the Riemann Zeta-Function}, 2nd ed., revised by D.~R.~Heath-Brown, Oxford University Press, Oxford, 1986.
+
+\bibitem{Vasyunin1995}
+V.~I.~Vasyunin, \emph{On a biorthogonal system related to the Riemann hypothesis}, Algebra i Analiz \textbf{7} (1995), no.~3, 118--135; English transl., St. Petersburg Math. J. \textbf{7} (1996), no.~3, 405--419.
+
+\end{thebibliography}
+
+\end{document}

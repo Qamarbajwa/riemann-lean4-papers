@@ -650,6 +650,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): closed-form N=5 dipole Gram entries and reciprocity orthogonality",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuarteDipoleGramFive closed-form N=5 certificates",
     ),
+    PRSpec(
+        pr_id="PR-8G",
+        wave=8,
+        staged_file="UpstreamPR_8G_CotangentSixReciprocity.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8G_CotangentSixReciprocity",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteCotangentSix.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteCotangentSix",
+        branch="feat/baez-duarte-cotangent-six",
+        base_branch="feat/baez-duarte-dipole-gram-five",
+        pr_title="feat(NumberTheory/LSeries): exact N=6 Vasyunin sums in Q(sqrt(3)), K(3,6)=0, and G_24=0 decoupling",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteCotangentSix exact N=6 certificates",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

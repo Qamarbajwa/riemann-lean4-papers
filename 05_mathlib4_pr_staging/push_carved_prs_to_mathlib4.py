@@ -725,13 +725,13 @@ PR_REGISTRY: List[PRSpec] = [
     PRSpec(
         pr_id="PR-8M",
         wave=8,
-        staged_file="UpstreamPR_8M_PointwiseDiscreteContinuityIdentity.lean",
-        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8M_PointwiseDiscreteContinuityIdentity",
+        staged_file="UpstreamPR_8M_PointwiseContinuityAndPeriodicity.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8M_PointwiseContinuityAndPeriodicity",
         target_relpath="Mathlib/NumberTheory/LSeries/BaezDuartePointwiseContinuity.lean",
         target_module="Mathlib.NumberTheory.LSeries.BaezDuartePointwiseContinuity",
         branch="feat/baez-duarte-pointwise-continuity",
         base_branch="feat/baez-duarte-plaque-row-telescoping",
-        pr_title="feat(NumberTheory/LSeries): pointwise discrete-equals-continuous identity and top-half annihilation",
+        pr_title="feat(NumberTheory/LSeries): pointwise continuity, modular duality, and palindromic periodicity",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuartePointwiseContinuity",
     ),
 ]

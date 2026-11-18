@@ -1,6 +1,6 @@
 # Paper L: Unified Arithmetic & Lean 4 Master Review (`NO_RH_PROOF = TRUE`)
 
-- **Zenodo Hub 14 DOI:** [`10.5281/zenodo.24345175`](https://doi.org/10.5281/zenodo.24345175) *(earlier `10.5281/zenodo.24344632`, `10.5281/zenodo.24344093`, `10.5281/zenodo.24343534`, `10.5281/zenodo.24342950`, `10.5281/zenodo.24342626`, `10.5281/zenodo.24342101`, `10.5281/zenodo.24341718`, `10.5281/zenodo.24341498`)*
+- **Zenodo Hub 14 DOI:** [`10.5281/zenodo.24346051`](https://doi.org/10.5281/zenodo.24346051) *(earlier `10.5281/zenodo.24345175`, `10.5281/zenodo.24344632`, `10.5281/zenodo.24344093`, `10.5281/zenodo.24343534`, `10.5281/zenodo.24342950`, `10.5281/zenodo.24342626`, `10.5281/zenodo.24342101`, `10.5281/zenodo.24341718`, `10.5281/zenodo.24341498`)*
 - **Master Lean 4 Archive (Hub 07):** [`10.5281/zenodo.24329861`](https://doi.org/10.5281/zenodo.24329861)
 - **Epistemic Status:** `NO_RH_PROOF = TRUE`
 

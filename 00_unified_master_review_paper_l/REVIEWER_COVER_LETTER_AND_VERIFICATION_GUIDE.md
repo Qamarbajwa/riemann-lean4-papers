@@ -16,7 +16,7 @@ This dossier pairs the unified master review (`paper_l_unified_arithmetic_lean4_
 ## 2. One-Command Reproduction Protocol
 ```bash
 # Build core library and latest Wave 8 module (PR-8M)
-cd RiemannBlueprint && lake build RiemannBlueprint && lake build RiemannBlueprint.UpstreamPRs.UpstreamPR_8M_PointwiseDiscreteContinuityIdentity
+cd RiemannBlueprint && lake build RiemannBlueprint && lake build RiemannBlueprint.UpstreamPRs.UpstreamPR_8M_PointwiseContinuityAndPeriodicity
 
 # Run 85-digit mpmath benchmark laboratories
 python layer_c_dirichlet_locked_plaque_lab.py
@@ -86,7 +86,7 @@ All 56 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` a
 | `PR-8J` | 8 | `UpstreamPR_8J_UnitPartitionHomogenization.lean` | 197 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8K` | 8 | `UpstreamPR_8K_SuperdiagonalAndOrthogonalTriple.lean` | 188 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8L` | 8 | `UpstreamPR_8L_PlaqueRowTelescopingAndSimplex.lean` | 133 | `[propext, Classical.choice, Quot.sound]` |
-| `PR-8M` | 8 | `UpstreamPR_8M_PointwiseDiscreteContinuityIdentity.lean` | 192 | `[propext, Classical.choice, Quot.sound]` |
+| `PR-8M` | 8 | `UpstreamPR_8M_PointwiseContinuityAndPeriodicity.lean` | 232 | `[propext, Classical.choice, Quot.sound]` |
 
 ## 4. Complete 14-Hub Zenodo Publication Index
 - **Hub 01 (Paper 0):** `10.5281/zenodo.24328033`
@@ -100,9 +100,9 @@ All 56 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` a
 - **Hub 09 (Paper G):** `10.5281/zenodo.24328921`
 - **Hub 10 (Paper H):** `10.5281/zenodo.24328927`
 - **Hub 11 (Paper I):** `10.5281/zenodo.24328929`
-- **Hub 12 (Paper J):** `10.5281/zenodo.24345106` *(prev `24344628`, `24330500`, `24330400`)*
-- **Hub 13 (Paper K):** `10.5281/zenodo.24345122` *(prev `24344631`, `24344084`, `24343525`, `24342906`, `24342619`, `24342096`, `24341228`, `24341007`, `24339838`)*
-- **Hub 14 (Paper L — Unified Master Review):** Published live at `10.5281/zenodo.24345175` *(prev `24344632`, `24344093`, `24343534`, `24342950`, `24342626`, `24342101`, `24341718`, `24341498`; supplemented by `10.5281/zenodo.24329861`)*
+- **Hub 12 (Paper J):** `10.5281/zenodo.24345801` *(prev `24345106`, `24344628`, `24330500`, `24330400`)*
+- **Hub 13 (Paper K):** `10.5281/zenodo.24345966` *(prev `24345122`, `24344631`, `24344084`, `24343525`, `24342906`, `24342619`, `24342096`, `24341228`, `24341007`, `24339838`)*
+- **Hub 14 (Paper L — Unified Master Review):** Published live at `10.5281/zenodo.24346051` *(prev `24345175`, `24344632`, `24344093`, `24343534`, `24342950`, `24342626`, `24342101`, `24341718`, `24341498`; supplemented by `10.5281/zenodo.24329861`)*
 
 ---
 

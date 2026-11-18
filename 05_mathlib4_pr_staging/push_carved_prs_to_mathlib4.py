@@ -806,6 +806,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): multi-prime L2 energy superposition and planar-Mellin capstone",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuarteMultiPrimeSuperposition",
     ),
+    PRSpec(
+        pr_id="PR-8T",
+        wave=8,
+        staged_file="UpstreamPR_8T_DoubleConeL2FoldingAndFlux.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8T_DoubleConeL2FoldingAndFlux",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteDoubleConeFolding.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteDoubleConeFolding",
+        branch="feat/baez-duarte-double-cone-folding",
+        base_branch="feat/baez-duarte-multiprime-superposition",
+        pr_title="feat(NumberTheory/LSeries): palindromic double cone L2 folding and counter rotating flux",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteDoubleConeFolding",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

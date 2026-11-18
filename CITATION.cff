@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use these papers, numerical benchmarks, or staged Lean 4 PRs, please cite this repository."
-title: "Riemann-Lean4-Papers: Thematic Companion Suite and Mathlib4 PR Staging (Papers 0 and A-K)"
+title: "Riemann-Lean4-Papers: Thematic Companion Suite and Mathlib4 PR Staging (Papers 0 and A-L)"
 version: "3.0.0"
 date-released: "2026-11-18"
 license: "Apache-2.0"
@@ -19,7 +19,7 @@ keywords:
   - analytic-number-theory
   - nyman-beurling
 abstract: >-
-  Thematic micro-paper suite (Papers 0 and A through K) and 50 self-contained,
+  Thematic micro-paper suite (Papers 0 and A through L, 14 Zenodo Hubs) and 50 self-contained,
   linter-verified modular Lean 4 formalization units (Waves 1-8) verified in
   Lean 4.35.0 with zero custom axioms and zero sorry. Maintains NO_RH_PROOF = TRUE.
 identifiers:
@@ -29,3 +29,6 @@ identifiers:
   - type: doi
     value: "10.5281/zenodo.24150107"
     description: "Zenodo Hub 07 Concept DOI"
+  - type: doi
+    value: "10.5281/zenodo.24341498"
+    description: "Paper L Unified Arithmetic & Lean 4 Master Review (Zenodo Hub 14)"

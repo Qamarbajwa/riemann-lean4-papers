@@ -1,0 +1,586 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=2.2cm}
+\usepackage{booktabs,longtable,array}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{tikz}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=red!70!black,
+    urlcolor=blue!70!black,
+    pdftitle={Unconditional Arithmetic Reductions, Exact Cotangent Reciprocity, and Lean 4 Formal Verification for the Classical and Nyman-Beurling Theory of the Riemann Zeta Function},
+    pdfauthor={Qamar Munawer}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Acal}{\mathcal{A}}
+\newcommand{\Pcal}{\mathcal{P}}
+
+\title{\textbf{Unconditional Arithmetic Reductions, Exact Cotangent Reciprocity, and Lean~4 Formal Verification for the Classical and Nyman--Beurling Theory of the Riemann Zeta Function}}
+
+\author{\textbf{Qamar Munawer}\\[0.25em]
+\small Brandenburg University of Technology Cottbus--Senftenberg, Cottbus, Germany}
+
+\date{November 18, 2026}
+
+\begin{document}
+\linespread{1.12}\selectfont
+\emergencystretch=3em
+
+\maketitle
+
+\begin{abstract}
+Under the standing epistemic invariant \texttt{NO\_RH\_PROOF = TRUE}, this master review consolidates an end-to-end formalization and numerical diagnostic program around the Riemann zeta function without claiming an unconditional proof of the Riemann Hypothesis. Fifty self-contained modular Lean~4.35 units (\texttt{UpstreamPR\_1A} through \texttt{UpstreamPR\_8G}) are verified with zero \texttt{sorry}s, zero errors across fifteen Mathlib and Batteries linters, and strictly standard axioms (\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}). The verified corpus spans both classical pillars---de~la~Vall\'ee~Poussin's 1899 zero-free region, Hardy's 1914 theorem on infinitely many critical-line zeros, Littlewood's Tauberian equivalence, von~Koch's Chebyshev $\psi$ equivalence, and bidirectional Mellin Nyman--Beurling criteria---and a complete finite-$N$ algebraic theory on the B\'aez--Duarte affine manifold. In this finite-$N$ theory, smooth logarithmic kernels and Euler--Mascheroni constants cancel identically on tangent vectors, reducing the Nyman--Beurling $L^2$ objective to a rank-two boundary drive plus a pure four-point cotangent plaque form. Enforcing the Dirichlet pole lock $c_1 = -1$ cancels the leading drive ambiguity and reduces the unit-drive squared distance to a two-dimensional telescoped kernel form whose vanishing implies the Riemann Hypothesis under Titchmarsh's Mellin identity. Closed-form arithmetic reciprocity certificates are proved completely in Lean~4 for $N = 3, 4, 5, 6$, including the exact rational-multiple $\frac{31}{108}\pi$ Dirichlet optimum on $\mathcal{A}_4$, $(\mathbb{Z}/5\mathbb{Z})^\times$ decoupling, and composite return to $\mathbb{Q}(\sqrt{3})$ at $N = 6$. Complementary 85-digit \texttt{mpmath} and 512-bit \texttt{flint.arb} diagnostics corroborate all discrete identities to within $2.5 \times 10^{-85}$ and cleanly delineate the open asymptotic cancellation frontier as $N \to \infty$.
+\end{abstract}
+
+\noindent\textbf{Keywords:} Riemann Hypothesis, Lean~4 formal verification, Vasyunin--B\'aez--Duarte criterion, pure plaque kernel, Dirichlet anchoring, cotangent reciprocity, \texttt{NO\_RH\_PROOF = TRUE}.
+
+\tableofcontents
+\clearpage
+
+\section{Introduction and Epistemic Architecture}\label{sec:intro}
+
+Formal verification and high-precision experimental diagnostics in analytic number theory serve complementary roles only when the logical boundary between unconditionally proved theorems, conditional equivalences, finite-section certificates, and open asymptotic conjectures remains completely transparent. Throughout this work and its accompanying fourteen-hub archival suite, that boundary is enforced by the explicit invariant \texttt{NO\_RH\_PROOF = TRUE}.
+
+Specifically, every mathematical result in the corpus falls into one of three strictly partitioned categories:
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+\item \textbf{Unconditional Lean~4 Theorems:} Classical complex-analytic and arithmetic results (de~la~Vall\'ee~Poussin's 1899 zero-free strip, Hardy's 1914 theorem establishing infinitely many zeros on $\operatorname{Re}(s)=1/2$, $\Lambda'(1/2)=0$, the prime--composite arithmetic dichotomy), together with all finite-dimensional algebraic, variational, and reciprocity identities on the B\'aez--Duarte affine manifold $\mathcal{A}_N$ for all $N \ge 2$ and exact closed-form evaluations at $N = 3, 4, 5, 6$.
+\item \textbf{Formal Conditional Equivalences in Lean~4:} Verified implications connecting zeros of $\zeta(s)$ to global analytic or Hilbert-space criteria, including reciprocal zeta holomorphy, Littlewood's remainder criterion, von~Koch's Chebyshev $\psi$ implication, the bidirectional Mellin Nyman--Beurling equivalence, and the pure-plaque / telescoped-kernel vanishing criteria assuming \texttt{TitchmarshMellinProperty}.
+\item \textbf{Certified Numerical Diagnostics ($N \le 750$):} Eighty-five-digit \texttt{mpmath} quadratic optimization experiments for $N \in [4, 64]$, 192-bit \texttt{flint.arb} spectral indefiniteness proofs on separated Vasyunin kernels, and 512-bit unwrapped \texttt{flint.arb} Schur elimination on a $750$-mode truncation of Weil's quadratic form at $L=1$. None of these finite-horizon computations imply $N \to \infty$ convergence of $\mathcal{P}_N$ or global Weil positivity.
+\end{enumerate}
+
+Architecturally, the formal codebase in \texttt{RiemannBlueprint} (\texttt{leanprover--lean4---v4.35.0}) has been factored into \textbf{50 self-contained, linter-verified modular Lean~4 units} (\texttt{UpstreamPR\_1A} through \texttt{UpstreamPR\_8G}) organized across Waves~1--8 as an acyclic dependency DAG:
+\begin{itemize}[leftmargin=1.6em,itemsep=2pt]
+\item \textbf{Wave~1 (\texttt{1A}, \texttt{3A}, \texttt{4A}):} Self-contained roots for critical-line intermediate-value zero detection, Vasyunin $L^1/L^2$ fractional-part integrals, and affine Lagrange projection on $\mathcal{A}_N$.
+\item \textbf{Wave~2 (\texttt{1B}--\texttt{1F}):} Five-stage chain culminating in de~la~Vall\'ee~Poussin's unconditional zero-free region.
+\item \textbf{Wave~3 (\texttt{3B}--\texttt{3H}, \texttt{4B}--\texttt{4M}):} Complete smooth-kernel elimination, harmonic wavelets, cumulative dipoles, exact $N=4$ global KKT optimization, general-$N$ completeness on $\mathcal{A}_N$, and diagonal Gram non-negativity.
+\item \textbf{Wave~4 (\texttt{2B}--\texttt{2G}):} Six-stage analytic chain proving Hardy's 1914 theorem on infinitely many critical-line zeros.
+\item \textbf{Wave~5 (\texttt{5A}--\texttt{5C}):} Reciprocal zeta holomorphy, von~Koch's Chebyshev $\psi$ forward implication, and bidirectional Mellin Nyman--Beurling equivalence.
+\item \textbf{Wave~6 (\texttt{6A}--\texttt{6C}):} Completed zeta derivative antisymmetry, equipartition at the $s=1/2$ fulcrum, strip penetration bounds, and prime--composite arithmetic partition.
+\item \textbf{Wave~7 (\texttt{7A}--\texttt{7D}):} Weighted Mellin $L^2$ energy identity, 4-segment rectangle contour subdivision, pure 4-point plaque extraction with anchor-drive cancellation, and diagonal/off-diagonal decomposition.
+\item \textbf{Wave~8 (\texttt{8A}--\texttt{8G}):} Pure plaque Cauchy--Schwarz lower bounds, Dirichlet anchoring ($c_1 = -1$), two-dimensional Abel telescoping, pure plaque RH equivalence, and exact closed-form radical certificates for $N=4, 5, 6$.
+\end{itemize}
+
+All 50 modules are maintained as standalone verifiable artifacts in \texttt{Qamarbajwa/\allowbreak RiemannBlueprint}, the companion manuscript repository \texttt{Qamarbajwa/\allowbreak riemann-lean4-papers}, the 50-branch fork archive \texttt{Qamarbajwa/\allowbreak mathlib4}, and Zenodo Hubs~01--14, with automated upstream \texttt{leanprover-community/\allowbreak mathlib4} actions disabled (\texttt{ALLOW\_UPSTREAM\_BOT\_ACTIONS = False}).
+
+\section{Classical Analytic and Arithmetic Pillars in Lean~4}\label{sec:classical}
+
+Before entering finite-$N$ wavelet coordinates, the Lean~4 corpus formalizes the foundational complex-analytic and arithmetic theorems surrounding $\zeta(s)$ and the completed zeta function $\Lambda(s) = \pi^{-s/2}\Gamma(s/2)\zeta(s)$.
+
+\subsection{Zero-Free Strip and Critical-Line Zeros (\texttt{PR-1A}--\texttt{1F}, \texttt{PR-2B}--\texttt{2G})}
+
+In Wave~1 and Wave~2 (\texttt{UpstreamPR\_1A}--\texttt{1F}), the classical trigonometric $3 + 4\cos\theta + \cos(2\theta) \ge 0$ inequality (\texttt{trig\_poly\_nonneg}) is combined with Dirichlet-series partial summation (\texttt{riemannZeta\_\allowbreak partial\_summation}), uniform log-strip bounds (\texttt{norm\_riemannZeta\_\allowbreak le\_of\_log\_strip}), and horizontal Lipschitz control near real-line poles (\texttt{riemannZeta\_\allowbreak horizontal\_lipschitz\_of\_zero}) to prove:
+\begin{theorem}[De~la~Vall\'ee~Poussin Zero-Free Region, \texttt{PR-1F}]
+There exists an explicit constant $c > 0$ such that for every $s = \sigma + it \in \C$ with $|t| \ge 2$ and $\sigma > 1 - \frac{c}{\ln |t|}$, $\zeta(s) \neq 0$ (\texttt{deLaValleePoussin\_\allowbreak zero\_free\_region\_unconditional}).
+\end{theorem}
+
+On the critical line $s = \tfrac{1}{2} + it$, Wave~4 (\texttt{UpstreamPR\_2B}--\texttt{2G}) formalizes the Jacobi theta modular identity \texttt{jacobiTheta\_\allowbreak neg\_one\_add}, Phragm\'en--Lindel\"of / Gaussian strip decay for $\Lambda(\tfrac{1}{2} + it)$, iterated derivative parity of \texttt{hardyPsi}, and the Mellin--Fourier even-moment contradiction yielding infinitely many real zeros of Hardy's $Z$-function:
+\begin{theorem}[Hardy 1914 Critical-Line Zeros, \texttt{PR-2G}]
+Both \texttt{infinite\_criticalLine\_zeros} ($\forall T \in \R,\,\exists t > T,\,\zeta(\tfrac{1}{2} + it) = 0$) and \texttt{infinite\_hardyZ\_zeros} hold unconditionally in Lean~4 without custom axioms.
+\end{theorem}
+
+\subsection{Holomorphy, Von Koch Remainder, and Prime--Composite Split (\texttt{PR-5A}--\texttt{6C})}
+
+Wave~5 formalizes the exact bridge between zero-freeness in $\operatorname{Re}(s) > 1/2$ and analytic continuation of reciprocal/logarithmic derivatives:
+\begin{itemize}[leftmargin=1.6em,itemsep=2pt]
+\item \texttt{PR-5A} proves \texttt{analyticAt\_inv\_\allowbreak riemannZeta\_of\_ne\_zero}, \texttt{analyticAt\_neg\_deriv\_\allowbreak div\_riemannZeta\_\allowbreak of\_ne\_zero}, and zero reflection \texttt{riemannZeta\_\allowbreak zero\_reflection\_\allowbreak of\_re\_lt\_half}.
+\item \texttt{PR-5B} defines \texttt{chebyshevPsi} and \texttt{VonKochRemainderBound}, formalizing the pole subtraction \texttt{neg\_deriv\_riemannZeta\_\allowbreak div\_eq\_pole\_add\_\allowbreak mellinVonKochRemainder} and proving \texttt{vonKoch\_implies\_rh}.
+\item \texttt{PR-5C} formalizes \texttt{TitchmarshMellinProperty} and proves the bidirectional Mellin Nyman--Beurling equivalence \texttt{riemannHypothesis\_\allowbreak iff\_mellin\_recipFract\_approx} over scaled reciprocal fractional parts $\rho_k(x) = \{1/(kx)\}$.
+\end{itemize}
+\begin{remark}[Epistemic Isolation of Wave~6 Arithmetic Bridges]
+In Wave~6 (\texttt{PR-6A}--\texttt{6C}), every Dirichlet-series identity holds strictly in its verified half-plane ($\operatorname{Re}(s) > 1$ for \texttt{riemannZeta\_eq\_one\_add\_primeZeta\_add\_compositeZeta}), while strip defect inequalities in \texttt{PR-6B} depend explicitly on non-vanishing hypotheses on finite mollified products $\zeta(s) D_N(s) = 1 + \mathrm{stripDefect}_N(s)$, ensuring no unverified continuation into the critical strip is assumed.
+\end{remark}
+Wave~6 complements this analytic layer with symmetry and arithmetic decomposition theorems:
+\begin{itemize}[leftmargin=1.6em,itemsep=2pt]
+\item \texttt{PR-6A} proves $\Lambda'(1 - s) = -\Lambda'(s)$ (\texttt{completedRiemannZeta\_\allowbreak deriv\_one\_sub}), exact vanishing at the reflection center $\Lambda'(1/2) = 0$ (\texttt{completedRiemannZeta\_\allowbreak deriv\_at\_half}), and the Euler/prime--composite split $\zeta(s) = 1 + \mathrm{PrimeZeta}(s) + \mathrm{CompositeZeta}(s)$ with \texttt{equipartition\_fifty\_fifty\_split} at the critical fulcrum.
+\item \texttt{PR-6B} introduces the finite Dirichlet mollifier \texttt{dirichletPoly} and \texttt{stripDefect}, proving \texttt{stripDefect\_\allowbreak norm\_lt\_one\_implies\_ne\_zero} and the explicit critical-line penetration barrier \texttt{critical\_line\_\allowbreak penetration\_lower\_bound}.
+\item \texttt{PR-6C} formalizes the disjoint partition \texttt{nat\_partition\_dichotomy} of $\N$ into $\{0\}$, units $\{1\}$, primes, and composites alongside B\'ezout, Euclid, modulo-6 sieve confinement, Fermat's Little Theorem, Wilson's Theorem, and \texttt{riemannHypothesis\_iff\_strip}.
+\end{itemize}
+
+\section{Exact Smooth-Kernel Elimination and Wavelet/Dipole Bases on $\mathcal{A}_N$}\label{sec:vasyunin}
+
+Let $\rho_k(x) = \{1/(kx)\}$ for $k \in \N_{\ge 1}$ and $x \in (0, 1]$. For a finite coefficient sequence $c : \N \to \R$ supported on $\{1, \dots, N\}$, the Nyman--Beurling--B\'aez--Duarte squared $L^2(0, 1)$ approximation error is
+\begin{equation}\label{eq:nb_error}
+E_N(c) := \int_0^1 \left(1 - \sum_{k=1}^N c_k \rho_k(x)\right)^2 dx.
+\end{equation}
+Define the two linear boundary functionals on $\R^N$:
+\[
+D_1(c, N) := \sum_{k=1}^N \frac{c_k}{k}, \qquad D_0(c, N) := \sum_{k=1}^N c_k,
+\]
+along with the \textbf{affine manifold} $\mathcal{A}_N := \{c \mid D_1(c, N) = 0 \;\land\; D_0(c, N) = 2\}$ and its parallel \textbf{tangent hyperplane} $\mathcal{A}_N^0 := \{h \mid D_1(h, N) = 0 \;\land\; D_0(h, N) = 0\}$.
+
+\subsection{Vasyunin Cross-Integral and Cancellation of $G_{\mathrm{smooth}}$, $\gamma$, $\ln(2\pi)$ (\texttt{PR-3A}--\texttt{3F}, \texttt{4E})}
+
+Wave~1 (\texttt{PR-3A}) evaluates the elementary single-mode $L^1$ and $L^2$ reciprocal fractional-part integrals (\texttt{intervalIntegral\_\allowbreak recipFract\_zero\_to\_one}), while Wave~3 decomposes Vasyunin's cross-integral into a smooth logarithmic matrix plus a pure cotangent matrix:
+\begin{definition}[Vasyunin Cotangent Sums and Matrix]
+For integers $a \ge 1$ and $b \ge 0$, define
+\[
+V(a, b) := \sum_{m=1}^{a-1} \left\{\frac{mb}{a}\right\} \cot\!\left(\frac{\pi m}{a}\right),
+\qquad
+\delta_{\mathrm{cot}}(k) := V(k, 2) - V(k, 1),
+\]
+and define the unweighted and weighted cotangent kernels by
+\[
+K_{\mathrm{cot}}(j, k) := -\frac{\pi}{2}\bigl(V(j, k) + V(k, j)\bigr), \qquad
+g_{j,k}^{\mathrm{cot}} := \frac{K_{\mathrm{cot}}(j, k)}{jk}.
+\]
+\end{definition}
+On the diagonal $j = k$, \texttt{PR-4J} (\texttt{unweightedKCot\_diag}) proves $V(k, k) = 0$ because $\tfrac{mk}{k} \in \Z$, so $K_{\mathrm{cot}}(k, k) = 0$ and $g_{k,k}^{\mathrm{cot}} = 0$. Across Wave~3 (\texttt{UpstreamPR\_3B}--\texttt{3F}, building via Abel summation \texttt{sum\_Ico\_abel}, Stirling asymptotics, and Mittag-Leffler cotangent series), Lean~4 establishes the \textbf{Smooth-Kernel Cancellation Theorem}:
+\begin{theorem}[Pure Cotangent Reduction on $\mathcal{A}_N$, \texttt{PR-3F}, \texttt{PR-4E}]\label{thm:scot_reduction}
+For every $N \ge 2$ and every $c \in \mathcal{A}_N$, all occurrences of $\gamma$, $\ln(2\pi)$, and $G_{\mathrm{smooth}}$ cancel identically in~\eqref{eq:nb_error} (\texttt{affine\_l2\_dist\_\allowbreak eq\_one\_sub\_scot}):
+\begin{equation}\label{eq:e_scot}
+E_N(c) = 1 - S_{\mathrm{cot}}(c, N), \qquad
+S_{\mathrm{cot}}(c, N) := -Q_{\mathrm{cot}}(c, N) := -\sum_{j=1}^N \sum_{k=1}^N c_j c_k g_{j,k}^{\mathrm{cot}}.
+\end{equation}
+On the tangent hyperplane $h \in \mathcal{A}_N^0$, the smooth kernel satisfies $\sum_{j,k=1}^N h_j h_k G_{\mathrm{smooth}}(j, k) = 0$ (\texttt{sum\_GSmooth\_eq\_zero\_of\_mem\_tangent}), yielding the tangent $L^2$-to-cotangent isometry
+\begin{equation}\label{eq:tangent_isom}
+\int_0^1 \left(\sum_{k=1}^N h_k \rho_k(x)\right)^2 dx = Q_{\mathrm{cot}}(h, N) \ge 0 \qquad (\forall h \in \mathcal{A}_N^0).
+\end{equation}
+\end{theorem}
+
+Identity~\eqref{eq:e_scot} turns the analytic $L^2$ approximation problem on $\mathcal{A}_N$ into an exact finite-dimensional quadratic program governed purely by algebraic cotangent sums, even though separated $G_{\mathrm{smooth}}$ and $G_{\mathrm{cot}}$ are individually indefinite (Section~\ref{sec:numerics}).
+
+\subsection{3-Point Wavelets, 4-Point Cumulative Dipoles, and Suffix--Prefix Duality (\texttt{PR-4B}--\texttt{4M})}
+
+The canonical baseline point on $\mathcal{A}_N$ ($N \ge 2$) is the 2-point anchor $c_{\mathrm{base}} = (-2, 4, 0, \dots, 0)$ (\texttt{cBaseAnchor}), which satisfies $D_1(c_{\mathrm{base}}, N) = -2 + 4/2 = 0$, $D_0(c_{\mathrm{base}}, N) = 2$, $S_{\mathrm{cot}}(c_{\mathrm{base}}, N) = 0$, and $E_N(c_{\mathrm{base}}) = 1$ (\texttt{PR-4C}).
+
+\begin{definition}[3-Point Wavelets and 4-Point Cumulative Dipoles]
+For each $r \ge 1$, the $r$-th \emph{harmonic wavelet} $w^{(r)} : \N \to \R$ (\texttt{harmonicWavelet}) has 3-point support on $\{r, r+1, r+2\}$ given by
+\[
+w^{(r)}_r = r, \qquad w^{(r)}_{r+1} = -2(r+1), \qquad w^{(r)}_{r+2} = r+2, \qquad w^{(r)}_k = 0 \text{ otherwise}.
+\]
+For each $m \ge 1$, the $m$-th \emph{cumulative dipole} $v^{(m)} := \sum_{r=1}^m w^{(r)}$ (\texttt{cumulativeDipole}) collapses telescopically (\texttt{PR-4J}) to the 4-point support $\{1, 2, m+1, m+2\}$ (explicitly $v^{(1)} = w^{(1)} = (1, -4, 3)$ and, for $m \ge 2$, $v^{(m)}_1 = 1$, $v^{(m)}_2 = -2$, $v^{(m)}_{m+1} = -(m+1)$, $v^{(m)}_{m+2} = m+2$).
+\end{definition}
+
+Direct summation verifies this four-point collapse of $v^{(m)} = \sum_{r=1}^m w^{(r)}$: at $k=1$, only $r=1$ contributes $+1$; at $k=2$, $r=1$ contributes $-4$ and $r=2$ contributes $+2$, summing to $-2$; at interior $3 \le k \le m$, $r=k-2, k-1, k$ contribute $k - 2k + k = 0$; at $k=m+1$, $r=m-1, m$ contribute $-(m+1)$; and at $k=m+2$, $r=m$ contributes $+(m+2)$.
+
+Because $\sum_{k} w^{(r)}_k / k = 1 - 2 + 1 = 0$ and $\sum_{k} w^{(r)}_k = r - 2(r+1) + (r+2) = 0$, every $w^{(r)}$ and $v^{(m)}$ ($m+2 \le N$) belongs to $\mathcal{A}_N^0$. Moreover, Wave~3 (\texttt{PR-4K}--\texttt{4L}) proves \textbf{general-$N$ basis completeness}:
+\begin{theorem}[Completeness and Suffix--Prefix Duality, \texttt{PR-4K}, \texttt{PR-4L}]
+For every $N \ge 2$ and every $h \in \mathcal{A}_N^0$, on $\{1, \dots, N\}$,
+\[
+h = \sum_{m=1}^{N-2} \alpha_m(h) v^{(m)}, \qquad
+\alpha_m(h) := \sum_{j=m+2}^N \frac{h_j}{j} = -\sum_{j=1}^{m+1} \frac{h_j}{j} \quad (\text{\texttt{dipoleCoord}}),
+\]
+and every $c \in \mathcal{A}_N$ decomposes as $c = c_{\mathrm{base}} + \sum_{m=1}^{N-2} \alpha_m(c) v^{(m)}$ with $c_1 = -2 + \sum_{m=1}^{N-2} \alpha_m(c)$ and $h = c - c_{\mathrm{base}} \in \mathcal{A}_N^0$.
+\end{theorem}
+
+Crucially, because each $v^{(m)}$ has only 4 nonzero entries regardless of $N$, the cumulative dipole Gram matrix $\widetilde{G}_{a,b} := Q_{\mathrm{cot}}(v^{(a)}, v^{(b)})$ (\texttt{dipoleGramEntry a b}) is \textbf{completely $N$-independent}:
+\begin{equation}\label{eq:dipole_gram_def}
+\widetilde{G}_{a,b} = \frac{\pi}{2}\bigl(\delta_{\mathrm{cot}}(a+2)-\delta_{\mathrm{cot}}(a+1)+\delta_{\mathrm{cot}}(b+2)-\delta_{\mathrm{cot}}(b+1)\bigr) + P(a, b),
+\end{equation}
+where $P(a, b)$ is the four-point pure plaque kernel studied in Section~\ref{sec:plaque}. On the diagonal $a=b=m$, \texttt{PR-4M} collapses~\eqref{eq:dipole_gram_def} to a single adjacent pair $\widetilde{G}_{m,m} = \pi(\delta_{\mathrm{cot}}(m+2) - \delta_{\mathrm{cot}}(m+1)) - 2 K_{\mathrm{cot}}(m+1, m+2) \ge 0$ (\texttt{dipoleGramEntry\_diag\_nonneg}).
+
+\section{Pure Plaque Reduction, Dirichlet Anchoring ($c_1 = -1$), and the Mellin $L^2$ Criterion}\label{sec:plaque}
+
+Isolating the rank-two boundary difference terms in~\eqref{eq:dipole_gram_def} reveals an algebraic cancellation across the entire affine manifold $\mathcal{A}_N$.
+
+\subsection{Pure 4-Point Plaque Extraction and Anchor-Drive Cancellation (\texttt{PR-7C}--\texttt{8A})}
+
+Define the \textbf{pure plaque kernel} $P(a, b)$ (\texttt{dipolePlaqueEntry a b}), the \textbf{linear cotangent drive} $L_{\mathrm{cot}}(h, N)$ (\texttt{linearCotDrive}), and the \textbf{pure plaque quadratic form} $\mathcal{P}_N(h)$ (\texttt{dipolePlaqueForm}):
+\[
+P(a, b) := K_{\mathrm{cot}}(a+1, b+1) - K_{\mathrm{cot}}(a+1, b+2) - K_{\mathrm{cot}}(a+2, b+1) + K_{\mathrm{cot}}(a+2, b+2),
+\]
+\[
+L_{\mathrm{cot}}(h, N) := \sum_{k=1}^N \frac{h_k}{k}\delta_{\mathrm{cot}}(k) = \sum_{m=1}^{N-2} \alpha_m(h)\bigl(\delta_{\mathrm{cot}}(m+2)-\delta_{\mathrm{cot}}(m+1)\bigr),
+\]
+\[
+\mathcal{P}_N(h) := \sum_{a=1}^{N-2}\sum_{b=1}^{N-2} \alpha_a(h)\alpha_b(h) P(a, b).
+\]
+Using $\delta_{\mathrm{cot}}(c - c_{\mathrm{base}}) \mapsto \alpha_m(c)$ and $h_1 = c_1 + 2 = \sum_{m=1}^{N-2}\alpha_m(c)$, Wave~7 (\texttt{PR-7C}) and Wave~8 (\texttt{PR-8A}) prove the master factorization:
+\begin{theorem}[Global Anchor-Drive Cancellation and Cauchy--Schwarz Floor, \texttt{PR-7C}, \texttt{PR-8A}]\label{thm:anchor_cancel}
+For every $N \ge 2$ and $h \in \mathcal{A}_N^0$, $Q_{\mathrm{cot}}(h, N) = \pi h_1 L_{\mathrm{cot}}(h, N) + \mathcal{P}_N(h)$. Consequently, for every $c \in \mathcal{A}_N$ with tangent shift $h = c - c_{\mathrm{base}}$, the $2\pi$ drive of $c_{\mathrm{base}}$ cancels against $-c_1 \pi$:
+\begin{equation}\label{eq:scot_plaque}
+S_{\mathrm{cot}}(c, N) = -\pi c_1 L_{\mathrm{cot}}(h, N) - \mathcal{P}_N(h),
+\qquad
+E_N(c) = 1 + \pi c_1 L_{\mathrm{cot}}(h, N) + \mathcal{P}_N(h).
+\end{equation}
+Furthermore, the tangent Cauchy--Schwarz inequality $(\pi L_{\mathrm{cot}}(h, N))^2 \le Q_{\mathrm{cot}}(h, N)$ (\texttt{PR-4F}) implies unconditionally for every $h \in \mathcal{A}_N^0$:
+\begin{equation}\label{eq:plaque_cs}
+\bigl(\pi L_{\mathrm{cot}}(h, N) - \tfrac{h_1}{2}\bigr)^2 - \frac{h_1^2}{4} \le \mathcal{P}_N(h),
+\qquad
+\text{so in particular} \quad \mathcal{P}_N(h) \ge -\frac{h_1^2}{4}.
+\end{equation}
+\end{theorem}
+
+\subsection{Dirichlet Anchoring ($c_1 = -1$) and 2D Discrete Abel Telescoping (\texttt{PR-8B}--\texttt{8C})}
+
+The presence of the unconstrained factor $c_1$ in~\eqref{eq:scot_plaque} accounts for negative values of $\mathcal{P}_N(h)$ on $\mathcal{A}_N^0$ when $c_1 \neq -1$. Wave~8 (\texttt{PR-8B}) introduces the \textbf{Dirichlet-anchored affine slice}
+\[
+\mathcal{A}_N^{\mathrm{dir}} := \{c \in \mathcal{A}_N \mid c_1 = -1\} \qquad (\text{\texttt{IsDirichletAnchored c N}}),
+\]
+populated explicitly at every $N \ge 3$ by the $3$-term anchor $c_{\mathrm{dir}} = (-1, 0, 3, 0, \dots) = c_{\mathrm{base}} + w^{(1)}$ (\texttt{cDirichletAnchor}). On $c \in \mathcal{A}_N^{\mathrm{dir}}$, we have $h_1 = c_1 + 2 = 1$ identically, turning~\eqref{eq:scot_plaque} and~\eqref{eq:plaque_cs} into an exact positivity law:
+\begin{theorem}[Dirichlet Unit-Drive Plaque Positivity \& 2D Telescoping, \texttt{PR-8B}, \texttt{PR-8C}]
+For every $c \in \mathcal{A}_N^{\mathrm{dir}}$ ($N \ge 2$) and $h = c - c_{\mathrm{base}}$:
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+\item $\mathcal{P}_N(h) \ge -\tfrac{1}{4}$ globally, and $\mathcal{P}_N(h) \ge \bigl(\pi L_{\mathrm{cot}}(h, N)\bigr)^2 - \pi L_{\mathrm{cot}}(h, N) \ge 0$ whenever $\pi L_{\mathrm{cot}}(h, N) \ge 1$.
+\item On the \textbf{unit-drive Dirichlet hyperplane} $\pi L_{\mathrm{cot}}(h, N) = 1$, the Nyman--Beurling $L^2$ error collapses purely to the pure plaque form (\texttt{unit\_drive\_dirichlet\_\allowbreak plaque\_eq\_l2\_dist}):
+\begin{equation}\label{eq:unit_drive_l2}
+E_N(c) = 1 - \pi L_{\mathrm{cot}}(h, N) + \mathcal{P}_N(h) = \mathcal{P}_N(h) \ge 0.
+\end{equation}
+\item Summed against $P(a, b)$, 2D discrete Abel telescoping compresses the $4$-point double sum over $1 \le a, b \le N-2$ into a boundary-subtracted bilinear kernel over $3 \le j, k \le N$ (\texttt{dipolePlaqueForm\_\allowbreak sub\_cBaseAnchor\_\allowbreak eq\_telescoped\_kernel}):
+\begin{equation}\label{eq:telescoped}
+\mathcal{P}_N(c) = \sum_{j=3}^N \sum_{k=3}^N \frac{c_j c_k}{jk}\bigl(K_{\mathrm{cot}}(j, k) - K_{\mathrm{cot}}(j, 2) - K_{\mathrm{cot}}(2, k)\bigr),
+\end{equation}
+using \texttt{unweightedKCot\_two\_two\_eq\_zero} ($K_{\mathrm{cot}}(2, 2) = 0$).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Derivation Sketch of Pure Plaque Cauchy--Schwarz and Telescoping]
+Substituting $h_1 = 1$ into Theorem~\ref{thm:anchor_cancel} converts $(\pi L_{\mathrm{cot}}(h,N) - h_1/2)^2 - h_1^2/4 \le \mathcal{P}_N(h)$ immediately into $(\pi L_{\mathrm{cot}}(h,N) - 1/2)^2 - 1/4 \le \mathcal{P}_N(h)$. Factoring the left-hand side at unit drive $\pi L_{\mathrm{cot}}(h,N) = 1$ proves $\mathcal{P}_N(h) \ge 0$, matching $E_N(c) = 1 + c_1 \pi L_{\mathrm{cot}}(h,N) + \mathcal{P}_N(h) = \mathcal{P}_N(h)$ identically. For~\eqref{eq:telescoped}, expanding $P(a,b) = K_{\mathrm{cot}}(a+1,b+1) - K_{\mathrm{cot}}(a+1,b+2) - K_{\mathrm{cot}}(a+2,b+1) + K_{\mathrm{cot}}(a+2,b+2)$ against suffix--prefix dipole coordinates $\alpha_a(c) = -\sum_{j=1}^{a+1} c_j/j = \sum_{j=a+2}^N c_j/j$ shifts summation indices along both axes simultaneously, leaving only interior modes $j, k \ge 3$ minus rank-one boundary slices evaluated at index $2$ (since $c_2$ cancels identically with $K_{\mathrm{cot}}(2,2)=0$).
+\end{proof}
+
+\subsection{Mellin Energy Coupling and the Pure Plaque RH Criterion (\texttt{PR-7A}, \texttt{PR-8D})}
+
+Combining \texttt{PR-5C} (\texttt{TitchmarshMellinProperty}), \texttt{PR-7A} (\texttt{integral\_Ioc\_sq\_mellinWeight}: $\int_0^1 x^{2\sigma - 2}\,dx = (2\sigma - 1)^{-1}$ for $\sigma > 1/2$), and~\eqref{eq:unit_drive_l2} yields the exact off-line zero floor and conditional RH implication in \texttt{PR-8D}:
+\begin{theorem}[Pure Plaque Vanishing Criterion for RH, \texttt{PR-8D}]\label{thm:pure_plaque_rh}
+Let \texttt{PurePlaqueVanishingCriterion} assert that for every $\varepsilon > 0$ there exist $N \ge 2$ and $c \in \mathcal{A}_N^{\mathrm{dir}}$ satisfying $\pi L_{\mathrm{cot}}(c - c_{\mathrm{base}}, N) = 1$ and $\mathcal{P}_N(c - c_{\mathrm{base}}) < \varepsilon$ (equivalently via~\eqref{eq:telescoped}, \texttt{TelescopedPlaqueVanishingCriterion}). Then:
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+\item Any off-line zero $\zeta(s) = 0$ with $1/2 < \operatorname{Re}(s) < 1$ imposes the strict lower floor $\frac{2\operatorname{Re}(s) - 1}{\|s\|^2} \le \mathcal{P}_N(c - c_{\mathrm{base}})$ across all unit-drive Dirichlet vectors (\texttt{purePlaque\_floor\_of\_zeta\_zero}).
+\item Under \texttt{TitchmarshMellinProperty}, \texttt{PurePlaqueVanishingCriterion} implies \texttt{\_root\_.\allowbreak RiemannHypothesis} (\texttt{riemannHypothesis\_\allowbreak of\_purePlaque\_vanishing}).
+\end{enumerate}
+\end{theorem}
+
+\section{Exact Closed-Form Radical Reciprocity and Finite-$N$ Optimality Certificates ($N = 3, 4, 5, 6$)}\label{sec:certificates}
+
+While numerical solvers track $N$ to large truncations, the Lean~4 corpus proves exact algebraic closed forms across $N \in \{3, 4, 5, 6\}$ using no approximations. Table~\ref{tab:exact_certs} compiles all certified evaluations, exact algebraic fields, and corresponding Lean~4 module theorems.
+
+\begin{table}[ht]
+\centering
+\caption{Summary of exact closed-form Lean~4 certificates across $N \in \{3, 4, 5, 6\}$ (\texttt{NO\_RH\_PROOF = TRUE}).}
+\label{tab:exact_certs}
+\vspace{4pt}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{@{}llll@{}}
+\toprule
+$N$ & Exact Quantity / Theorem & Closed Form (Verified in Lean~4) & Module \\
+\midrule
+$3$ & $\widetilde{G}_{11} = Q_{\mathrm{cot}}(v^{(1)}, 3)$ & $\pi / \sqrt{3}$ (\texttt{dipoleGramEntry\_one\_one\_eq}) & \texttt{PR-4E / 4M} \\
+$4$ & $S_{\mathrm{cot}}(c_{\mathrm{mob}}^{(4)}, 4)$ & $\bigl(\tfrac{119}{576} + \tfrac{54467}{389376\sqrt{3}}\bigr)\pi \approx 0.903860$ & \texttt{PR-3G} \\
+$4$ & $S_{\mathrm{cot}}(c_{\mathrm{var}}^{(4)}, 4)$ & $\bigl(\tfrac{319}{1600} + \tfrac{23}{150\sqrt{3}}\bigr)\pi \approx 0.904443$ & \texttt{PR-3H} \\
+$4$ & Global $\mathcal{A}_4$ KKT Optimum & $\tfrac{19+\sqrt{3}}{72}\pi \approx 0.904606$ (\texttt{cGlobalOptFour}) & \texttt{PR-4G} \\
+$4$ & $k=4$ Composite Overshoot & $\alpha_2^* = \tfrac{5-\sqrt{3}}{12} < \tfrac{7}{24} = \alpha_2(c_{\mathrm{mob}}^{(4)})$ & \texttt{PR-4L} \\
+$4$ & $\mathcal{A}_4^{\mathrm{dir}}$ ($c_1=-1$) Optimum & $\tfrac{31}{108}\pi \approx 0.901753$ (\texttt{cDirichletOptFour}) & \texttt{PR-8E} \\
+$4$ & Diagonal Gram Entries & $\widetilde{G}_{12} = \widetilde{G}_{21} = 0$, \; $\widetilde{G}_{22} = (1 - \tfrac{1}{\sqrt{3}})\pi$ & \texttt{PR-4M} \\
+$5$ & $(\Z/5\Z)^\times$ Off-Diagonal & $\widetilde{G}_{23} = \widetilde{G}_{32} = 0$ (\texttt{dipoleGramEntry\_two\_three\_eq\_zero}) & \texttt{PR-4I / 8F} \\
+$5$ & $(\Z/5\Z)^\times$ Gram Values & $\widetilde{G}_{13} = \pi\cot(\tfrac{2\pi}{5})$, \; $\widetilde{G}_{33} = \pi\bigl(\cot\tfrac{\pi}{5} + \cot\tfrac{2\pi}{5} - 1\bigr)$ & \texttt{PR-8F} \\
+$6$ & $a=6$ Row & $\delta_{\mathrm{cot}}(6) = \tfrac{5}{3\sqrt{3}} \in \Q(\sqrt{3})$, \; $K_{\mathrm{cot}}(3, 6) = 0$ & \texttt{PR-8G} \\
+$6$ & $N=6$ Cross-Dipole & $\widetilde{G}_{14} = \tfrac{\pi}{\sqrt{3}} - \pi\cot(\tfrac{2\pi}{5})$ & \texttt{PR-8G} \\
+$6$ & Complete 4D Decoupling & $\widetilde{G}_{24} = \widetilde{G}_{42} = 0$ (\texttt{dipoleGramEntry\_two\_four\_eq\_zero}) & \texttt{PR-8G} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Rational Radical Cancellation at $N = 4$ and $(\Z/5\Z)^\times$ Reciprocity at $N = 5$}
+
+Two algebraic phenomena stand out in Wave~8:
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+\item \textbf{Complete $\sqrt{3}$ Radical Cancellation on $\mathcal{A}_4^{\mathrm{dir}}$ (\texttt{PR-8E}):} Although $\alpha_1^{\mathrm{dir}} = \tfrac{1}{2} + \tfrac{1}{3\sqrt{3}}$ and $\alpha_2^{\mathrm{dir}} = \tfrac{1}{2} - \tfrac{1}{3\sqrt{3}}$ live in $\Q(\sqrt{3})$---just like the unconstrained KKT coordinates $\alpha_1^* = \tfrac{2}{3}$, $\alpha_2^* = \tfrac{5 - \sqrt{3}}{12}$ whose optimal score $\tfrac{19+\sqrt{3}}{72}\pi$ retains $\sqrt{3}$---imposing $c_1 = -1$ ($\alpha_1 + \alpha_2 = 1$) forces exact cancellation of all $\sqrt{3}$ terms inside $S_{\mathrm{cot}}$, yielding the pure rational-multiple score $S_{\mathrm{cot}}(c_{\mathrm{dir}}^{(4)}, 4) = \tfrac{31}{108}\pi$.
+\item \textbf{Pentagonal $(\Z/5\Z)^\times$ Reciprocity and $N=6$ Composite Return to $\Q(\sqrt{3})$ (\texttt{PR-8F}--\texttt{8G}):} At $N=5$, the Vasyunin sums $V(5, b)$ introduce $\cot(\pi/5)$ and $\cot(2\pi/5)$, yet additive reciprocity $V(5,1) + V(5,4) = 0$ and $V(5,2) + V(5,3) = 0$ kills $\widetilde{G}_{23} = 0$. At $N=6$, all $a=6$ cotangent terms collapse back into $\Q(\sqrt{3})$ ($\delta_{\mathrm{cot}}(6) = \tfrac{5}{3\sqrt{3}}$), while multiplicative divisibility forces $V(2,6) = V(3,6) = V(4,6) = 0$ and $K_{\mathrm{cot}}(3, 6) = 0$. By the horizontal telescoping identity \texttt{dipoleGramEntry\_add\_succ\_right}, this combines with $\widetilde{G}_{23} = 0$ to decouple the second cumulative dipole completely across the first four dimensions: $\widetilde{G}_{21} = \widetilde{G}_{23} = \widetilde{G}_{24} = 0$.
+\end{enumerate}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=1.0]
+  % Left: 2D A_4 dipole phase portrait
+  \begin{scope}[xshift=0cm, yshift=0cm]
+    % Coordinate mapping: x = (a1 - 0.58) * 38, y = (a2 - 0.24) * 58
+    \draw[->] (0,0) -- (6.2,0) node[right,font=\scriptsize] {$\alpha_1$};
+    \draw[->] (0,0) -- (0,5.2) node[above,font=\scriptsize] {$\alpha_2$};
+    % Ticks on x: 0.60 -> 0.76, 0.65 -> 2.66, 0.70 -> 4.56
+    \foreach \val/\pos in {0.60/0.76, 0.65/2.66, 0.70/4.56} {
+      \draw (\pos,0) -- (\pos,-0.08) node[below,font=\tiny] {\val};
+    }
+    % Ticks on y: 0.25 -> 0.58, 0.28 -> 2.32, 0.31 -> 4.06
+    \foreach \val/\pos in {0.25/0.58, 0.28/2.32, 0.31/4.06} {
+      \draw (0,\pos) -- (-0.08,\pos) node[left,font=\tiny] {\val};
+    }
+    % Contours centered at cGlobalOptFour: (0.6667, 0.2723) -> (3.29, 1.87)
+    \draw[blue!35,thin] (3.29,1.87) ellipse [x radius=0.95, y radius=0.80];
+    \draw[blue!50,thin] (3.29,1.87) ellipse [x radius=1.90, y radius=1.60];
+    \draw[blue!65,thin] (3.29,1.87) ellipse [x radius=2.75, y radius=2.35];
+    % Dirichlet line a1 + a2 = 1 => at a1=0.69245, a2=0.30755; slope in physical plot: da2/da1 = -1 => dy/dx = -58/38 = -1.526
+    % Range a1=0.675 (a2=0.325 -> x=3.61, y=4.93) to a1=0.725 (a2=0.275 -> x=5.51, y=2.03)
+    \draw[teal!80!black,thick,dashed] (3.61,4.93) -- (5.51,2.03);
+    \node[teal!80!black,font=\tiny,right] at (4.55,3.75) {$c_1=-1$};
+    \node[teal!80!black,font=\tiny,right] at (4.55,3.45) {($\alpha_1+\alpha_2=1$)};
+    % Points:
+    % cGlobalOptFour: (0.6667, 0.2723) -> (3.29, 1.87)
+    \fill[blue!80!black] (3.29,1.87) circle (2.2pt);
+    \node[blue!80!black,font=\tiny,below] at (3.29,1.82) {$c_{\mathrm{opt}}^{(4)}$};
+    % cDirichletOptFour: (0.6925, 0.3075) -> (4.27, 3.92)
+    \fill[teal!80!black] (4.27,3.92) circle (2.2pt);
+    \node[teal!80!black,font=\tiny,right] at (4.30,4.08) {$c_{\mathrm{dir}}^{(4)}$ ($\tfrac{31}{108}\pi$)};
+    % cVariationalFour: (0.675, 0.275) -> (3.61, 2.03)
+    \fill[orange!85!black] (3.61,2.03) circle (2.0pt);
+    \node[orange!85!black,font=\tiny,right] at (3.65,2.08) {$c_{\mathrm{var}}^{(4)}$};
+    % cCandidateMobius 4: (0.6394, 0.2917) -> (2.26, 3.00)
+    \fill[red!75!black] (2.26,3.00) circle (2.0pt);
+    \node[red!75!black,font=\tiny,left] at (2.22,3.05) {$c_{\mathrm{mob}}^{(4)}$};
+    \node[font=\scriptsize,below] at (3.1,-0.55) {(a) $N=4$ $(\alpha_1,\alpha_2)$ phase portrait};
+  \end{scope}
+
+  % Right: 3-point wavelet vs 4-point cumulative dipole telescoping stems
+  \begin{scope}[xshift=8.2cm, yshift=0.3cm]
+    \draw[->] (0.3,2.3) -- (6.3,2.3) node[right,font=\scriptsize] {$k$};
+    \draw[->] (0.3,0) -- (0.3,4.7) node[above,font=\scriptsize] {coeff / $4$};
+    \foreach \k in {1,2,3,4,5} {
+      \draw (\k,2.3) -- (\k,2.22) node[below,font=\tiny] {\k};
+    }
+    % Wavelets w^(1) = (1,-4,3), w^(2) = (0,2,-6,4), w^(3) = (0,0,3,-8,5) (scaled y = 2.3 + c*0.26)
+    % Plot cumulative dipole v^(3) = w^(1)+w^(2)+w^(3) = (1, -2, 0, -4, 5)
+    \foreach \k/\v in {1/0.26, 2/-0.52, 3/0.0, 4/-1.04, 5/1.30} {
+      \draw[blue!75!black,ultra thick] (\k,2.3) -- (\k,2.3+\v);
+      \fill[blue!75!black] (\k,2.3+\v) circle (2.1pt);
+    }
+    % Mark interior cancellation at k=3
+    \draw[red!75!black,dashed] (3,1.2) -- (3,3.5);
+    \node[red!75!black,font=\tiny,above] at (3,3.52) {interior $0$};
+    \node[blue!75!black,font=\tiny,above] at (5,3.62) {$+5$};
+    \node[blue!75!black,font=\tiny,below] at (4,1.22) {$-4$};
+    \node[blue!75!black,font=\tiny,above] at (1,2.60) {$+1$};
+    \node[blue!75!black,font=\tiny,below] at (2,1.74) {$-2$};
+    \node[font=\scriptsize,below] at (3.3,-0.85) {(b) 4-point dipole $v^{(3)} = w^{(1)}+w^{(2)}+w^{(3)}$};
+  \end{scope}
+\end{tikzpicture}
+\caption{Geometric structure on $\mathcal{A}_N$: (a) $N=4$ elliptical $E_4$ level sets in cumulative dipole coordinates $(\alpha_1, \alpha_2)$, comparing `cGlobalOptFour`, `cDirichletOptFour`, `cVariationalFour`, and `cCandidateMobius 4` along $c_1=-1$; (b) exact interior cancellation collapsing $\sum_{r=1}^3 w^{(r)}$ to the 4-point cumulative dipole $v^{(3)} = (1,-2,0,-4,5)$.}
+\label{fig:phase_and_stems}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[xscale=0.16,yscale=38]
+  \draw[->] (2,0) -- (67,0) node[right,font=\small] {$N$};
+  \draw[->] (2,0) -- (2,0.122) node[above,font=\small] {$L^2$ Energy / Plaque Margin};
+  \foreach \y in {0.02,0.04,0.06,0.08,0.10} {
+    \draw[gray!22] (2,\y) -- (65,\y);
+    \node[left,font=\scriptsize] at (2,\y) {\y};
+  }
+  \foreach \x in {4,8,12,16,24,32,48,64} {
+    \draw (\x,0) -- (\x,-0.0028) node[below,font=\scriptsize] {\x};
+  }
+  \draw[red!75!black,thick,dashed]
+    (4,0.109836) -- (8,0.033308) -- (12,0.027108) -- (16,0.022875) --
+    (24,0.019456) -- (32,0.017171) -- (48,0.014025) -- (64,0.013351);
+  \foreach \p in {(4,0.109836),(8,0.033308),(12,0.027108),(16,0.022875),(24,0.019456),(32,0.017171),(48,0.014025),(64,0.013351)} {
+    \fill[red!75!black] \p circle[x radius=0.45,y radius=0.0018];
+  }
+  \draw[teal!75!black,thick]
+    (4,0.098247) -- (8,0.025908) -- (12,0.021616) -- (16,0.018833) --
+    (24,0.016312) -- (32,0.014681) -- (48,0.012317) -- (64,0.011787);
+  \draw[blue!75!black,thick]
+    (4,0.095394) -- (8,0.024715) -- (12,0.020509) -- (16,0.017959) --
+    (24,0.015578) -- (32,0.014085) -- (48,0.011893) -- (64,0.011392);
+  \draw[fill=white,draw=gray!60] (30,0.068) rectangle (65,0.114);
+  \draw[red!75!black,thick,dashed] (32,0.103) -- (37,0.103);
+  \node[right,font=\scriptsize] at (38,0.103) {Unit-drive Dirichlet $E_{\mathrm{unit}} = \mathcal{P}_{\mathrm{unit}}$};
+  \draw[teal!75!black,thick] (32,0.089) -- (37,0.089);
+  \node[right,font=\scriptsize] at (38,0.089) {Dirichlet-anchored $E_{\mathrm{dir}}$ ($c_1 = -1$)};
+  \draw[blue!75!black,thick] (32,0.075) -- (37,0.075);
+  \node[right,font=\scriptsize] at (38,0.075) {Unconstrained $\mathcal{A}_N$ optimum $E_{\mathrm{opt}}$};
+\end{tikzpicture}
+\caption{Eighty-five-digit optimization trajectories across $N \in [4, 64]$ comparing unconstrained $\mathcal{A}_N$ minimization ($E_{\mathrm{opt}}$), Dirichlet anchoring ($E_{\mathrm{dir}}$), and the pure unit-drive Dirichlet slice ($E_{\mathrm{unit}} = \mathcal{P}_{\mathrm{unit}}$).}
+\label{fig:trajectories}
+\end{figure}
+
+\section{High-Precision Numerical Diagnostics and the Open $N \to \infty$ Frontier}\label{sec:numerics}
+
+To stress-test all formal identities and quantify the finite-$N$ asymptotic barrier, two 85-digit \texttt{mpmath} laboratories (\texttt{layer\_c\_\allowbreak dipole\_\allowbreak asymptotic\_\allowbreak lab.py} and \texttt{layer\_c\_\allowbreak dirichlet\_\allowbreak locked\_\allowbreak plaque\_\allowbreak lab.py}) and 192-/512-bit \texttt{flint.arb} audits were executed across $N \le 750$.
+
+\subsection{85-Digit Unconstrained vs.\ Dirichlet-Anchored Trajectories ($N \in [4, 64]$)}
+
+Table~\ref{tab:master_bench} reports the consolidated 85-digit measurements. Across every $N \in \{4, 8, 12, 16, 24, 32, 48, 64\}$:
+\begin{itemize}[leftmargin=1.6em,itemsep=2pt]
+\item The 2D discrete Abel telescoping identity~\eqref{eq:telescoped} holds with maximum error $2.69 \times 10^{-86}$, and the anchor-drive cancellation law~\eqref{eq:scot_plaque} holds with maximum error $2.41 \times 10^{-85}$.
+\item Unconstrained $c_{1,\mathrm{opt}}^{(N)}$ moves monotonically upward from $-0.9539$ ($N=8$) to $-0.9725$ ($N=64$), tracking the Dirichlet lock $c_1 = -1$ closely so that the energy gap between $E_{\mathrm{dir}}^{(64)} = 0.01178662$ and $E_{\mathrm{opt}}^{(64)} = 0.01139247$ narrows to $3.46\%$.
+\item Simultaneously, the ratio between diagonal and off-diagonal cumulative-dipole energies $O_N / D_N$ remains order unity ($0.567$ to $0.679$), highlighting substantial coherent off-diagonal coupling beyond $N=4$.
+\end{itemize}
+
+\begin{table}[ht]
+\centering
+\caption{Consolidated 85-digit \texttt{mpmath} benchmark ($N \in [4, 64]$, \texttt{NO\_RH\_PROOF = TRUE}).}
+\label{tab:master_bench}
+\vspace{4pt}
+\scriptsize
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{@{}rccccccc@{}}
+\toprule
+$N$ & $c_{1,\mathrm{opt}}^{(N)}$ & $E_{\mathrm{opt}}^{(N)}$ & $E_{\mathrm{dir}}^{(N)}$ & $E_{\mathrm{unit}}^{(N)}$ & $D_N$ & $O_N$ & $O_N / D_N$ \\
+\midrule
+$4$  & $-1.061004$ & $0.09539363$ & $0.09824655$ & $0.10983572$ & $0.90460637$ & $0.00000000$ & $0.0000$ \\
+$8$  & $-0.953855$ & $0.02471483$ & $0.02590792$ & $0.03330814$ & $0.62232598$ & $0.35295919$ & $0.5672$ \\
+$12$ & $-0.954801$ & $0.02050866$ & $0.02161614$ & $0.02710830$ & $0.58343184$ & $0.39605950$ & $0.6788$ \\
+$16$ & $-0.959532$ & $0.01795885$ & $0.01883278$ & $0.02287503$ & $0.59146383$ & $0.39057731$ & $0.6604$ \\
+$24$ & $-0.962810$ & $0.01557784$ & $0.01631197$ & $0.01945589$ & $0.59400550$ & $0.39041666$ & $0.6573$ \\
+$32$ & $-0.966387$ & $0.01408463$ & $0.01468093$ & $0.01717137$ & $0.60040868$ & $0.38550668$ & $0.6421$ \\
+$48$ & $-0.971535$ & $0.01189257$ & $0.01231702$ & $0.01402525$ & $0.61577328$ & $0.37233415$ & $0.6047$ \\
+$64$ & $-0.972540$ & $0.01139247$ & $0.01178662$ & $0.01335088$ & $0.62002332$ & $0.36858421$ & $0.5945$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Sparse BNBD Obstructions, 512-Bit Unwrapped Schur Audit, and Open Limit}\label{sec:open_frontier}
+
+Accompanying high-precision interval diagnostics (detailed in Paper~H) isolate two distinct finite-section computational obstructions:
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+\item \textbf{Isolated Kernel Indefiniteness \& BBLR Floor:} At $50$-digit and $192$-bit \texttt{flint.arb} precision, separated $G_{\mathrm{smooth}}$ ($24/50$ negative eigenvalues at $N=50$) and separated $G_{\mathrm{cot}}$ ($2/50$ negative eigenvalues, $\lambda_{\min} = -9.8002$ on \texttt{omp\_plus\_swap\_50}) are both indefinite; positivity holds strictly for $G_{\mathrm{smooth}} + G_{\mathrm{cot}}$ or on $\mathcal{A}_N^0$. Greedy sparse BNBD compression ($|S|=50$) lowers $d_S^2$ to $0.00973769$, still above the B\'aez-Duarte--Balazard--Landreau--Saias (BBLR) barrier $0.00850088$.
+\item \textbf{512-Bit Unwrapped Weil Schur Audit ($L=1$, $N=750$):} On shifted Legendre bases, eigenvalues decay super-exponentially ($\lambda_{\min}$ drops from $1.8157 \times 10^{-4}$ at $N=4$ to $4.3430 \times 10^{-26}$ at $N=50$). Switching to $512$-bit \texttt{flint.arb} unwrapped congruence resolves IEEE \texttt{float64} and interval-wrapping pathologies, certifying $12/12$ positive $LDL^T$ pivots ($\min_k \underline{D}_k = +2.3269 \times 10^{-22}$) across the $750$-mode $L=1$ truncation.
+\end{enumerate}
+
+\textbf{Open Millennium Frontier (\texttt{NO\_RH\_PROOF = TRUE}):} By Theorem~\ref{thm:pure_plaque_rh}, establishing the Riemann Hypothesis via the pure plaque program reduces completely to proving—or refuting—the asymptotic cancellation statement:
+\[
+\begin{aligned}
+\forall \varepsilon > 0,\;\exists N \ge 2,\;\exists c \in \mathcal{A}_N^{\mathrm{dir}} \text{ with } & \pi L_{\mathrm{cot}}(c - c_{\mathrm{base}}, N) = 1 \text{ and} \\
+& \sum_{j,k=3}^N \frac{c_j c_k}{jk}\bigl(K_{\mathrm{cot}}(j,k) - K_{\mathrm{cot}}(j,2) - K_{\mathrm{cot}}(2,k)\bigr) < \varepsilon.
+\end{aligned}
+\]
+As $N$ grows from $4$ to $64$, $E_{\mathrm{unit}}^{(N)} = \mathcal{P}_{\mathrm{unit}}^{(N)}$ decays from $0.1098$ to $0.01335$, following the slow logarithmic profile expected from Nyman--Beurling theory. Bridging from $N \le 64$ to arbitrary $\varepsilon > 0$ remains strictly open.
+
+\section{Complete 50-Module Lean~4 Verification Ledger and Reproducibility Guide}\label{sec:ledger}
+
+Table~\ref{tab:50_modules} indexes all 50 Lean~4.35 modules in \texttt{RiemannBlueprint/\allowbreak RiemannBlueprint/\allowbreak UpstreamPRs/} (paired with the companion 14-hub Zenodo archive in Table~\ref{tab:14_hubs}). Every module compiles cleanly under \texttt{lake build} (\texttt{0} errors, \texttt{0} warnings), passes all 15 Mathlib/Batteries \texttt{\#lint} checks (\texttt{0} errors), and uses exclusively standard Lean axioms \texttt{[propext, Classical.choice, Quot.sound]} (denoted \texttt{Std} below).
+
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{longtable}{@{}ll>{\raggedright\arraybackslash}p{5.2cm}>{\raggedright\arraybackslash}p{6.8cm}cc@{}}
+\caption{Complete 50-module Lean~4.35 verification ledger (\texttt{UpstreamPR\_\allowbreak 1A}--\texttt{8G}, axioms \texttt{[propext, Classical.choice, Quot.sound]}).}
+\label{tab:50_modules}\\
+\toprule
+ID & W & Module File & Key Formalized Theorems & L & Ax \\
+\midrule
+\endfirsthead
+\toprule
+ID & W & Module File & Key Formalized Theorems & L & Ax \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{1A} & 1 & \texttt{UpstreamPR\_\allowbreak 1A\_\allowbreak CriticalLineZeros.lean} & \texttt{criticalLine\_\allowbreak re}, \texttt{completedRiemannZeta\_\allowbreak criticalLine\_\allowbreak neg} & 131 & Std \\
+\texttt{3A} & 1 & \texttt{UpstreamPR\_\allowbreak 3A\_\allowbreak VasyuninIntegral.lean} & \texttt{intervalIntegral\_\allowbreak recipFract\_\allowbreak zero\_\allowbreak to\_\allowbreak one} & 250 & Std \\
+\texttt{4A} & 1 & \texttt{UpstreamPR\_\allowbreak 4A\_\allowbreak AffineLagrangeProjection.lean} & \texttt{D0}, \texttt{D1}, \texttt{projectAffine}, \texttt{lambda0}, \texttt{lambda1} & 191 & Std \\
+\texttt{1B} & 2 & \texttt{UpstreamPR\_\allowbreak 1B\_\allowbreak ZetaPoleAndRepulsion.lean} & \texttt{riemannZeta\_\allowbreak norm\_\allowbreak cubed\_\allowbreak fourth\_\allowbreak mul\_\allowbreak ge\_\allowbreak one} & 180 & Std \\
+\texttt{1C} & 2 & \texttt{UpstreamPR\_\allowbreak 1C\_\allowbreak ZetaRemainderSeries.lean} & \texttt{zetaRemainderTerm\_\allowbreak eq\_\allowbreak integral}, \texttt{norm\_\allowbreak zetaRemainderTerm\_\allowbreak le} & 166 & Std \\
+\texttt{1D} & 2 & \texttt{UpstreamPR\_\allowbreak 1D\_\allowbreak ZetaPartialSummation.lean} & \texttt{riemannZeta\_\allowbreak partial\_\allowbreak summation} & 174 & Std \\
+\texttt{1E} & 2 & \texttt{UpstreamPR\_\allowbreak 1E\_\allowbreak ZetaLogStripBound.lean} & \texttt{tsum\_\allowbreak rpow\_\allowbreak neg\_\allowbreak sub\_\allowbreak one\_\allowbreak le}, \texttt{norm\_\allowbreak riemannZeta\_\allowbreak le\_\allowbreak of\_\allowbreak log\_\allowbreak strip} & 213 & Std \\
+\texttt{1F} & 2 & \texttt{UpstreamPR\_\allowbreak 1F\_\allowbreak ZetaZeroFreeRegion.lean} & \texttt{deLaValleePoussin\_\allowbreak zero\_\allowbreak free\_\allowbreak region\_\allowbreak unconditional} & 205 & Std \\
+\texttt{3B} & 3 & \texttt{UpstreamPR\_\allowbreak 3B\_\allowbreak VasyuninSmoothAndCotDefs.lean} & \texttt{GSmooth}, \texttt{vasyuninGCot}, \texttt{vasyuninCotSum} & 241 & Std \\
+\texttt{3C} & 3 & \texttt{UpstreamPR\_\allowbreak 3C\_\allowbreak HarmonicCellAndAbelSum.lean} & \texttt{sum\_\allowbreak Ico\_\allowbreak abel}, \texttt{cross\_\allowbreak partial\_\allowbreak exact\_\allowbreak identity} & 259 & Std \\
+\texttt{3D} & 3 & \texttt{UpstreamPR\_\allowbreak 3D\_\allowbreak StirlingAndHarmonicAsymptotics.lean} & \texttt{tendsto\_\allowbreak stirling\_\allowbreak log\_\allowbreak term}, \texttt{nat\_\allowbreak div\_\allowbreak sub\_\allowbreak pred\_\allowbreak div} & 209 & Std \\
+\texttt{3E} & 3 & \texttt{UpstreamPR\_\allowbreak 3E\_\allowbreak CotangentMittagLefflerLimit.lean} & \texttt{tendsto\_\allowbreak cotApproxSum} & 221 & Std \\
+\texttt{3F} & 3 & \texttt{UpstreamPR\_\allowbreak 3F\_\allowbreak VasyuninCrossIntegral.lean} & \texttt{affine\_\allowbreak l2\_\allowbreak dist\_\allowbreak eq\_\allowbreak one\_\allowbreak sub\_\allowbreak scot} & 193 & Std \\
+\texttt{3G} & 3 & \texttt{UpstreamPR\_\allowbreak 3G\_\allowbreak MobiusCandidateFourCert.lean} & \texttt{cCandidateMobius\_\allowbreak four\_\allowbreak eval}, \texttt{SCot\_\allowbreak cCandidateMobius\_\allowbreak four\_\allowbreak eq} & 188 & Std \\
+\texttt{3H} & 3 & \texttt{UpstreamPR\_\allowbreak 3H\_\allowbreak VariationalOptimumFour.lean} & \texttt{SCot\_\allowbreak cVariationalFour\_\allowbreak eq}, \texttt{l2\_\allowbreak dist\_\allowbreak cVariationalFour\_\allowbreak lt\_\allowbreak ...} & 199 & Std \\
+\texttt{4B} & 3 & \texttt{UpstreamPR\_\allowbreak 4B\_\allowbreak AffineOrthogonalDecomp.lean} & \texttt{cMinNorm\_\allowbreak eq}, \texttt{cMinNorm\_\allowbreak inner\_\allowbreak eq\_\allowbreak zero} & 127 & Std \\
+\texttt{4C} & 3 & \texttt{UpstreamPR\_\allowbreak 4C\_\allowbreak HarmonicWaveletBasis.lean} & \texttt{cBaseAnchor}, \texttt{cBaseAnchor\_\allowbreak mem\_\allowbreak A\_\allowbreak N}, \texttt{SCot\_\allowbreak cBaseAnchor\_\allowbreak eq\_\allowbreak zero} & 212 & Std \\
+\texttt{4D} & 3 & \texttt{UpstreamPR\_\allowbreak 4D\_\allowbreak WaveletCotangentStencil.lean} & \texttt{harmonicWavelet\_\allowbreak div\_\allowbreak sum\_\allowbreak eq\_\allowbreak second\_\allowbreak diff} & 203 & Std \\
+\texttt{4E} & 3 & \texttt{UpstreamPR\_\allowbreak 4E\_\allowbreak TangentCotangentPositivity.lean} & \texttt{sum\_\allowbreak GSmooth\_\allowbreak eq\_\allowbreak zero\_\allowbreak of\_\allowbreak mem\_\allowbreak tangent}, \texttt{tangent\_\allowbreak l2\_\allowbreak norm\_\allowbreak sq\_\allowbreak eq\_\allowbreak qcot} & 218 & Std \\
+\texttt{4F} & 3 & \texttt{UpstreamPR\_\allowbreak 4F\_\allowbreak TangentRayleighQuotient.lean} & \texttt{SCot\_\allowbreak cBaseAnchor\_\allowbreak add\_\allowbreak smul\_\allowbreak eq\_\allowbreak rayleigh\_\allowbreak sub\_\allowbreak sq} & 231 & Std \\
+\texttt{4G} & 3 & \texttt{UpstreamPR\_\allowbreak 4G\_\allowbreak GlobalOptimumFour.lean} & \texttt{SCot\_\allowbreak cGlobalOptFour\_\allowbreak eq}, \texttt{SCot\_\allowbreak le\_\allowbreak cGlobalOptFour\_\allowbreak ...} & 215 & Std \\
+\texttt{4H} & 3 & \texttt{UpstreamPR\_\allowbreak 4H\_\allowbreak WaveletRayleighRHCriterion.lean} & \texttt{linearCotDrive\_\allowbreak sum\_\allowbreak harmonicWavelet\_\allowbreak eq} & 164 & Std \\
+\texttt{4I} & 3 & \texttt{UpstreamPR\_\allowbreak 4I\_\allowbreak CumulativeWaveletDipole.lean} & \texttt{linearCotDrive\_\allowbreak cumulativeDipole\_\allowbreak eq}, \texttt{vasyuninCotSum\_\allowbreak five\_\allowbreak ...} & 248 & Std \\
+\texttt{4J} & 3 & \texttt{UpstreamPR\_\allowbreak 4J\_\allowbreak FourPointDipoleKernel.lean} & \texttt{sum\_\allowbreak cumulativeDipole\_\allowbreak vasyuninGCot\_\allowbreak eq\_\allowbreak four\_\allowbreak point} & 157 & Std \\
+\texttt{4K} & 3 & \texttt{UpstreamPR\_\allowbreak 4K\_\allowbreak GeneralWaveletCompleteness.lean} & \texttt{eq\_\allowbreak sum\_\allowbreak cumulativeDipole\_\allowbreak of\_\allowbreak mem\_\allowbreak tangent} & 245 & Std \\
+\texttt{4L} & 3 & \texttt{UpstreamPR\_\allowbreak 4L\_\allowbreak DipoleQuadraticReduction.lean} & \texttt{dipoleGramEntry}, \texttt{QCot\_\allowbreak eq\_\allowbreak sum\_\allowbreak dipoleGramEntry} & 199 & Std \\
+\texttt{4M} & 3 & \texttt{UpstreamPR\_\allowbreak 4M\_\allowbreak DipoleDiagonalAndSymmetry.lean} & \texttt{dipoleGramEntry\_\allowbreak diag\_\allowbreak nonneg}, \texttt{dipoleGramEntry\_\allowbreak one\_\allowbreak two\_\allowbreak eq\_\allowbreak zero} & 82 & Std \\
+\texttt{2B} & 4 & \texttt{UpstreamPR\_\allowbreak 2B\_\allowbreak HardyPsiAndThetaKernel.lean} & \texttt{differentiableAt\_\allowbreak hardyPsi}, \texttt{jacobiTheta\_\allowbreak neg\_\allowbreak one\_\allowbreak add} & 259 & Std \\
+\texttt{2C} & 4 & \texttt{UpstreamPR\_\allowbreak 2C\_\allowbreak HardyThetaIteratedDeriv.lean} & \texttt{tendsto\_\allowbreak iteratedDeriv\_\allowbreak hardyThetaTerm} & 260 & Std \\
+\texttt{2D} & 4 & \texttt{UpstreamPR\_\allowbreak 2D\_\allowbreak CompletedZetaStripDecay.lean} & \texttt{completedRiemannZeta\_\allowbreak half\_\allowbreak add\_\allowbreak mul\_\allowbreak I\_\allowbreak eq\_\allowbreak fourier} & 259 & Std \\
+\texttt{2E} & 4 & \texttt{UpstreamPR\_\allowbreak 2E\_\allowbreak HardyGContourAndMellin.lean} & \texttt{hardyG\_\allowbreak eq\_\allowbreak hardyPsi}, \texttt{continuous\_\allowbreak completedRiemannZeta\_\allowbreak criticalLine} & 255 & Std \\
+\texttt{2F} & 4 & \texttt{UpstreamPR\_\allowbreak 2F\_\allowbreak HardyEvenMomentIdentity.lean} & \texttt{hardyGn\_\allowbreak even\_\allowbreak re}, \texttt{iteratedDeriv\_\allowbreak hardyPsi\_\allowbreak mul\_\allowbreak I\_\allowbreak eq} & 229 & Std \\
+\texttt{2G} & 4 & \texttt{UpstreamPR\_\allowbreak 2G\_\allowbreak HardyCriticalLineZeros.lean} & \texttt{infinite\_\allowbreak criticalLine\_\allowbreak zeros}, \texttt{infinite\_\allowbreak hardyZ\_\allowbreak zeros} & 229 & Std \\
+\texttt{5A} & 5 & \texttt{UpstreamPR\_\allowbreak 5A\_\allowbreak ZetaLogDerivHolomorphy.lean} & \texttt{analyticAt\_\allowbreak inv\_\allowbreak riemannZeta\_\allowbreak of\_\allowbreak ne\_\allowbreak zero} & 155 & Std \\
+\texttt{5B} & 5 & \texttt{UpstreamPR\_\allowbreak 5B\_\allowbreak VonKochChebyshevPsi.lean} & \texttt{VonKochRemainderBound}, \texttt{vonKoch\_\allowbreak implies\_\allowbreak rh} & 250 & Std \\
+\texttt{5C} & 5 & \texttt{UpstreamPR\_\allowbreak 5C\_\allowbreak MellinNymanBeurlingIff.lean} & \texttt{TitchmarshMellinProperty}, \texttt{riemannHypothesis\_\allowbreak iff\_\allowbreak mellin\_\allowbreak ...} & 250 & Std \\
+\texttt{6A} & 6 & \texttt{UpstreamPR\_\allowbreak 6A\_\allowbreak CompletedZetaDerivSymmetry.lean} & \texttt{completedRiemannZeta\_\allowbreak deriv\_\allowbreak one\_\allowbreak sub}, \texttt{equipartition\_\allowbreak fifty\_\allowbreak fifty\_\allowbreak split} & 202 & Std \\
+\texttt{6B} & 6 & \texttt{UpstreamPR\_\allowbreak 6B\_\allowbreak CriticalLinePenetrationBarrier.lean} & \texttt{stripDefect\_\allowbreak norm\_\allowbreak lt\_\allowbreak one\_\allowbreak implies\_\allowbreak ne\_\allowbreak zero} & 250 & Std \\
+\texttt{6C} & 6 & \texttt{UpstreamPR\_\allowbreak 6C\_\allowbreak PrimeCompositeDirichletSplit.lean} & \texttt{nat\_\allowbreak partition\_\allowbreak dichotomy}, \texttt{riemannHypothesis\_\allowbreak iff\_\allowbreak strip} & 210 & Std \\
+\texttt{7A} & 7 & \texttt{UpstreamPR\_\allowbreak 7A\_\allowbreak MellinKernelEnergyIdentity.lean} & \texttt{integral\_\allowbreak Ioc\_\allowbreak sq\_\allowbreak mellinWeight}, \texttt{integral\_\allowbreak Ioc\_\allowbreak two\_\allowbreak mul\_\allowbreak mellin\_\allowbreak le} & 125 & Std \\
+\texttt{7B} & 7 & \texttt{UpstreamPR\_\allowbreak 7B\_\allowbreak RectangleContourSubdivision.lean} & \texttt{rectBoundaryIntegral\_\allowbreak split\_\allowbreak sigma}, \texttt{rectBoundaryIntegral\_\allowbreak split\_\allowbreak height} & 107 & Std \\
+\texttt{7C} & 7 & \texttt{UpstreamPR\_\allowbreak 7C\_\allowbreak PurePlaqueReduction.lean} & \texttt{dipolePlaqueEntry}, \texttt{SCot\_\allowbreak eq\_\allowbreak neg\_\allowbreak c\_\allowbreak one\_\allowbreak mul\_\allowbreak linearCotDrive\_\allowbreak sub\_\allowbreak plaque} & 162 & Std \\
+\texttt{7D} & 7 & \texttt{UpstreamPR\_\allowbreak 7D\_\allowbreak DiagonalOffDiagonalFrontier.lean} & \texttt{QCot\_\allowbreak eq\_\allowbreak dipoleDiagEnergy\_\allowbreak add\_\allowbreak dipoleOffDiagEnergy} & 97 & Std \\
+\texttt{8A} & 8 & \texttt{UpstreamPR\_\allowbreak 8A\_\allowbreak PurePlaqueCauchySchwarz.lean} & \texttt{sq\_\allowbreak linearCotDrive\_\allowbreak sub\_\allowbreak le\_\allowbreak dipolePlaqueForm} & 144 & Std \\
+\texttt{8B} & 8 & \texttt{UpstreamPR\_\allowbreak 8B\_\allowbreak DirichletAnchoredPlaque.lean} & \texttt{IsDirichletAnchored}, \texttt{unit\_\allowbreak drive\_\allowbreak dirichlet\_\allowbreak plaque\_\allowbreak eq\_\allowbreak l2\_\allowbreak dist} & 147 & Std \\
+\texttt{8C} & 8 & \texttt{UpstreamPR\_\allowbreak 8C\_\allowbreak PlaqueTwoDimTelescoping.lean} & \texttt{dipolePlaqueForm\_\allowbreak sub\_\allowbreak cBaseAnchor\_\allowbreak eq\_\allowbreak telescoped\_\allowbreak kernel} & 168 & Std \\
+\texttt{8D} & 8 & \texttt{UpstreamPR\_\allowbreak 8D\_\allowbreak PurePlaqueRHCriterion.lean} & \texttt{PurePlaqueVanishingCriterion}, \texttt{riemannHypothesis\_\allowbreak of\_\allowbreak purePlaque\_\allowbreak vanishing} & 239 & Std \\
+\texttt{8E} & 8 & \texttt{UpstreamPR\_\allowbreak 8E\_\allowbreak DirichletOptFourCert.lean} & \texttt{cDirichletOptFour}, \texttt{SCot\_\allowbreak cDirichletOptFour\_\allowbreak eq} ($\tfrac{31}{108}\pi$) & 162 & Std \\
+\texttt{8F} & 8 & \texttt{UpstreamPR\_\allowbreak 8F\_\allowbreak DipoleGramFiveCert.lean} & \texttt{dipoleGramEntry\_\allowbreak two\_\allowbreak three\_\allowbreak eq\_\allowbreak zero}, \texttt{dipoleGramEntry\_\allowbreak one\_\allowbreak three\_\allowbreak eq} & 172 & Std \\
+\texttt{8G} & 8 & \texttt{UpstreamPR\_\allowbreak 8G\_\allowbreak CotangentSixReciprocity.lean} & \texttt{deltaCot\_\allowbreak six\_\allowbreak eq}, \texttt{unweightedKCot\_\allowbreak three\_\allowbreak six\_\allowbreak eq\_\allowbreak zero}, \texttt{dipoleGramEntry\_\allowbreak two\_\allowbreak four\_\allowbreak eq\_\allowbreak zero} & 209 & Std \\
+\end{longtable}
+\normalsize
+
+\begin{table}[ht]
+\centering
+\caption{Complete 14-Hub companion publication archive on Zenodo (\texttt{NO\_RH\_PROOF = TRUE}).}
+\label{tab:14_hubs}
+\vspace{4pt}
+\small
+\begin{tabular}{@{}c>{\raggedright\arraybackslash}p{8.2cm}lc@{}}
+\toprule
+Hub & Deliverable & Live Zenodo DOI & Type \\
+\midrule
+01 & Paper~0: Geometric Intuition \& Joined-Cone Visualizations & \texttt{10.5281/zenodo.24328033} & Preprint \\
+02 & Paper~A: Littlewood Tauberian Equivalence in Lean~4 & \texttt{10.5281/zenodo.24328035} & Preprint \\
+03 & Paper~B: Titchmarsh Identity \& Forward Nyman--Beurling & \texttt{10.5281/zenodo.24328037} & Preprint \\
+04 & Paper~C: De~la~Vall\'ee~Poussin Zero-Free Region in Lean~4 & \texttt{10.5281/zenodo.24328039} & Preprint \\
+05 & Paper~D: Hardy (1914) Critical-Line Zeros in Lean~4 & \texttt{10.5281/zenodo.24328045} & Preprint \\
+06 & Paper~E: Constructive Candidates, Wavelets \& $N=4$ KKT & \texttt{10.5281/zenodo.24328047} & Preprint \\
+07 & \textbf{Master Lean~4 Repository (\texttt{RiemannBlueprint}, 50 Modules)} & \texttt{10.5281/zenodo.24329861} & Software \\
+08 & Paper~F: Mellin Nyman--Beurling Converse \& Rouch\'e Bounds & \texttt{10.5281/zenodo.24328918} & Preprint \\
+09 & Paper~G: Unconditional Von~Koch Chebyshev $\psi$ Closure & \texttt{10.5281/zenodo.24328921} & Preprint \\
+10 & Paper~H: Gram Indefiniteness \& 512-Bit Arb Unwrapped Schur Audit & \texttt{10.5281/zenodo.24328927} & Preprint \\
+11 & Paper~I: Prime--Composite Partition \& Strip Convergence Firewall & \texttt{10.5281/zenodo.24328929} & Preprint \\
+12 & Paper~J: Pure 4-Point Plaque Reduction \& Diagonal Frontier & \texttt{10.5281/zenodo.24330500} & Preprint \\
+13 & Paper~K: Dirichlet Anchoring ($c_1=-1$) \& $N=4,5,6$ Certificates & \texttt{10.5281/zenodo.24341228} & Preprint \\
+14 & Paper~L: Unified Arithmetic \& Lean~4 Master Review (this paper) & \emph{Assigned on Hub~14 publish} & Preprint \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{One-Command Reviewer Verification Protocol}
+External referees can independently reproduce every Lean~4 kernel proof, linter pass, axiom audit, 85-digit benchmark, and integrity test using the commands below inside the \texttt{RiemannBlueprint} and root directories:
+\begin{verbatim}
+cd RiemannBlueprint && lake build RiemannBlueprint
+lake build RiemannBlueprint.UpstreamPRs.UpstreamPR_8G_CotangentSixReciprocity
+python layer_c_dirichlet_locked_plaque_lab.py
+python layer_c_dipole_asymptotic_lab.py
+pytest test_monograph_audit.py -q
+\end{verbatim}
+
+\begin{thebibliography}{9}
+\bibitem{BaezDuarte2003}
+L.~B\'aez-Duarte, A strengthening of the Nyman--Beurling criterion for the Riemann hypothesis, \emph{Rend.\ Mat.\ Acc.\ Lincei} \textbf{14} (2003), 5--11.
+
+\bibitem{Vasyunin1995}
+V.~I.~Vasyunin, On a biorthogonal system associated with the Riemann hypothesis, \emph{Algebra i Analiz} \textbf{7} (1995), 118--135.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh, \emph{The Theory of the Riemann Zeta-Function}, 2nd ed.\ (revised by D.~R.~Heath-Brown), Oxford University Press, 1986.
+
+\bibitem{Hardy1914}
+G.~H.~Hardy, Sur les z\'eros de la fonction $\zeta(s)$ de Riemann, \emph{C.\ R.\ Acad.\ Sci.\ Paris} \textbf{158} (1914), 1012--1014.
+
+\bibitem{RiemannBlueprint}
+Q.~Munawer, \emph{RiemannBlueprint: Axiom-Free Lean~4.35.0 Formalizations of Classical Analytic Number Theory} (50 Self-Contained Modular Units, \texttt{NO\_RH\_PROOF = TRUE}), Zenodo Master Archive Hub~07, DOI \href{https://doi.org/10.5281/zenodo.24329861}{10.5281/zenodo.24329861} (2026).
+\end{thebibliography}
+
+\end{document}

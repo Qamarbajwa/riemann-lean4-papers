@@ -3,8 +3,10 @@
 **Author:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Epistemic Invariant:** `NO_RH_PROOF = TRUE` — All Lean 4 formalizations verify classical conditional equivalences, unconditional zero-free regions, critical-line zero theorems, exact constructive/variational identities on the Báez–Duarte manifold, and rigorous numerical obstruction audits. **No unconditional proof of the Riemann Hypothesis is claimed.**
 
-## Thematic Sub-Sections & Live Zenodo DOIs
+## Thematic Sub-Sections & Live Zenodo DOIs (14 Live Hubs / 12 PDFs: Paper 0, Papers A–L)
 
+0. **[`00_unified_master_review_paper_l`](./00_unified_master_review_paper_l/)**
+   - Unified 14-page Arithmetic & Lean 4 Master Review (`Paper L`, 50 modules + 85-digit / 512-bit diagnostics) — Zenodo Hub 14 DOI: [`10.5281/zenodo.24341498`](https://doi.org/10.5281/zenodo.24341498)
 1. **[`01_geometric_intuition`](./01_geometric_intuition/)**
    - [`paper_0_joined_cone_visualizations`](./01_geometric_intuition/paper_0_joined_cone_visualizations/) — Zenodo DOI: [`10.5281/zenodo.24328033`](https://doi.org/10.5281/zenodo.24328033)
 2. **[`02_classical_theorems_lean4`](./02_classical_theorems_lean4/)**

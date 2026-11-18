@@ -1,7 +1,7 @@
-<!-- Zenodo DOI: 10.5281/zenodo.24353570 -->
+<!-- Zenodo DOI: 10.5281/zenodo.24354440 -->
 # Paper 0: Geometric Intuition, Joined-Cone Zeta Visualizations, and the Genesis of the Lean 4 Formalization
 
-- **Zenodo DOI:** [`10.5281/zenodo.24353570`](https://doi.org/10.5281/zenodo.24353570) (prev `10.5281/zenodo.24328033`)
+- **Zenodo DOI:** [`10.5281/zenodo.24354440`](https://doi.org/10.5281/zenodo.24354440) (prev `10.5281/zenodo.24328033`)
 - **MSC 2020:** Primary 11M26; Secondary 46E20, 68V20
 
 # Submission Package: Companion Paper 0 — Geometric Intuition & Joined-Cone Visualizations

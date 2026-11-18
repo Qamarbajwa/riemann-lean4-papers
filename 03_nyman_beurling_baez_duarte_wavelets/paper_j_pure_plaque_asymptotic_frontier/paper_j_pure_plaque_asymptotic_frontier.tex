@@ -56,7 +56,7 @@ In the Nyman--Beurling--B\'aez--Duarte formulation~\cite{Nyman1950,Beurling1955,
 \]
 whose parallel tangent space is $\mathcal{A}_N^0 := \{ h \mid D_1(h,N) = D_0(h,N) = 0 \}$. Shifting by $c_{\mathrm{base}} = (-2, 4, 0, \dots)$ maps any $c \in \mathcal{A}_N$ to $h = c - c_{\mathrm{base}} \in \mathcal{A}_N^0$. Because Vasyunin's smooth cross-integral kernel $G_{\mathrm{smooth}}(j,k)$ is purely affine in $1$ and $1/k$, every occurrence of Euler's constant $\gamma$ and $\ln(2\pi)$ cancels identically on $\mathcal{A}_N$, leaving $E_N(c) = 1 - S_{\mathrm{cot}}(c, N) = 1 + Q_{\mathrm{cot}}(c, N)$~\cite{Vasyunin1995,Titchmarsh1986}.
 
-On the analytic side inside the critical strip $\sigma = \operatorname{Re}(s) > 1/2$, two unconditional primitives prepare contour and Mellin estimates: the real weight $x^{2\sigma-2}$ belongs to $L^1((0,1])$ with exact integral $(2\sigma-1)^{-1}$ and satisfies the pointwise AM--GM bound $2 f(x) x^{\sigma-1} \le (2\sigma-1) f(x)^2 + x^{2\sigma-2}/(2\sigma-1)$, while oriented $4$-segment complex rectangle boundary integrals exhibit exact interior cancellation along any horizontal ($\sigma_m$) or vertical ($t_m$) partition. Table~\ref{tab:wave7_concordance} records the verified Lean~4.35 formalization modules~\cite{deMouraUllrich2021,mathlibCommunity2020,MunawerRiemannBlueprint2026}.
+On the analytic side inside the critical strip $\sigma = \operatorname{Re}(s) > 1/2$, two unconditional primitives prepare contour and Mellin estimates: the real weight $x^{2\sigma-2}$ belongs to $L^1((0,1])$ with exact integral $(2\sigma-1)^{-1}$ and satisfies the pointwise AM--GM bound $2 f(x) x^{\sigma-1} \le (2\sigma-1) f(x)^2 + x^{2\sigma-2}/(2\sigma-1)$, while oriented $4$-segment complex rectangle boundary integrals exhibit exact interior cancellation along any horizontal ($\sigma_m$) or vertical ($t_m$) partition. Table~\ref{tab:series7_concordance} records the verified Lean~4.35 formalization modules~\cite{deMouraUllrich2021,mathlibCommunity2020,MunawerRiemannBlueprint2026}.
 
 \section{Pure 4-Point Plaque Kernel and Anchor-Drive Cancellation}\label{sec:plaque}
 
@@ -195,8 +195,8 @@ ID & Module File & Principal Formalized Theorems & L \\
 \texttt{PR-7D} & \texttt{UpstreamPR\_\allowbreak 7D\_\allowbreak DiagonalOffDiagonalFrontier.lean} & \texttt{dipoleDiagEnergy\_nonneg}, \texttt{QCot\_eq\_\allowbreak dipoleDiagEnergy\_\allowbreak add\_dipoleOffDiagEnergy} & 97 \\
 \bottomrule
 \end{tabular}
-\caption{Lean~4.35 formal concordance (Wave~7 modules, zero \texttt{sorry}, axioms \texttt{[propext, Classical.choice, Quot.sound]}).}
-\label{tab:wave7_concordance}
+\caption{Lean~4.35 formal concordance (Series~7 modules, zero \texttt{sorry}, axioms \texttt{[propext, Classical.choice, Quot.sound]}).}
+\label{tab:series7_concordance}
 \end{table}
 
 \bibliographystyle{amsplain}

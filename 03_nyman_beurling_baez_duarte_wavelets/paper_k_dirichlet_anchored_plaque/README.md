@@ -3,7 +3,7 @@
 **Title:** Pure Plaque Cauchy--Schwarz Bounds, Dirichlet Anchoring ($c_1 = -1$), Two-Dimensional Abel Telescoping, and the Plaque Vanishing Criterion  
 **Author:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **MSC 2020:** Primary `11M26`; Secondary `46E20`, `68V20`  
-**Zenodo Hub 13 DOI:** [`10.5281/zenodo.24354137`](https://doi.org/10.5281/zenodo.24354137) (prev `10.5281/zenodo.24353175`) *(earlier `10.5281/zenodo.24352931`, `10.5281/zenodo.24352695`, `10.5281/zenodo.24351770`, `10.5281/zenodo.24351489`, `10.5281/zenodo.24350152`, `10.5281/zenodo.24348668`, `10.5281/zenodo.24347847`, `10.5281/zenodo.24345966`, `10.5281/zenodo.24345122`, `10.5281/zenodo.24344631`, `10.5281/zenodo.24344084`, `10.5281/zenodo.24343525`, `10.5281/zenodo.24342906`, `10.5281/zenodo.24342619`, `10.5281/zenodo.24342096`, `10.5281/zenodo.24341228`, `10.5281/zenodo.24341007`, `10.5281/zenodo.24339838`)*
+**Zenodo Hub 13 DOI:** [`10.5281/zenodo.24354448`](https://doi.org/10.5281/zenodo.24354448) (prev `10.5281/zenodo.24353175`) *(earlier `10.5281/zenodo.24352931`, `10.5281/zenodo.24352695`, `10.5281/zenodo.24351770`, `10.5281/zenodo.24351489`, `10.5281/zenodo.24350152`, `10.5281/zenodo.24348668`, `10.5281/zenodo.24347847`, `10.5281/zenodo.24345966`, `10.5281/zenodo.24345122`, `10.5281/zenodo.24344631`, `10.5281/zenodo.24344084`, `10.5281/zenodo.24343525`, `10.5281/zenodo.24342906`, `10.5281/zenodo.24342619`, `10.5281/zenodo.24342096`, `10.5281/zenodo.24341228`, `10.5281/zenodo.24341007`, `10.5281/zenodo.24339838`)*
 
 ## Contents
 - `paper_k_dirichlet_anchored_plaque_criterion.pdf` / `.tex` (5-page preprint + pure TikZ figure)

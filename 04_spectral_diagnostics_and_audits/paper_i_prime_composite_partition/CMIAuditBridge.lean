@@ -11,7 +11,7 @@ import RiemannBlueprint.Section8_VasyuninBDR
 Self-contained Lean 4 module satisfying the Phase 1 quantifier audit:
 - Universal quantification over the open critical strip (`InCriticalStrip s → riemannZeta s = 0 → IsOnCriticalLine s`), never pre-binding `s := 1/2 + I * t`.
 - Conditional equivalence `riemannHypothesis_iff_collapse_zero` between `RiemannHypothesisStrip` (and Mathlib's `_root_.RiemannHypothesis`) and `Tendsto baezDuarteDistSq atTop (nhds 0)` given the analytical Baez-Duarte equivalence premise `h_bd`.
-- Zero `sorry` tokens and zero custom axioms (`NO_RH_PROOF = TRUE`).
+- Zero `sorry` tokens and strictly standard axioms (`[propext, Classical.choice, Quot.sound]`).
 -/
 
 namespace CMIAudit

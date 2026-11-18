@@ -83,7 +83,7 @@ From pointwise trichotomy (\texttt{pointwise\_\allowbreak additive\_\allowbreak 
 \begin{equation}\label{eq:additive_split}
 \zeta(s) = 1 + P(s) + \zeta_{\mathrm{comp}}(s) \qquad (\operatorname{Re}(s) > 1)
 \end{equation}
-(\texttt{riemannZeta\_\allowbreak eq\_\allowbreak one\_\allowbreak add\_\allowbreak primeZeta\_\allowbreak add\_\allowbreak compositeZeta}), yielding $\zeta_{\mathrm{comp}}(2) = \pi^2/6 - 1 - P(2)$ (\texttt{additive\_\allowbreak identity\_\allowbreak at\_\allowbreak s\_\allowbreak 2}). Contrastingly, the squared convolution series $(\zeta(s) - 1)^2$ (\texttt{CompositeZetaSquared}) carries divisor-weight coefficients $d(n) - 2$ (\texttt{divisorWeight}) and admits global meromorphic continuation, whereas the unweighted $\zeta_{\mathrm{comp}}(s)$ hits a dense natural boundary along $\operatorname{Re}(s) = 0$ (\texttt{analytic\_\allowbreak discrepancy\_\allowbreak theorem}, parameterized explicitly by \texttt{ClassicalAnalyticInterface}).
+(\texttt{riemannZeta\_\allowbreak eq\_\allowbreak one\_\allowbreak add\_\allowbreak primeZeta\_\allowbreak add\_\allowbreak compositeZeta}), yielding $\zeta_{\mathrm{comp}}(2) = \pi^2/6 - 1 - P(2)$ (\texttt{additive\_\allowbreak identity\_\allowbreak at\_\allowbreak s\_\allowbreak 2}). On the real half-line $(1, \infty)$, the monotonically decreasing prime-composite balance equation $P(s) = \zeta_{\mathrm{comp}}(s)$ admits the unique parity crossover $s^* \approx 1.446537622476$ (certified to $85$-digit precision via $P(s^*) = \zeta_{\mathrm{comp}}(s^*) = (\zeta(s^*) - 1)/2 \approx 0.92409539$), separating prime-dominated decay ($s > s^*$) from composite logarithmic pole growth ($1 < s < s^*$). Contrastingly, the squared convolution series $(\zeta(s) - 1)^2$ (\texttt{CompositeZetaSquared}) carries divisor-weight coefficients $d(n) - 2$ (\texttt{divisorWeight}) and admits global meromorphic continuation, whereas the unweighted $\zeta_{\mathrm{comp}}(s)$ hits a dense natural boundary along $\operatorname{Re}(s) = 0$ (\texttt{analytic\_\allowbreak discrepancy\_\allowbreak theorem}, parameterized explicitly by \texttt{ClassicalAnalyticInterface}).
 
 \subsection{M\"obius Composite Inversion (\texttt{Section5\_\allowbreak MobiusMertens.lean}, $610$ lines)}
 The Dirichlet convolution inverse identity $(\mu * \zeta : \texttt{ArithmeticFunction}\;\Zset) = 1$ (\texttt{moebius\_\allowbreak mul\_\allowbreak zetaZ\_\allowbreak eq\_\allowbreak one}) and pure-power annihilation $\mu(p^k) = 0$ ($k \ge 2$, \texttt{moebius\_\allowbreak pure\_\allowbreak powers\_\allowbreak annihilation}) isolate squarefree mixed composites as the non-trivial support of $\zeta_{\mu,C}(s)$ (\texttt{moebius\_\allowbreak composite\_\allowbreak support}), yielding \texttt{reciprocal\_\allowbreak partition\_\allowbreak identity} and feeding directly into Littlewood's Mertens equivalence (\texttt{riemannHypothesis\_\allowbreak iff\_\allowbreak mertens\_\allowbreak isBigO}).
@@ -111,12 +111,12 @@ proved directly in Lean~4 from \texttt{Complex.\allowbreak Gamma\_\allowbreak co
   \node[box] (s2) {\textbf{Sec.\ 2--3:} $\Nset_{\ge 1} = \{1\} \dot{\cup} \Pset \dot{\cup} \Ccomp$\\Pure powers vs.\ mixed $\omega(n) \ge 2$};
   \node[box, right=1.1cm of s2] (s4) {\textbf{Sec.\ 4--5:} $\operatorname{Re}(s) > 1$ Split\\$\zeta = 1 + P + \zeta_{\mathrm{comp}}$, $\mu * \zeta = 1$};
   \node[box, below=0.9cm of s4, draw=red!65!black, fill=red!4] (s6) {\textbf{Sec.\ 6 Firewall:} $0 < \operatorname{Re}(s) < 1$\\$\neg\texttt{Summable}(n^{-s})$,\; $\|\chi(\tfrac{1}{2}+it)\| = 1$};
-  \node[box, left=1.1cm of s6, draw=teal!65!black, fill=teal!5] (cmi) {\textbf{CMI Audit Bridge:}\\$\texttt{\_root\_.RH} \to \texttt{RHStrip}$\\Szeg\H{o} floor \& \texttt{VerifyNoTraps}};
+  \node[box, left=1.1cm of s6, draw=teal!65!black, fill=teal!5] (cmi) {\textbf{Strip Quantifier Audit:}\\$\texttt{\_root\_.RH} \to \texttt{RHStrip}$\\Szeg\H{o} floor \& \texttt{VerifyNoTraps}};
   \draw[-{Stealth[length=2mm]}, thick] (s2) -- (s4);
   \draw[-{Stealth[length=2mm]}, thick] (s4) -- (s6);
   \draw[-{Stealth[length=2mm]}, thick] (s6) -- (cmi);
 \end{tikzpicture}
-\caption{Unconditional epistemic firewall from convergent integer partitioning to critical-strip quantifier audits.}
+\caption{Analytic convergence boundary separating convergent integer partitioning ($\operatorname{Re}(s) > 1$, parity crossover $s^* \approx 1.44653762$) from critical-strip quantifier audits ($0 < \operatorname{Re}(s) < 1$).}
 \label{fig:firewall_architecture}
 \end{figure}
 

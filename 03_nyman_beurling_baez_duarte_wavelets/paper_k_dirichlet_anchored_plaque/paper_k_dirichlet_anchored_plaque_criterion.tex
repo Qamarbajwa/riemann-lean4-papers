@@ -84,7 +84,7 @@ Let $N \ge 2$, $c \in \mathcal{A}_N^{\mathrm{dir}}$ ($c_1 = -1$), and $h = c - c
 \item \emph{[Lean: PR-8Q].} Completing the square across each adjacent prime cell pair $\{p-1, p\}$ gives the exact orthogonal defect identity $\frac{a^2}{(p-1)p} + \frac{b^2}{p(p+1)} = \frac{(b-a)^2}{2p^2} + \frac{((p+1)a+(p-1)b)^2}{2p^2(p-1)(p+1)}$ ($p \ge 2$). Under $c \in \mathcal{A}_N^{\mathrm{dir}}$, every prime $p > N$ yields the exact quantitative tail floor $\mathrm{harmonicPairEnergy}(c,N,p) \ge \frac{1}{2p^2} > 0$, so $L_N^{(2)}(M) \ge \frac{1}{2p^2}$ whenever $N < p \le M$, and $L_N^{(2)}(M) \ge \frac{1}{2p^2} + \frac{1}{2q^2}$ for any two primes $N < p$, $p + 2 \le q \le M$.
 \item \emph{[Lean: PR-8R].} On the Mellin side of the planar contradiction ($r_N(x) = 1 - \sum_{k=1}^N c_k \{1/(kx)\}$), evaluating $\mathcal{M}[r_N](s) = \frac{1 + \zeta(s)D_N(s)}{s}$ (or $\frac{1 - \zeta(s)D_N(s)}{s}$ under the $+$-sign convention) at any zero $\zeta(s_0) = 0$ ($s_0 \neq 0$) annihilates the entire finite Dirichlet polynomial term, leaving $\frac{1}{s_0} \neq 0$ and $\|\mathcal{M}[r_N](s_0)\|^2 = \frac{1}{\|s_0\|^2} > 0$. For any off-line zero $\sigma_0 = \operatorname{Re}(s_0) > \tfrac{1}{2}$, the Mellin kernel norm $\int_0^1 x^{2\sigma_0 - 2}\,dx = \frac{1}{2\sigma_0 - 1} > 0$ traps $\|r_N\|_{L^2}^2 \ge \frac{2\sigma_0 - 1}{\|s_0\|^2} > 0$ independently of $N$ and $c$, excluding off-line zeros by contraposition whenever $L^2$ closure reaches arbitrarily small $\varepsilon > 0$.
 \item \emph{[Lean: PR-8S].} Moreover, for any $N \ge 2$ and any finite prime subset $S \subseteq \mathrm{Icc}\,(N+1)\,M$, every pair of distinct odd primes $p \neq q$ in $S$ satisfies $|p - q| \ge 2$, keeping $\{p-1, p\}$ and $\{q-1, q\}$ strictly disjoint inside $[1, M]$; summing over $S$ via \texttt{Finset.biUnion} establishes the arbitrary multi-prime superposition floor $\sum_{p \in S} \frac{1}{2p^2} \le L_N^{(2)}(M)$ (\texttt{harmonicCellL2PartialSum\_\allowbreak ge\_\allowbreak sum\_\allowbreak primes}) and unifies outer-slab annihilation, coordinate $L^2$ positivity, Mellin zero non-vanishing, and the off-line Cauchy--Schwarz barrier (\texttt{planar\_\allowbreak mellin\_\allowbreak dual\_\allowbreak contradiction\_\allowbreak capstone}).
-\item \emph{[Lean: PR-8T].} Pairing each cell $m$ with its palindromic mirror $L - 1 - m$ across any common multiple period $L$ of $\{1, \dots, N\}$ via the symmetric double-cone width $w_L^{\mathrm{sym}}(m) := \frac{1}{2}(w_m + w_{L-1-m})$ collapses negative amplitudes into positive energy invariance $A_c(L - 1 - m)^2 = A_c(m)^2$ and doubles counter-rotating signed fluxes: $A_c(m)(A_c(m) - A_c(L - 1 - m)) = 2 A_c(m)^2$ and $\mathrm{weightedCounterRotatingFlux}(c,N,L,m) = 2 A_c(m)^2 w_L^{\mathrm{sym}}(m)$, folding $L_N^{(2)}(L - 2)$ onto $\sum_{m=1}^{L-2} A_c(m)^2 w_L^{\mathrm{sym}}(m)$ with anchored endpoint vanishing $A_c(1) = A_c(L - 2) = 0$ (\texttt{harmonicCellL2PartialSum\_\allowbreak period\_\allowbreak sub\_\allowbreak two\_\allowbreak eq\_\allowbreak doubleCone}, \texttt{sum\_\allowbreak Icc\_\allowbreak weightedCounterRotatingFlux\_\allowbreak eq\_\allowbreak two\_\allowbreak mul\_\allowbreak l2}).
+\item \emph{[Lean: PR-8T].} Pairing each cell $m$ with its palindromic mirror $L - 1 - m$ across any common multiple period $L$ of $\{1, \dots, N\}$ via the symmetric double-cone width $w_L^{\mathrm{sym}}(m) := \frac{1}{2}(w_m + w_{L-1-m})$ collapses negative amplitudes into positive energy invariance $A_c(L - 1 - m)^2 = A_c(m)^2$ and doubles counter-rotating signed fluxes: $A_c(m)(A_c(m) - A_c(L - 1 - m)) = 2 A_c(m)^2$ and $\mathrm{weightedCounterRotatingFlux}(c,N,L,m) = 2 A_c(m)^2 w_L^{\mathrm{sym}}(m)$, folding $L_N^{(2)}(L - 2)$ onto $\sum_{m=1}^{L-2} A_c(m)^2 w_L^{\mathrm{sym}}(m)$ with anchored endpoint vanishing $A_c(1) = A_c(L - 2) = 0$ (Figure~\ref{fig:double_cone_counter_rotation}; \texttt{harmonicCellL2PartialSum\_\allowbreak period\_\allowbreak sub\_\allowbreak two\_\allowbreak eq\_\allowbreak doubleCone}, \texttt{sum\_\allowbreak Icc\_\allowbreak weightedCounterRotatingFlux\_\allowbreak eq\_\allowbreak two\_\allowbreak mul\_\allowbreak l2}).
 \item \emph{[Lean: PR-8U].} Dually by Euclid's method of exhaustion (Book~X.1), without appealing to the LCM period $L_N$, the $\ell^1$ triangle inequality yields the period-free uniform bound $|A_c(n)| \le B_N := 1 + \sum_{k=1}^N |c_k|$ across all $n \in \mathbb{N}$ (\texttt{uniformCellBound}, \texttt{abs\_\allowbreak modularCellResidual\_\allowbreak le}); telescoping $\sum_{n=M+1}^{M'} w_n = \frac{1}{M+1} - \frac{1}{M'+1}$ then bounds the residual tail energy above cutoff $M$ uniformly by $L_N^{(2)}(M') - L_N^{(2)}(M) \le \frac{B_N^2}{M+1}$ ($< \varepsilon$ whenever $\frac{B^2}{\varepsilon} < M + 1$, \texttt{harmonicCellL2TailSum\_\allowbreak le\_\allowbreak div\_\allowbreak succ}, \texttt{harmonicCellL2TailSum\_\allowbreak le\_\allowbreak uniformCellBound\_\allowbreak sq\_\allowbreak div\_\allowbreak succ}). Furthermore, integrating each half-open cell $(1/(n+1), 1/n]$ shows $\int_{(1/(M+1), 1]} r_N(x)^2\,dx = L_N^{(2)}(M)$ (\texttt{harmonicCellL2PartialSum\_\allowbreak eq\_\allowbreak setIntegral\_\allowbreak Ioc}) and monotonicity yields $\sum_{p \in S}\frac{1}{2p^2} \le L_N^{(2)}(M) \le \int_{(0,1]} r_N(x)^2\,dx$ (\texttt{harmonicCellL2PartialSum\_\allowbreak le\_\allowbreak integral\_\allowbreak Ioc}, \texttt{sum\_\allowbreak primes\_\allowbreak le\_\allowbreak integral\_\allowbreak Ioc}, \texttt{euclidean\_\allowbreak book\_\allowbreak ix\_\allowbreak and\_\allowbreak x\_\allowbreak continuity\_\allowbreak capstone}).
 \end{enumerate}
 \end{theorem}
@@ -137,6 +137,110 @@ Let $N \ge 2$, $c \in \mathcal{A}_N^{\mathrm{dir}}$ ($c_1 = -1$), and $h = c - c
 \end{tikzpicture}
 \caption{Pointwise cell plateaus and $L_4 = 12$ palindromic periodicity for the exact Dirichlet $N=4$ optimum $c^*$ (\texttt{layer\_d\_\allowbreak palindromic\_\allowbreak period\_\allowbreak lab.py}): (a) $D_1 = 0$ eliminates the continuous $x$-slope and locks $r_4(x) = 0$ on $(1/2,1]$; (b) modular antisymmetry pairs $A_{c^*}(m)$ against $-A_{c^*}(11-m)$ across the period midpoint, certified to $3.55 \times 10^{-84}$.}
 \label{fig:pointwise_continuity_palindromic}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[font=\small, scale=0.92]
+  % ==================== PANEL (A): COORDINATE-SPACE PALINDROMIC DOUBLE CONE ====================
+  \begin{scope}[shift={(0,0)}]
+    \node[anchor=west, font=\bfseries\small] at (-0.2, 4.45)
+      {(a) Coordinate-Space Palindromic Double Cone ($A_c(L{-}1{-}m) = -A_c(m)$)};
+
+    % Left Cone (Forward Positive Cone: m = 1 -> (L-1)/2, shaded blue)
+    \fill[blue!14, opacity=0.75] (0.6, 3.35) -- (3.3, 2.0) -- (0.6, 0.65) -- cycle;
+    \draw[very thick, color=blue!80!black] (0.6, 3.35) -- (3.3, 2.0);
+    \draw[very thick, color=blue!80!black] (0.6, 0.65) -- (3.3, 2.0);
+    % Left mouth ellipse (m = 1: A_c(1) = 0, wide mouth w(m) = 1/(m(m+1)))
+    \fill[blue!22, opacity=0.8] (0.6, 2.0) ellipse (0.28 and 1.35);
+    \draw[very thick, color=blue!85!black] (0.6, 2.0) ellipse (0.28 and 1.35);
+    % Intermediate cross-section ellipse on left cone (m = 2)
+    \draw[thick, densely dashed, color=blue!75!black] (1.65, 2.0) ellipse (0.18 and 0.82);
+
+    % Right Cone (Opposite-Directed Negative Cone: L-1-m <- (L-1)/2, shaded orange/red)
+    \fill[orange!18, opacity=0.78] (6.0, 3.35) -- (3.3, 2.0) -- (6.0, 0.65) -- cycle;
+    \draw[very thick, color=orange!85!black] (3.3, 2.0) -- (6.0, 3.35);
+    \draw[very thick, color=orange!85!black] (3.3, 2.0) -- (6.0, 0.65);
+    % Right mouth ellipse (m = L-2: A_c(L-2) = 0, narrow tip w(L-1-m))
+    \fill[orange!25, opacity=0.8] (6.0, 2.0) ellipse (0.28 and 1.35);
+    \draw[very thick, color=orange!90!black] (6.0, 2.0) ellipse (0.28 and 1.35);
+    % Intermediate cross-section ellipse on right cone (L-3)
+    \draw[thick, densely dashed, color=orange!85!black] (4.95, 2.0) ellipse (0.18 and 0.82);
+
+    % Central Axis & Joined Inversion Apex at m = (L-1)/2
+    \draw[thin, dash dot, color=black!65] (0.1, 2.0) -- (6.5, 2.0);
+    \fill[purple!85!black] (3.3, 2.0) circle (3.0pt);
+    \node[above, font=\scriptsize\bfseries, color=purple!85!black, align=center] at (3.3, 2.28)
+      {Inversion Apex\\[-1pt]$m = \tfrac{L-1}{2}$};
+
+    % Counter-Rotating Curved Arrows around the two cones
+    \draw[->, ultra thick, color=blue!80!black]
+      (1.5, 3.12) arc[start angle=70, end angle=290, x radius=0.26, y radius=1.12];
+    \node[above, font=\scriptsize\bfseries, color=blue!80!black] at (1.65, 3.45)
+      {Forward $+A_c(m)$};
+
+    \draw[->, ultra thick, color=red!80!black]
+      (5.1, 0.88) arc[start angle=-70, end angle=150, x radius=0.26, y radius=1.12];
+    \node[above, font=\scriptsize\bfseries, color=red!80!black] at (4.95, 3.45)
+      {Opposite $-A_c(m)$};
+
+    % Boundary zero labels & folded flux equation
+    \node[font=\tiny\bfseries, color=blue!85!black, align=center] at (0.6, 2.0)
+      {$m{=}1$\\$A_c{=}0$};
+    \node[font=\tiny\bfseries, color=orange!90!black, align=center] at (6.0, 2.0)
+      {$L{-}2$\\$A_c{=}0$};
+    \node[draw=purple!70!black, fill=purple!5, rounded corners=2pt, inner sep=3pt, font=\scriptsize]
+      at (3.3, 0.15)
+      {Folded Flux: $A_c(m)\big(A_c(m) - A_c(L{-}1{-}m)\big) = 2A_c(m)^2 \ge 0$};
+  \end{scope}
+
+  % ==================== PANEL (B): MELLIN-SPACE COUNTER-ROTATING PHASOR CONES ====================
+  \begin{scope}[shift={(7.7,0)}]
+    \node[anchor=west, font=\bfseries\small] at (-0.2, 4.45)
+      {(b) Mellin-Space Dual Cones ($s \leftrightarrow 1{-}s$) \& Off-Line Waist Gap};
+
+    % Critical-Line Double Cone (Pinched cleanly at sigma = 1/2, vertical axis)
+    % Bottom Cone (Forward phasor k^{-sigma} e^{-it ln k})
+    \fill[teal!15, opacity=0.75] (1.9, 0.55) -- (3.3, 2.0) -- (4.7, 0.55) -- cycle;
+    \draw[very thick, color=teal!80!black] (1.9, 0.55) -- (3.3, 2.0) -- (4.7, 0.55);
+    \fill[teal!22, opacity=0.8] (3.3, 0.55) ellipse (1.4 and 0.24);
+    \draw[very thick, color=teal!85!black] (3.3, 0.55) ellipse (1.4 and 0.24);
+
+    % Top Cone (Counter-rotating dual k^{-(1-sigma)} e^{+it ln k})
+    \fill[blue!15, opacity=0.75] (1.9, 3.45) -- (3.3, 2.0) -- (4.7, 3.45) -- cycle;
+    \draw[very thick, color=blue!80!black] (1.9, 3.45) -- (3.3, 2.0) -- (4.7, 3.45);
+    \fill[blue!22, opacity=0.8] (3.3, 3.45) ellipse (1.4 and 0.24);
+    \draw[very thick, color=blue!85!black] (3.3, 3.45) ellipse (1.4 and 0.24);
+
+    % Opposite rotation arrows on top and bottom cones
+    \draw[->, very thick, color=blue!85!black]
+      (2.4, 3.45) arc[start angle=180, end angle=350, x radius=0.9, y radius=0.16];
+    \draw[->, very thick, color=teal!85!black]
+      (4.2, 0.55) arc[start angle=0, end angle=-170, x radius=0.9, y radius=0.16];
+
+    % Dashed Red Hyperboloid Waist showing Off-Line Zero Mismatch (sigma_0 > 1/2)
+    \draw[very thick, densely dashed, color=red!80!black]
+      (2.15, 3.45) .. controls (2.85, 2.35) and (2.85, 1.65) .. (2.15, 0.55);
+    \draw[very thick, densely dashed, color=red!80!black]
+      (4.45, 3.45) .. controls (3.75, 2.35) and (3.75, 1.65) .. (4.45, 0.55);
+    \draw[thick, color=red!80!black, fill=red!18, fill opacity=0.7]
+      (3.3, 2.0) ellipse (0.58 and 0.14);
+
+    % Critical Apex Pinpoint at sigma = 1/2
+    \fill[green!45!black] (3.3, 2.0) circle (2.8pt);
+    \node[left, font=\scriptsize\bfseries, color=green!45!black, align=right] at (2.62, 2.0)
+      {Critical Apex\\[-1pt]$\sigma = \tfrac{1}{2}$ (Pinched)};
+
+    % Off-line waist callout
+    \draw[->, thick, color=red!80!black] (4.75, 2.0) -- (3.92, 2.0);
+    \node[right, font=\scriptsize\bfseries, color=red!80!black, align=left] at (4.75, 2.0)
+      {Off-Line Waist ($\sigma_0 > \tfrac{1}{2}$)\\[-1pt]$\|E_N\|_{L^2}^2 \ge \frac{2\sigma_0 - 1}{|s_0|^2} > 0$};
+  \end{scope}
+\end{tikzpicture}%
+}
+\caption{Counter-rotating double-cone geometry in coordinate slab space and Mellin frequency space (\emph{Lean 4: \texttt{UpstreamPR\_8R}, \texttt{UpstreamPR\_8T}}). \textbf{(a)} Across the fundamental period $L_N = \mathrm{lcm}(1,\dots,N)$, the forward positive cone $A_c(m)$ ($m \ge 1$) and the opposite-directed negative cone $A_c(L_N-1-m) = -A_c(m)$ meet at the inversion apex $m = (L_N-1)/2$, doubling the counter-rotating signed flux to $2A_c(m)^2$ and folding the partial $L^2$ quadrature sum onto the symmetric width kernel $\bar{w}_{L_N}(m) = \frac{1}{2}(w(m) + w(L_N-1-m))$. \textbf{(b)} In Mellin space, the counter-rotating phasor cones $k^{-\sigma}e^{-it\ln k}$ and $k^{-(1-\sigma)}e^{+it\ln k}$ pinch to a closed apex only on the critical mirror $\sigma = 1/2$; any off-line zero at $\sigma_0 > 1/2$ opens an unclosable hyperboloid waist of $L^2$ energy bounded below by $(2\sigma_0 - 1)/|s_0|^2 > 0$.}
+\label{fig:double_cone_counter_rotation}
 \end{figure}
 
 \section{2D Telescoping, Exact Certificates, and Superdiagonal Orthogonality}

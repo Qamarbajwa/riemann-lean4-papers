@@ -13,9 +13,8 @@ public import RiemannBlueprint.UpstreamPRs.UpstreamPR_8G_CotangentSixReciprocity
 This module lifts Vasyunin cotangent symmetries from concrete finite truncations (`N ≤ 6`) to
 unconditional universal laws valid for all `a, b, k : ℕ`:
 
-* `vasyuninCotSum_mod_eq`, `vasyuninCotSum_add_self_right`, `vasyuninCotSum_dvd_right_eq_zero`,
-  and `vasyuninCotSum_le_nine_fold`: modulo periodicity, shift invariance `V(a, a + b) = V(a, b)`,
-  divisibility vanishing, and `{1..9}` finite column folding.
+* `vasyuninCotSum_mod_eq`, `vasyuninCotSum_add_self_right`, and `vasyuninCotSum_dvd_right_eq_zero`:
+  modulo periodicity, shift invariance `V(a, a + b) = V(a, b)`, and divisibility vanishing.
 * `vasyuninCotSum_sub_eq_neg`: universal reflection reciprocity `V(a, a - b) = -V(a, b)` for all
   `b ≤ a` without coprimality assumptions.
 * `vasyuninCotSum_two_mul_self_eq_zero` and `unweightedKCot_self_two_mul_eq_zero`: infinite
@@ -56,19 +55,6 @@ theorem vasyuninCotSum_add_self_right (a b : ℕ) :
 theorem vasyuninCotSum_dvd_right_eq_zero {a b : ℕ} (h : a ∣ b) : vasyuninCotSum a b = 0 := by
   rw [← vasyuninCotSum_mod_eq a b, Nat.mod_eq_zero_of_dvd h]
   simp [vasyuninCotSum]
-
-/-- **`{1..9}` Fundamental Horizon Folding Theorem**: for every conductor `a ∈ [1, 9]` and every
-`b : ℕ`, either `a ∣ b` with `V(a, b) = 0` or `V(a, b) = V(a, r)` for a residue `r ∈ [1, 8]`. -/
-theorem vasyuninCotSum_le_nine_fold {a : ℕ} (ha : a ∈ Finset.Icc 1 9) (b : ℕ) :
-    (a ∣ b ∧ vasyuninCotSum a b = 0) ∨
-      ∃ r ∈ Finset.Icc 1 8, vasyuninCotSum a b = vasyuninCotSum a r := by
-  by_cases h : a ∣ b
-  · exact Or.inl ⟨h, vasyuninCotSum_dvd_right_eq_zero h⟩
-  · have ha1 : 1 ≤ a := (Finset.mem_Icc.mp ha).1
-    have ha9 : a ≤ 9 := (Finset.mem_Icc.mp ha).2
-    have hne0 : b % a ≠ 0 := fun hz => h (Nat.dvd_of_mod_eq_zero hz)
-    have hlt : b % a < a := Nat.mod_lt b (by omega)
-    exact Or.inr ⟨b % a, Finset.mem_Icc.mpr ⟨by omega, by omega⟩, (vasyuninCotSum_mod_eq a b).symm⟩
 
 /-- Pointwise fractional-part reflection identity on `Ico 1 a` for all `b ≤ a`. -/
 theorem fract_sub_mul_div_eq {a b m : ℕ} (ha : a ≠ 0) (hm : m ≤ a) (hb : b ≤ a) :

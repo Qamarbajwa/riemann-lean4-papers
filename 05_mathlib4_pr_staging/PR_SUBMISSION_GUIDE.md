@@ -1,17 +1,17 @@
-# Modular Lean 4 Formalization Guide — Waves 1–8 (53 Self-Contained Units)
+# Modular Lean 4 Formalization Guide — Waves 1–8 (54 Self-Contained Units)
 
 **Author / Contributor:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Staging Directory:** `MATHLIB4_PR_STAGING/`  
 **Verified Build Mirror:** `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/`  
 **Automation Script:** `push_carved_prs_to_mathlib4.py`  
-**Fork Archive Target:** `Qamarbajwa/mathlib4` (`53` standalone `feat/*` branches; `ALLOW_UPSTREAM_BOT_ACTIONS = False` — never opens or comments on upstream PRs)  
-**Epistemic Invariant:** `NO_RH_PROOF = TRUE` (all 53 modules verify unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, exact `N = 4, 5, 6` certificates, all-`N` universal symmetries, or conditional RH bridges; none claim an unconditional RH proof)
+**Fork Archive Target:** `Qamarbajwa/mathlib4` (`54` standalone `feat/*` branches; `ALLOW_UPSTREAM_BOT_ACTIONS = False` — never opens or comments on upstream PRs)  
+**Epistemic Invariant:** `NO_RH_PROOF = TRUE` (all 54 modules verify unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, exact `N = 4, 5, 6` certificates, all-`N` universal symmetries, or conditional RH bridges; none claim an unconditional RH proof)
 
 ---
 
 ## Standalone Repository & Fork Archive Policy
 
-1. All 53 `UpstreamPR_1A`–`8J.lean` files are maintained as **53 self-contained, linter-verified modular Lean 4 formalization units** archived on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4`, and Zenodo (`10.5281/zenodo.24329861`).
+1. All 54 `UpstreamPR_1A`–`8K.lean` files are maintained as **54 self-contained, linter-verified modular Lean 4 formalization units** archived on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4`, and Zenodo (`10.5281/zenodo.24329861`).
 2. `ALLOW_UPSTREAM_BOT_ACTIONS = False` disables automated `gh pr create` and `gh pr comment` mutations against `leanprover-community/mathlib4`. `--inspect` and `--advance-queue` operate strictly as read-only local status monitors.
 3. Branches are pushed strictly to the user-owned fork `https://github.com/Qamarbajwa/mathlib4.git`.
 4. Every module registers cleanly as `public import Mathlib.NumberTheory.LSeries.<Name>` in `Mathlib.lean` (never before line 1 `module`).
@@ -19,13 +19,13 @@
 ### Fork Verification & Staging Commands
 
 ```bash
-# Dry-run import rewriting & line-length audit across all 53 modules
+# Dry-run import rewriting & line-length audit across all 54 modules
 python push_carved_prs_to_mathlib4.py --wave all --dry-run
 
 # Push carved branches from a local mathlib4 checkout to user-owned fork Qamarbajwa/mathlib4
 python push_carved_prs_to_mathlib4.py --mathlib-dir /path/to/mathlib4 --wave all --base-ref master --remote origin --push
 
-# Verify all 53 pushed feat/* branches on Qamarbajwa/mathlib4
+# Verify all 54 pushed feat/* branches on Qamarbajwa/mathlib4
 python push_carved_prs_to_mathlib4.py --check-remote-ci
 ```
 
@@ -289,7 +289,7 @@ Wave 5 covers Papers F & G:
 
 ---
 
-## Wave 8 Dependency Stack (`PR-8A`–`PR-8D`, Paper K)
+## Wave 8 Dependency Stack (`PR-8A`–`PR-8K`, Papers K & L)
 
 - **PR-8A** (`Mathlib/NumberTheory/LSeries/BaezDuartePlaqueCauchySchwarz.lean`, `feat/baez-duarte-plaque-cauchy-schwarz`, stacked on `PR-7D` + `PR-4H`, 144 lines, max 96 chars): `dipolePlaqueForm`, `dipoleCoord_sub_cBaseAnchor_eq`, `dipolePlaqueForm_sub_cBaseAnchor_eq`, `QCot_eq_h_one_mul_drive_add_dipolePlaqueForm`, `SCot_eq_neg_c_one_mul_drive_sub_dipolePlaqueForm`, `l2_dist_eq_one_add_c_one_mul_drive_add_dipolePlaqueForm`, `sq_linearCotDrive_sub_le_dipolePlaqueForm`, `neg_h_one_sq_div_four_le_dipolePlaqueForm`, `one_sub_h_one_le_dipolePlaqueForm_of_unit_drive`.
 - **PR-8B** (`Mathlib/NumberTheory/LSeries/BaezDuarteDirichletAnchoredPlaque.lean`, `feat/baez-duarte-dirichlet-anchored-plaque`, stacked on `PR-8A`, 147 lines, max 99 chars): `IsDirichletAnchored`, `cDirichletAnchor`, `cDirichletAnchor_isDirichletAnchored`, `IsDirichletAnchored.sub_mem_tangent`, `dipolePlaqueForm_ge_of_dirichlet`, `dipolePlaqueForm_nonneg_of_dirichlet_of_one_le_drive`, `neg_one_div_four_le_dipolePlaqueForm_of_dirichlet`, `SCot_eq_drive_sub_dipolePlaqueForm_of_dirichlet`, `unit_drive_dirichlet_plaque_eq_l2_dist`, `unit_drive_dirichlet_plaque_nonneg`.
@@ -298,6 +298,7 @@ Wave 5 covers Papers F & G:
 - **PR-8E** (`Mathlib/NumberTheory/LSeries/BaezDuarteDirichletOptFour.lean`, `feat/baez-duarte-dirichlet-opt-four`, stacked on `PR-8D`, 162 lines, max 99 chars): `cDirichletOptFour`, `cDirichletOptFour_isDirichletAnchored`, `SCot_eq_dirichlet_four_sub_sq`, `SCot_cDirichletOptFour_eq`, `SCot_le_cDirichletOptFour_of_isDirichletAnchored_four`, `one_sub_31_div_108_pi_le_l2_dist_of_isDirichletAnchored_four`.
 - **PR-8F** (`Mathlib/NumberTheory/LSeries/BaezDuarteDipoleGramFive.lean`, `feat/baez-duarte-dipole-gram-five`, stacked on `PR-8E`, 172 lines, max 98 chars): `dipoleGramEntry_two_three_eq_zero`, `vasyuninCotSum_five_one_eq`, `vasyuninCotSum_five_two_eq`, `dipoleGramEntry_one_three_eq`, `dipoleGramEntry_three_three_eq`, `dipolePlaqueEntry_two_three_eq`.
 - **PR-8G** (`Mathlib/NumberTheory/LSeries/BaezDuarteCotangentSix.lean`, `feat/baez-duarte-cotangent-six`, stacked on `PR-8F`, 209 lines, max 100 chars): `vasyuninCotSum_six_eval`, `deltaCot_six_eq`, `vasyuninCotSum_two_six_eq_zero`, `vasyuninCotSum_three_six_eq_zero`, `vasyuninCotSum_four_six_eq_zero`, `unweightedKCot_two_six_eq`, `unweightedKCot_three_six_eq_zero`, `unweightedKCot_four_six_eq`, `dipoleGramEntry_add_succ_right`, `dipoleGramEntry_one_three_add_one_four_eq`, `dipoleGramEntry_one_four_eq`, `dipoleGramEntry_two_four_eq_zero`.
-- **PR-8H** (`Mathlib/NumberTheory/LSeries/BaezDuarteUniversalCotangent.lean`, `feat/baez-duarte-universal-cotangent`, stacked on `PR-8G`, 139 lines, max 100 chars): `vasyuninCotSum_mod_eq`, `vasyuninCotSum_add_self_right`, `vasyuninCotSum_dvd_right_eq_zero`, `vasyuninCotSum_le_nine_fold`, `fract_sub_mul_div_eq`, `vasyuninCotSum_sub_eq_neg`, `vasyuninCotSum_two_mul_self_eq_zero`, `unweightedKCot_self_two_mul_eq_zero`.
+- **PR-8H** (`Mathlib/NumberTheory/LSeries/BaezDuarteUniversalCotangent.lean`, `feat/baez-duarte-universal-cotangent`, stacked on `PR-8G`, 125 lines, max 100 chars): `vasyuninCotSum_mod_eq`, `vasyuninCotSum_add_self_right`, `vasyuninCotSum_dvd_right_eq_zero`, `fract_sub_mul_div_eq`, `vasyuninCotSum_sub_eq_neg`, `vasyuninCotSum_two_mul_self_eq_zero`, `vasyuninCotSum_self_two_mul_eq_zero`, `unweightedKCot_self_two_mul_eq_zero`.
 - **PR-8I** (`Mathlib/NumberTheory/LSeries/BaezDuarteLogarithmicPlaqueDecay.lean`, `feat/baez-duarte-logarithmic-plaque-decay`, stacked on `PR-8H`, 88 lines, max 96 chars): `purePlaqueVanishing_of_majorant_tendsto_zero`, `riemannHypothesis_of_plaque_majorant_tendsto_zero`, `riemannHypothesis_of_logarithmic_plaque_bound`.
-- **PR-8J** (`Mathlib/NumberTheory/LSeries/BaezDuarteSuperdiagonalOrthogonalTriple.lean`, `feat/baez-duarte-superdiagonal-orthogonal-triple`, stacked on `PR-8I`, 235 lines, max 100 chars): `dipoleGramEntry_self_succ_eq_zero`, `dipolePlaqueEntry_self_succ_eq`, `dipoleGramEntry_orthogonal_triple_two_three_four`, `QCot_span_two_three_four_eq_sum_sq`, `dipoleGramEntry_four_four_eq`, `dipoleGramEntry_three_three_add_four_four_eq`, `isDirichletAnchored_unit_partition`, `unitDefectEntry`, `unitDefectEntry_comm`, `unitDefectEntry_self_succ_eq`, `unitDefectEntry_traces_and_one_two`, `one_sub_SCot_eq_sum_unitDefectEntry_of_isDirichletAnchored`.
+- **PR-8J** (`Mathlib/NumberTheory/LSeries/BaezDuarteUnitPartitionKernel.lean`, `feat/baez-duarte-unit-partition-kernel`, stacked on `PR-8I`, 197 lines, max 100 chars): `sum_Icc_two_div_eq_one_of_isDirichletAnchored`, `sum_Icc_two_eq_three_of_isDirichletAnchored`, `sum_dipoleCoord_eq_one_of_isDirichletAnchored`, `unitDefectEntry`, `unitDefectEntry_comm`, `unitDefectEntry_eq_one_sub_drive_add_gram`, `unitDefectEntry_one_two_eq`, `one_sub_SCot_eq_sum_unitDefectEntry_of_isDirichletAnchored`, `sum_unitDefectEntry_nonneg_of_isDirichletAnchored`, `riemannHypothesis_of_unitDefectEntry_simplex_vanishing`.
+- **PR-8K** (`Mathlib/NumberTheory/LSeries/BaezDuarteSuperdiagonalOrthogonalTriple.lean`, `feat/baez-duarte-superdiagonal-orthogonal-triple`, stacked on `PR-8J`, 188 lines, max 100 chars): `vasyuninCotSum_le_nine_fold`, `dipoleGramEntry_self_succ_eq_zero`, `dipolePlaqueEntry_self_succ_eq`, `unitDefectEntry_self_succ_eq`, `dipoleGramEntry_orthogonal_triple_two_three_four`, `QCot_span_two_three_four_eq_sum_sq`, `dipoleGramEntry_four_four_eq`, `dipoleGramEntry_three_three_add_four_four_eq`, `unitDefectEntry_one_one_add_two_two_eq`, `unitDefectEntry_three_three_add_four_four_eq`.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Read-only mathlib4 PR Queue & Status Monitor for all 52 Carved UpstreamPRs (Waves 1-8).
+Read-only mathlib4 PR Queue & Status Monitor for all 54 Carved UpstreamPRs (Waves 1-8).
 
 AI Policy Safety Guard:
   ALLOW_UPSTREAM_BOT_ACTIONS = False disables all automated `gh pr create` and `gh pr comment`

@@ -48,10 +48,24 @@ theorem harmonicPairEnergy_eq_width_sum (c : ℕ → ℝ) (N : ℕ) {p : ℕ} (h
   rw [hsub]
   simp only [div_eq_mul_inv, one_mul]
 
+/-- Non-negative Cauchy-Schwarz defect of the adjacent harmonic cells `p - 1` and `p`. -/
+noncomputable def harmonicPairDefect (c : ℕ → ℝ) (N p : ℕ) : ℝ :=
+  ((((p : ℝ) + 1) * discreteCellResidual c N (p - 1) +
+      ((p : ℝ) - 1) * discreteCellResidual c N p) ^ 2) /
+    (2 * (p : ℝ) ^ 2 * ((p : ℝ) - 1) * ((p : ℝ) + 1))
+
+/-- The Cauchy-Schwarz defect `harmonicPairDefect c N p` is non-negative for `p ≥ 2`. -/
+theorem harmonicPairDefect_nonneg (c : ℕ → ℝ) (N : ℕ) {p : ℕ} (hp : 2 ≤ p) :
+    0 ≤ harmonicPairDefect c N p := by
+  have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp
+  have h1 : 0 ≤ (p : ℝ) - 1 := by linarith
+  unfold harmonicPairDefect
+  exact div_nonneg (sq_nonneg _) (by positivity)
+
 /-- **Exact Adjacent-Cell Defect Identity**: for any real `a, b` and `p ≥ 2`,
 `a^2 / ((p - 1) * p) + b^2 / (p * (p + 1))` splits orthogonally into `(b - a)^2 / (2 * p^2)`
 plus a non-negative defect square. -/
-theorem adjacentCellEnergy_eq_jump_sq_add_defect (a b : ℝ) {p : ℕ} (hp : 2 ≤ p) :
+theorem sq_div_pred_mul_add_sq_div_mul_succ (a b : ℝ) {p : ℕ} (hp : 2 ≤ p) :
     a ^ 2 / (((p - 1 : ℕ) : ℝ) * (p : ℝ)) + b ^ 2 / ((p : ℝ) * ((p : ℝ) + 1)) =
       (b - a) ^ 2 / (2 * (p : ℝ) ^ 2) +
         (((p : ℝ) + 1) * a + ((p : ℝ) - 1) * b) ^ 2 /
@@ -65,6 +79,14 @@ theorem adjacentCellEnergy_eq_jump_sq_add_defect (a b : ℝ) {p : ℕ} (hp : 2 �
   rw [hcast]
   field_simp [hp0, hpm1, hpp1]
   ring
+
+/-- Alias of `sq_div_pred_mul_add_sq_div_mul_succ` for compatibility. -/
+theorem adjacentCellEnergy_eq_jump_sq_add_defect (a b : ℝ) {p : ℕ} (hp : 2 ≤ p) :
+    a ^ 2 / (((p - 1 : ℕ) : ℝ) * (p : ℝ)) + b ^ 2 / ((p : ℝ) * ((p : ℝ) + 1)) =
+      (b - a) ^ 2 / (2 * (p : ℝ) ^ 2) +
+        (((p : ℝ) + 1) * a + ((p : ℝ) - 1) * b) ^ 2 /
+          (2 * (p : ℝ) ^ 2 * ((p : ℝ) - 1) * ((p : ℝ) + 1)) :=
+  sq_div_pred_mul_add_sq_div_mul_succ a b hp
 
 /-- General lower bound `a^2 / ((p - 1) * p) + b^2 / (p * (p + 1)) ≥ (b - a)^2 / (2 * p^2)` for
 all real `a, b` and `p ≥ 2`. -/

@@ -782,6 +782,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): exact prime-cell L2 energy defect identity and 1/(2*p^2) tail floor",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuartePrimeCellEnergyFloor",
     ),
+    PRSpec(
+        pr_id="PR-8R",
+        wave=8,
+        staged_file="UpstreamPR_8R_MellinZeroObstructionFloor.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8R_MellinZeroObstructionFloor",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteMellinZeroFloor.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteMellinZeroFloor",
+        branch="feat/baez-duarte-mellin-zero-floor",
+        base_branch="feat/baez-duarte-prime-cell-energy-floor",
+        pr_title="feat(NumberTheory/LSeries): Mellin zero obstruction and off line Cauchy Schwarz L2 floor",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteMellinZeroFloor",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

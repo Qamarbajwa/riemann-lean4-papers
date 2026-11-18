@@ -221,6 +221,28 @@ ID & Module File & Key Formalized Theorems & L \\
 \label{tab:wave8_concordance}
 \end{table}
 
+\begin{table}[ht]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{@{}cl>{\raggedright\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{7.3cm}@{}}
+\toprule
+\# & Condition ($n \to$ Continuum) & Core Analytic / Algebraic Claim & Certified Lean~4.35 Theorems (\texttt{PR-8M}--\texttt{8U}) \\
+\midrule
+1 & Slab partition \& gap & $\bigcup_{n=1}^M \bigl(\tfrac{1}{n+1},\tfrac{1}{n}\bigr] = \bigl(\tfrac{1}{M+1},1\bigr]$, $\frac{1}{M+2} \in (0,\tfrac{1}{M+1}]$ & \texttt{sum\_Icc\_\allowbreak harmonicCellWidth}, \texttt{residualHorizonGap\_\allowbreak pos}, \texttt{forbiddenHarmonicPlane\_\allowbreak mem\_gap} \\
+2 & Slope \& floor collapse & $R_c = A_c(n) - D_1/x$; $D_1 = 0 \Rightarrow A_c = A_c^{\mathrm{mod}}$ & \texttt{continuousNymanResidual\_\allowbreak eq\_sub\_D1\_\allowbreak mul\_inv}, \texttt{continuousNymanResidual\_\allowbreak eq\_discreteCellResidual} \\
+3 & Outer-slab zeroing & $c_1 = -1, D_1 = 0 \Rightarrow R_c(x) = 0$ on $(1/2, 1]$ & \texttt{discreteCellResidual\_one\_eq}, \texttt{continuousNymanResidual\_\allowbreak eq\_zero\_on\_top\_half} \\
+4 & Period \& double-cone & $A_c(n+L) = A_c(n)$, $A_c(L-1-m) = -A_c(m)$ & \texttt{modularCellResidual\_\allowbreak palindromic\_neg}, \texttt{harmonicCellL2PartialSum\_\allowbreak period\_sub\_two\_\allowbreak eq\_doubleCone} \\
+5 & Prime $1/(2p^2)$ floor & Prime $p > N$: jump $-1$ and $\sum_{p \in S}\frac{1}{2p^2} \le L_N^{(2)}(M)$ & \texttt{harmonicPairEnergy\_\allowbreak prime\_eq}, \texttt{harmonicCellL2PartialSum\_\allowbreak ge\_sum\_primes} \\
+6 & $L_N$-free Book~X.1 tail & $|A_c(n)| \le 1 + \sum_{k=1}^N |c_k|$, tail $\le B^2/(M+1)$ & \texttt{abs\_modularCellResidual\_\allowbreak le}, \texttt{harmonicCellL2TailSum\_\allowbreak le\_div\_succ}, \texttt{lt\_eps\_of\_gt} \\
+7 & Lebesgue bridge \& $L^2 > 0$ & $\int_{(1/(M+1),1]} R_c^2 = L_N^{(2)}(M) \le \int_{(0,1]} R_c^2$ & \texttt{harmonicCellL2PartialSum\_\allowbreak eq\_setIntegral\_Ioc}, \texttt{sum\_primes\_le\_\allowbreak integral\_Ioc}, \texttt{sq\_integral\_pos} \\
+8 & Mellin off-line floor & $\mathcal{M}[E_N](s_0) = \frac{1}{s_0}$, $\|E_N\|_2^2 \ge \frac{2\sigma_0 - 1}{|s_0|^2} > 0$ & \texttt{mellinResidualQuotient\_\allowbreak at\_zeta\_zero}, \texttt{l2NormSq\_ge\_\allowbreak offlineEnergyFloor\_\allowbreak of\_cauchy\_schwarz} \\
+\bottomrule
+\end{tabular}
+\caption{Eight-condition $n$-to-continuity bridge (\texttt{verify\_\allowbreak n\_\allowbreak to\_\allowbreak continuity\_\allowbreak chain.py}; all axioms strictly \texttt{[propext, Classical.choice, Quot.sound]}).}
+\label{tab:eight_condition_continuity}
+\end{table}
+
 \bibliographystyle{amsplain}
 \bibliography{riemann_master_references}
 

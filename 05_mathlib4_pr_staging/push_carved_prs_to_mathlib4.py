@@ -26,6 +26,7 @@ from typing import Dict, List, Optional
 
 
 STAGING_DIR = pathlib.Path(__file__).resolve().parent
+ALLOW_UPSTREAM_BOT_ACTIONS = False
 
 
 @dataclass(frozen=True)
@@ -625,6 +626,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): pure plaque and 2D-telescoped kernel vanishing criteria for RH",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuartePurePlaqueRHCriterion equivalence bridge",
     ),
+    PRSpec(
+        pr_id="PR-8E",
+        wave=8,
+        staged_file="UpstreamPR_8E_DirichletOptFourCert.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8E_DirichletOptFourCert",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteDirichletOptFour.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteDirichletOptFour",
+        branch="feat/baez-duarte-dirichlet-opt-four",
+        base_branch="feat/baez-duarte-pure-plaque-rh-criterion",
+        pr_title="feat(NumberTheory/LSeries): exact closed-form (31/108)*pi Dirichlet-anchored optimum on A_4",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteDirichletOptFour exact radical-free N=4 certificate",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {
@@ -922,6 +935,13 @@ def main() -> int:
                     return push_res.returncode
 
         if args.create_pr:
+            if not ALLOW_UPSTREAM_BOT_ACTIONS:
+                print(
+                    "ERROR: --create-pr is blocked by mathlib4 AI policy (ALLOW_UPSTREAM_BOT_ACTIONS = False). "
+                    "Push branches only to your own fork Qamarbajwa/mathlib4.",
+                    file=sys.stderr,
+                )
+                return 1
             body = build_pr_body(spec, len(lines_list), max_len)
             existing = run_cmd([
                 "gh", "pr", "list", "--repo", args.upstream_repo,

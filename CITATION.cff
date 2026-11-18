@@ -20,7 +20,7 @@ keywords:
   - nyman-beurling
 abstract: >-
   Thematic micro-paper suite (Papers 0 and A through K) and staged Wave 1-8 mathlib4
-  pull requests (47 extracted modules) verified in Lean 4.35.0 with zero custom axioms
+  pull requests (48 extracted modules) verified in Lean 4.35.0 with zero custom axioms
   and zero sorry. Maintains NO_RH_PROOF = TRUE.
 identifiers:
   - type: doi

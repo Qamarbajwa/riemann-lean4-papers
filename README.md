@@ -22,7 +22,7 @@
    - [`paper_h_gram_indefiniteness_arb512`](./04_spectral_diagnostics_and_audits/paper_h_gram_indefiniteness_arb512/) — Zenodo DOI: [`10.5281/zenodo.24328927`](https://doi.org/10.5281/zenodo.24328927)
    - [`paper_i_prime_composite_partition`](./04_spectral_diagnostics_and_audits/paper_i_prime_composite_partition/) — Zenodo DOI: [`10.5281/zenodo.24328929`](https://doi.org/10.5281/zenodo.24328929)
 5. **[`05_mathlib4_pr_staging`](./05_mathlib4_pr_staging/)**
-   - 47 atomic `UpstreamPR_1A`–`8D` modules (Waves 1–8), [`PR_SUBMISSION_GUIDE.md`](./05_mathlib4_pr_staging/PR_SUBMISSION_GUIDE.md), and [`push_carved_prs_to_mathlib4.py`](./05_mathlib4_pr_staging/push_carved_prs_to_mathlib4.py)
+   - 48 atomic `UpstreamPR_1A`–`8E` modules (Waves 1–8), [`PR_SUBMISSION_GUIDE.md`](./05_mathlib4_pr_staging/PR_SUBMISSION_GUIDE.md), and [`push_carved_prs_to_mathlib4.py`](./05_mathlib4_pr_staging/push_carved_prs_to_mathlib4.py)
    - **Master Lean 4 Hub 07 DOI:** [`10.5281/zenodo.24329861`](https://doi.org/10.5281/zenodo.24329861) (Concept DOI [`10.5281/zenodo.24150107`](https://doi.org/10.5281/zenodo.24150107))
    - **Lean 4 Repository:** https://github.com/Qamarbajwa/RiemannBlueprint
    - **Citation Metadata:** [`CITATION.cff`](./CITATION.cff)

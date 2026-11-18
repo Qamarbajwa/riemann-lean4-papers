@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """
-Autonomous mathlib4 PR Queue & Review Manager for all 47 Carved UpstreamPRs (Waves 1-8).
+Read-only mathlib4 PR Queue & Status Monitor for all 48 Carved UpstreamPRs (Waves 1-8).
+
+AI Policy Safety Guard:
+  ALLOW_UPSTREAM_BOT_ACTIONS = False disables all automated `gh pr create` and `gh pr comment`
+  mutations against `leanprover-community/mathlib4`, keeping `--inspect` and `--advance-queue`
+  strictly read-only local status monitors.
 
 Supports:
-  --inspect             Inspect live PRs on leanprover-community/mathlib4 (#46127-#46129 & any open)
-  --apply-delegated     Automatically comment 'bors merge' ONLY on delegated PRs with green CI
-  --rebase-conflicting  Rebase any CONFLICTING PR onto upstream/master (--force-with-lease)
-  --advance-queue       Inspect merged parents, unlocked child PRs, and root wave queueing
-  --execute             Execute write actions (rebases / branch pushes / opening up to --max-concurrent PRs)
+  --inspect             Inspect live PRs on leanprover-community/mathlib4 (read-only)
+  --apply-delegated     Preview delegated PR status (blocked from upstream commenting by default)
+  --rebase-conflicting  Check CONFLICTING PRs against upstream/master
+  --advance-queue       Inspect merged parents, unlocked child PRs, and root wave queueing (read-only)
   --write-zulip         Generate MATHLIB4_PR_STAGING/ZULIP_PR_REVIEW_MESSAGES.md
   --max-concurrent N    Maximum concurrent open upstream PRs (default: 4)
 """
@@ -31,6 +35,7 @@ UPSTREAM_REPO = "leanprover-community/mathlib4"
 FORK_REPO = "Qamarbajwa/mathlib4"
 FORK_OWNER = "Qamarbajwa"
 UPSTREAM_URL = "https://github.com/leanprover-community/mathlib4.git"
+ALLOW_UPSTREAM_BOT_ACTIONS = False
 
 
 def run_cmd(cmd: List[str], cwd: Optional[pathlib.Path] = None) -> subprocess.CompletedProcess:
@@ -137,7 +142,12 @@ def apply_actions(
         num = d["number"]
         branch = d["branch"]
         if apply_delegated and d["delegated"] and d["checks"]["all_green"]:
-            if execute:
+            if not ALLOW_UPSTREAM_BOT_ACTIONS:
+                actions.append(
+                    f"[BLOCKED by mathlib4 AI policy: ALLOW_UPSTREAM_BOT_ACTIONS=False] "
+                    f"PR #{num} ({branch}): automated 'bors merge' comment disabled"
+                )
+            elif execute:
                 res = run_cmd([
                     "gh", "pr", "comment", str(num), "--repo", upstream_repo,
                     "--body", "bors merge",
@@ -221,15 +231,15 @@ def write_zulip_messages(details: List[Dict[str, Any]], out_path: pathlib.Path) 
     )
 
     content = (
-        "# Lean Zulip `#PR-reviews` Review Packet (Qamar Munawer)\n\n"
-        "All PRs extract small, self-contained modules (`<= 250` lines for Waves 5-7, `<= 100` chars/line, `#lint` `0` errors across 15 linters, strictly `[propext, Classical.choice, Quot.sound]`, `NO_RH_PROOF = TRUE`).\n\n"
-        "## 1. Ready Message for Currently Open Wave 1 PRs (`#46127`–`#46129`)\n\n"
-        "```markdown\n"
-        "Hi! Sharing three small, self-contained NumberTheory/LSeries PRs ready for initial review (all green CI, `0` `#lint` errors, `LLM-generated` disclosed):\n\n"
+        "# Lean Zulip `#PR-reviews` Human Reference Notes (Qamar Munawer)\n\n"
+        "> **AI Policy Reminder (`mathlib4`):** Upstream `mathlib4` policy strictly forbids pasting "
+        "LLM-generated comments into GitHub PRs or Zulip, and requires human-written communication "
+        "plus explicit AI-tool disclosure in PR descriptions. Use this file as a local index only; "
+        "compose all GitHub/Zulip messages yourself.\n\n"
+        "All PRs extract small, self-contained modules (`<= 250` lines for Waves 5-8, `<= 100` chars/line, `#lint` `0` errors across 15 linters, strictly `[propext, Classical.choice, Quot.sound]`, `NO_RH_PROOF = TRUE`).\n\n"
+        "## 1. Status Index for Wave 1 PRs (`#46127`–`#46129`)\n\n"
         f"{open_block}\n\n"
-        "Each module is 131-250 lines with zero custom axioms. Any review feedback is very welcome!\n"
-        "```\n\n"
-        "## 2. Independent Root PRs Queued Once Wave 1 Advances (`max_concurrent <= 4`)\n\n"
+        "## 2. Independent Root PRs Queued Locally (`max_concurrent <= 4`)\n\n"
         f"{next_block}\n"
     )
     out_path.write_text(content, encoding="utf-8")
@@ -278,7 +288,10 @@ def main() -> int:
 
     plan = compute_queue_plan(details, args.max_concurrent)
     if args.advance_queue or args.inspect:
-        print("\n=== 47-Branch DAG Queue Plan ===")
+        print(
+            f"\n=== {len(PR_REGISTRY)}-Branch DAG Queue Plan "
+            f"(READ-ONLY, ALLOW_UPSTREAM_BOT_ACTIONS={ALLOW_UPSTREAM_BOT_ACTIONS}) ==="
+        )
         print(
             f"  open={plan['open_count']} | merged={plan['merged_count']} | "
             f"max_concurrent={plan['max_concurrent']} | available_slots={plan['available_slots']}"

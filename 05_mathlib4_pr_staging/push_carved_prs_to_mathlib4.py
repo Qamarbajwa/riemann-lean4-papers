@@ -689,14 +689,14 @@ PR_REGISTRY: List[PRSpec] = [
     PRSpec(
         pr_id="PR-8J",
         wave=8,
-        staged_file="UpstreamPR_8J_UnitPartitionHomogenization.lean",
-        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8J_UnitPartitionHomogenization",
-        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteUnitPartitionKernel.lean",
-        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteUnitPartitionKernel",
-        branch="feat/baez-duarte-unit-partition-kernel",
+        staged_file="UpstreamPR_8J_UniversalSuperdiagonalAndUnitDefect.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8J_UniversalSuperdiagonalAndUnitDefect",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteSuperdiagonalUnitDefect.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteSuperdiagonalUnitDefect",
+        branch="feat/baez-duarte-superdiagonal-unit-defect",
         base_branch="feat/baez-duarte-logarithmic-plaque-decay",
-        pr_title="feat(NumberTheory/LSeries): unit-partition duality and homogeneous unit-defect kernel on Dirichlet simplex",
-        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteUnitPartitionKernel homogeneous simplex RH bridge",
+        pr_title="feat(NumberTheory/LSeries): universal all-m superdiagonal orthogonality and homogeneous unit-defect kernel",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteSuperdiagonalUnitDefect all-m G_{m,m+1}=0 and unitDefectEntry",
     ),
 ]
 

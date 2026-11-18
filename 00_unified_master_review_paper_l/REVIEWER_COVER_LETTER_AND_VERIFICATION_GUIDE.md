@@ -16,7 +16,7 @@ This dossier pairs the unified master review (`paper_l_unified_arithmetic_lean4_
 ## 2. One-Command Reproduction Protocol
 ```bash
 # Build core library and latest Wave 8 module (PR-8J)
-cd RiemannBlueprint && lake build RiemannBlueprint && lake build RiemannBlueprint.UpstreamPRs.UpstreamPR_8J_UnitPartitionHomogenization
+cd RiemannBlueprint && lake build RiemannBlueprint && lake build RiemannBlueprint.UpstreamPRs.UpstreamPR_8J_UniversalSuperdiagonalAndUnitDefect
 
 # Run 85-digit mpmath benchmark laboratories
 python layer_c_dirichlet_locked_plaque_lab.py
@@ -83,7 +83,7 @@ All 53 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` a
 | `PR-8G` | 8 | `UpstreamPR_8G_CotangentSixReciprocity.lean` | 209 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8H` | 8 | `UpstreamPR_8H_UniversalCotangentSymmetries.lean` | 119 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8I` | 8 | `UpstreamPR_8I_LogarithmicPlaqueDecayCriterion.lean` | 88 | `[propext, Classical.choice, Quot.sound]` |
-| `PR-8J` | 8 | `UpstreamPR_8J_UnitPartitionHomogenization.lean` | 196 | `[propext, Classical.choice, Quot.sound]` |
+| `PR-8J` | 8 | `UpstreamPR_8J_UniversalSuperdiagonalAndUnitDefect.lean` | 230 | `[propext, Classical.choice, Quot.sound]` |
 
 ## 4. Complete 14-Hub Zenodo Publication Index
 - **Hub 01 (Paper 0):** `10.5281/zenodo.24328033`

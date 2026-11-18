@@ -30,5 +30,5 @@ identifiers:
     value: "10.5281/zenodo.24150107"
     description: "Zenodo Hub 07 Concept DOI"
   - type: doi
-    value: "10.5281/zenodo.24342101"
-    description: "Paper L Unified Arithmetic & Lean 4 Master Review (Zenodo Hub 14, prev 10.5281/zenodo.24341718)"
+    value: "10.5281/zenodo.24342626"
+    description: "Paper L Unified Arithmetic & Lean 4 Master Review (Zenodo Hub 14, prev 10.5281/zenodo.24342101, 10.5281/zenodo.24341718)"

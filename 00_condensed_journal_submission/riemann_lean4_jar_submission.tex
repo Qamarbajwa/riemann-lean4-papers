@@ -46,7 +46,7 @@ Formalizing analytic number theory in an interactive theorem prover requires sep
 
 Unlike partial formalizations that retain unproved analytic axioms or ad hoc hypotheses, every theorem in the codebase compiles against Mathlib's three standard axioms \texttt{[propext, Classical.choice, Quot.sound]} with zero \texttt{sorry} or \texttt{axiom} declarations. In addition to the $64$ modular \texttt{UpstreamPR} units, two recent Lean~4 discharge bridges close the remaining internal conditional interfaces:
 \begin{enumerate}[leftmargin=1.8em]
-  \item \textbf{Titchmarsh Mellin Discharge (\texttt{Unconditional\allowbreak TitchmarshBridge.lean}):} Previously, \texttt{UpstreamPR\_5C}, \texttt{8D}, and \texttt{8I} parameterized theorems by the predicate \texttt{Titchmarsh\allowbreak MellinProperty} stating
+  \item \textbf{Titchmarsh Mellin Discharge (\texttt{Unconditional\allowbreak Titchmarsh\allowbreak Bridge.lean}):} Previously, \texttt{UpstreamPR\_5C}, \texttt{8D}, and \texttt{8I} parameterized theorems by \texttt{Titchmarsh\allowbreak Mellin\allowbreak Property} stating
   \[
     \int_0^1 \{1/x\} x^{s-1}\,\mathrm{d}x = \frac{1}{s-1} - \frac{\zeta(s)}{s} \qquad (0 < \operatorname{Re}(s) < 1).
   \]

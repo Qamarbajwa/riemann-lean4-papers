@@ -3,7 +3,7 @@
 **Title:** Pure Plaque Cauchy--Schwarz Bounds, Dirichlet Anchoring ($c_1 = -1$), Two-Dimensional Abel Telescoping, and the Plaque Vanishing Criterion  
 **Author:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Epistemic Invariant:** `NO_RH_PROOF = TRUE`  
-**Zenodo Hub 13 DOI:** [`10.5281/zenodo.24352931`](https://doi.org/10.5281/zenodo.24352931) *(earlier `10.5281/zenodo.24352695`, `10.5281/zenodo.24351770`, `10.5281/zenodo.24351489`, `10.5281/zenodo.24350152`, `10.5281/zenodo.24348668`, `10.5281/zenodo.24347847`, `10.5281/zenodo.24345966`, `10.5281/zenodo.24345122`, `10.5281/zenodo.24344631`, `10.5281/zenodo.24344084`, `10.5281/zenodo.24343525`, `10.5281/zenodo.24342906`, `10.5281/zenodo.24342619`, `10.5281/zenodo.24342096`, `10.5281/zenodo.24341228`, `10.5281/zenodo.24341007`, `10.5281/zenodo.24339838`)*
+**Zenodo Hub 13 DOI:** [`10.5281/zenodo.24353175`](https://doi.org/10.5281/zenodo.24353175) *(earlier `10.5281/zenodo.24352931`, `10.5281/zenodo.24352695`, `10.5281/zenodo.24351770`, `10.5281/zenodo.24351489`, `10.5281/zenodo.24350152`, `10.5281/zenodo.24348668`, `10.5281/zenodo.24347847`, `10.5281/zenodo.24345966`, `10.5281/zenodo.24345122`, `10.5281/zenodo.24344631`, `10.5281/zenodo.24344084`, `10.5281/zenodo.24343525`, `10.5281/zenodo.24342906`, `10.5281/zenodo.24342619`, `10.5281/zenodo.24342096`, `10.5281/zenodo.24341228`, `10.5281/zenodo.24341007`, `10.5281/zenodo.24339838`)*
 
 ## Contents
 - `paper_k_dirichlet_anchored_plaque_criterion.pdf` / `.tex` (5-page preprint + pure TikZ figure)
@@ -25,6 +25,7 @@
 - `UpstreamPR_8R_MellinZeroObstructionFloor.lean` (`PR-8R`, 132 lines, max 99 chars)
 - `UpstreamPR_8S_MultiPrimeL2Superposition.lean` (`PR-8S`, 133 lines, max 99 chars)
 - `UpstreamPR_8T_DoubleConeL2FoldingAndFlux.lean` (`PR-8T`, 196 lines, max 99 chars)
+- `UpstreamPR_8U_EuclideanExhaustionTailBound.lean` (`PR-8U`, 173 lines, max 98 chars)
 - `layer_c_dirichlet_locked_plaque_lab.py` & `layer_c_dirichlet_locked_plaque_results.json` (85-digit `mpmath` benchmark across $N \in \{4, 8, 12, 16, 24, 32, 48, 64\}$)
 - `layer_c_simplex_test_families_lab.py` & `layer_c_simplex_test_families_results.json` (85-digit explicit analytical simplex test families & Graph-Laplacian verification)
 - `layer_d_palindromic_period_lab.py` & `palindromic_period_certificates.json` (85-digit $L_4 = 12$ and $L = 60$ pointwise plateau, prime-jump, modulo-periodicity, and palindromic antisymmetry verification)

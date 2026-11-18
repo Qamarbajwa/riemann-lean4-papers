@@ -1,0 +1,34 @@
+Hello everyone,
+
+In the last few pushes, we used Euclid's infinitude of primes (Book IX, Proposition 20) to show that for any finite cutoff N, primes p > N keep creating steps inside the unpartitioned gap (0, 1 / (M + 1)], giving a lower bound sum_{p in S} 1 / (2 * p^2) on the partial L2 cell sum. The natural companion question from Euclid's Elements is Book X, Proposition 1 (the method of exhaustion): if the cell values A_c(n) are bounded in magnitude by a constant B (which always holds when D1 = 0 because A_c(n) is periodic with period L_N), how much L2 energy can possibly hide inside the unexhausted tail from cell M + 1 to cell M'?
+
+This single push formalizes the exact Book X tail exhaustion bound in Lean 4. Because each harmonic cell I_n = (1 / (n + 1), 1 / n] has width 1 / (n * (n + 1)) = 1 / n - 1 / (n + 1), the sum of cell widths from n = M + 1 to M' telescopes to 1 / (M + 1) - 1 / (M' + 1). Therefore, whenever |A_c(n)| <= B on those cells, the tail L2 energy between horizon M and horizon M' is at most B^2 / (M + 1), which can be made smaller than any positive epsilon by choosing M + 1 > B^2 / epsilon.
+
+The step by step maths behind how this works is very simple:
+
+Step 1: For 1 <= M <= M', the difference between the partial L2 sum up to M' and the partial L2 sum up to M is the tail sum over the cells n = M + 1, ..., M':
+T(M, M') = sum_{n = M + 1}^{M'} (A_c(n))^2 / (n * (n + 1)).
+
+Step 2: Suppose every cell residual in this range is bounded by B >= 0, so |A_c(n)| <= B. Squaring both sides gives
+0 <= (A_c(n))^2 <= B^2.
+
+Step 3: Divide each term by the positive denominator n * (n + 1) and factor B^2 out of the sum:
+T(M, M') <= sum_{n = M + 1}^{M'} B^2 / (n * (n + 1)) = B^2 * sum_{n = M + 1}^{M'} 1 / (n * (n + 1)).
+
+Step 4: Use the partial fraction split 1 / (n * (n + 1)) = 1 / n - 1 / (n + 1) to telescope the width sum from M + 1 to M':
+(1 / (M + 1) - 1 / (M + 2)) + (1 / (M + 2) - 1 / (M + 3)) + ... + (1 / M' - 1 / (M' + 1))
+= 1 / (M + 1) - 1 / (M' + 1).
+
+Step 5: Substitute the telescoped width sum back into Step 3:
+T(M, M') <= B^2 * (1 / (M + 1) - 1 / (M' + 1)).
+Since 1 / (M' + 1) > 0, dropping the subtracted term gives the uniform upper bound
+T(M, M') <= B^2 / (M + 1).
+
+Step 6: Given any target tolerance epsilon > 0, if we choose the horizon M large enough that B^2 / epsilon < M + 1, multiplying and dividing by positive numbers gives
+T(M, M') <= B^2 / (M + 1) < epsilon.
+
+In the Lean 4 code, we also combine this Book X.1 upper exhaustion bound with the Book IX.20 multi prime lower bound and the double cone folding identity into a single capstone theorem showing how the partial L2 quadrature sum is sandwiched from both below and above.
+
+Please let me know if any names or comments should be adjusted.
+
+ai is being used as a tool

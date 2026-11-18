@@ -818,6 +818,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): palindromic double cone L2 folding and counter rotating flux",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuarteDoubleConeFolding",
     ),
+    PRSpec(
+        pr_id="PR-8U",
+        wave=8,
+        staged_file="UpstreamPR_8U_EuclideanExhaustionTailBound.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8U_EuclideanExhaustionTailBound",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteEuclideanExhaustion.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteEuclideanExhaustion",
+        branch="feat/baez-duarte-euclidean-exhaustion",
+        base_branch="feat/baez-duarte-double-cone-folding",
+        pr_title="feat(NumberTheory/LSeries): Euclidean Book X tail exhaustion bound B^2 / (M + 1)",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteEuclideanExhaustion",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

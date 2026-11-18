@@ -689,14 +689,14 @@ PR_REGISTRY: List[PRSpec] = [
     PRSpec(
         pr_id="PR-8J",
         wave=8,
-        staged_file="UpstreamPR_8J_UniversalSuperdiagonalAndUnitDefect.lean",
-        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8J_UniversalSuperdiagonalAndUnitDefect",
-        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteSuperdiagonalUnitDefect.lean",
-        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteSuperdiagonalUnitDefect",
-        branch="feat/baez-duarte-superdiagonal-unit-defect",
+        staged_file="UpstreamPR_8J_SuperdiagonalAndOrthogonalTriple.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8J_SuperdiagonalAndOrthogonalTriple",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteSuperdiagonalOrthogonalTriple.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteSuperdiagonalOrthogonalTriple",
+        branch="feat/baez-duarte-superdiagonal-orthogonal-triple",
         base_branch="feat/baez-duarte-logarithmic-plaque-decay",
-        pr_title="feat(NumberTheory/LSeries): universal all-m superdiagonal orthogonality and homogeneous unit-defect kernel",
-        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteSuperdiagonalUnitDefect all-m G_{m,m+1}=0 and unitDefectEntry",
+        pr_title="feat(NumberTheory/LSeries): all-m superdiagonal orthogonality, orthogonal triple {v_2,v_3,v_4}, and unitDefectEntry",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteSuperdiagonalOrthogonalTriple (G_{m,m+1}=0, {v2,v3,v4} triple, unitDefectEntry)",
     ),
 ]
 

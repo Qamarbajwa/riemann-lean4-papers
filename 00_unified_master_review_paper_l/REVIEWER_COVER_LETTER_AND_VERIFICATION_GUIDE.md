@@ -95,7 +95,7 @@ All 64 modules (updated from 57, 58, 59, 60, 61, 62, and 63) are located in `Rie
 | `PR-8R` | 8 | `UpstreamPR_8R_MellinZeroObstructionFloor.lean` | 132 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8S` | 8 | `UpstreamPR_8S_MultiPrimeL2Superposition.lean` | 133 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8T` | 8 | `UpstreamPR_8T_DoubleConeL2FoldingAndFlux.lean` | 196 | `[propext, Classical.choice, Quot.sound]` |
-| `PR-8U` | 8 | `UpstreamPR_8U_EuclideanExhaustionTailBound.lean` | 173 | `[propext, Classical.choice, Quot.sound]` |
+| `PR-8U` | 8 | `UpstreamPR_8U_EuclideanExhaustionTailBound.lean` | 233 | `[propext, Classical.choice, Quot.sound]` |
 
 ## 4. Complete 14-Hub Zenodo Publication Index
 - **Hub 01 (Paper 0):** `10.5281/zenodo.24353570` *(prev `24353454`, `24328033`)*
@@ -104,14 +104,14 @@ All 64 modules (updated from 57, 58, 59, 60, 61, 62, and 63) are located in `Rie
 - **Hub 04 (Paper C):** `10.5281/zenodo.24353574` *(prev `24353459`, `24328039`)*
 - **Hub 05 (Paper D):** `10.5281/zenodo.24353575` *(prev `24353460`, `24328045`)*
 - **Hub 06 (Paper E):** `10.5281/zenodo.24353578` *(prev `24353463`, `24328047`)*
-- **Hub 07 (Master Lean 4 Repo & 64 Units, updated from 57, 58, 59, 60, 61, 62, and 63):** `10.5281/zenodo.24353366` *(prev `10.5281/zenodo.24353134`, `10.5281/zenodo.24352900`, `10.5281/zenodo.24352678`, `10.5281/zenodo.24351725`, `10.5281/zenodo.24351438`, `10.5281/zenodo.24350100`, `10.5281/zenodo.24348917`, `10.5281/zenodo.24348520`, `10.5281/zenodo.24346792`, `10.5281/zenodo.24329861`; Concept DOI `10.5281/zenodo.24150107`)*
+- **Hub 07 (Master Lean 4 Repo & 64 Units, updated from 57, 58, 59, 60, 61, 62, and 63):** `10.5281/zenodo.24353918` *(prev `10.5281/zenodo.24353366`, `10.5281/zenodo.24353134`, `10.5281/zenodo.24352900`, `10.5281/zenodo.24352678`, `10.5281/zenodo.24351725`, `10.5281/zenodo.24351438`, `10.5281/zenodo.24350100`, `10.5281/zenodo.24348917`, `10.5281/zenodo.24348520`, `10.5281/zenodo.24346792`, `10.5281/zenodo.24329861`; Concept DOI `10.5281/zenodo.24150107`)*
 - **Hub 08 (Paper F):** `10.5281/zenodo.24353579` *(prev `24353467`, `24328918`)*
 - **Hub 09 (Paper G):** `10.5281/zenodo.24353580` *(prev `24353468`, `24328921`)*
 - **Hub 10 (Paper H):** `10.5281/zenodo.24353581` *(prev `24353469`, `24328927`)*
 - **Hub 11 (Paper I):** `10.5281/zenodo.24353584` *(prev `24353470`, `24328929`)*
 - **Hub 12 (Paper J):** `10.5281/zenodo.24353585` *(prev `24353471`, `24345801`, `24345106`, `24344628`, `24330500`, `24330400`)*
-- **Hub 13 (Paper K):** `10.5281/zenodo.24353590` *(prev `24353472`, `24353175`, `24352931`, `24352695`, `24351770`, `24351489`, `24350152`, `24348668`, `24347847`, `24345966`, `24345122`, `24344631`, `24344084`, `24343525`, `24342906`, `24342619`, `24342096`, `24341228`, `24341007`, `24339838`)*
-- **Hub 14 (Paper L — Unified Master Review):** `10.5281/zenodo.24353485` *(prev `24353183`, `24352948`, `24352713`, `24351816`, `24351529`, `24350192`, `24349114`, `24347940`, `24346051`, `24345175`, `24344632`, `24344093`, `24343534`, `24342950`, `24342626`, `24342101`, `24341718`, `24341498`; supplemented by `10.5281/zenodo.24353366`)*
+- **Hub 13 (Paper K):** `10.5281/zenodo.24353932` *(prev `24353590`, `24353472`, `24353175`, `24352931`, `24352695`, `24351770`, `24351489`, `24350152`, `24348668`, `24347847`, `24345966`, `24345122`, `24344631`, `24344084`, `24343525`, `24342906`, `24342619`, `24342096`, `24341228`, `24341007`, `24339838`)*
+- **Hub 14 (Paper L — Unified Master Review):** `10.5281/zenodo.24353606` *(prev `24353485`, `24353183`, `24352948`, `24352713`, `24351816`, `24351529`, `24350192`, `24349114`, `24347940`, `24346051`, `24345175`, `24344632`, `24344093`, `24343534`, `24342950`, `24342626`, `24342101`, `24341718`, `24341498`; supplemented by `10.5281/zenodo.24353918`)*
 
 ---
 

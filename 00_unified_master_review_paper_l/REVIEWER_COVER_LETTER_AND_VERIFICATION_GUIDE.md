@@ -6,17 +6,17 @@
 **Repositories:**  
 - Lean 4 Codebase: https://github.com/Qamarbajwa/RiemannBlueprint  
 - Companion Papers & Benchmarks: https://github.com/Qamarbajwa/riemann-lean4-papers  
-- Fork Branch Archive (`50/50` branches): https://github.com/Qamarbajwa/mathlib4 (`ALLOW_UPSTREAM_BOT_ACTIONS = False`)
+- Fork Branch Archive (`52/52` branches): https://github.com/Qamarbajwa/mathlib4 (`ALLOW_UPSTREAM_BOT_ACTIONS = False`)
 
 ---
 
 ## 1. Summary for Referees
-This dossier pairs the 14-page unified master review (`paper_l_unified_arithmetic_lean4_master_review.pdf`) with all arithmetic Wave 4–8 Lean 4.35 verification units (`UpstreamPR_4G`–`4M`, `7A`–`7D`, `8A`–`8G`), 85-digit `mpmath` benchmarks, and cryptographic checksums (`SHA256SUMS.txt`). Every formal theorem compiles under `leanprover--lean4---v4.35.0` with `0` `sorry`s, `0` `#lint` errors across 15 linters, and strictly standard axioms `[propext, Classical.choice, Quot.sound]`.
+This dossier pairs the unified master review (`paper_l_unified_arithmetic_lean4_master_review.pdf`) with all arithmetic Wave 4–8 Lean 4.35 verification units (`UpstreamPR_4G`–`4M`, `7A`–`7D`, `8A`–`8I`), 85-digit `mpmath` benchmarks (including BBLR $(\ln N) E^{(N)}$ scaling), and cryptographic checksums (`SHA256SUMS.txt`). Every formal theorem compiles under `leanprover--lean4---v4.35.0` with `0` `sorry`s, `0` `#lint` errors across 15 linters, and strictly standard axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## 2. One-Command Reproduction Protocol
 ```bash
-# Build core library and latest Wave 8 module (PR-8G)
-cd RiemannBlueprint && lake build RiemannBlueprint && lake build RiemannBlueprint.UpstreamPRs.UpstreamPR_8G_CotangentSixReciprocity
+# Build core library and latest Wave 8 module (PR-8I)
+cd RiemannBlueprint && lake build RiemannBlueprint && lake build RiemannBlueprint.UpstreamPRs.UpstreamPR_8I_LogarithmicPlaqueDecayCriterion
 
 # Run 85-digit mpmath benchmark laboratories
 python layer_c_dirichlet_locked_plaque_lab.py
@@ -26,8 +26,8 @@ python layer_c_dipole_asymptotic_lab.py
 pytest test_monograph_audit.py -q
 ```
 
-## 3. Complete 50-Module Lean 4 Ledger (Waves 1–8)
-All 50 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` and mirrored in `MATHLIB4_PR_STAGING/`:
+## 3. Complete 52-Module Lean 4 Ledger (Waves 1–8)
+All 52 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` and mirrored in `MATHLIB4_PR_STAGING/`:
 
 | ID | Wave | Module File | Lines | Axioms |
 | :---: | :---: | :--- | :---: | :--- |
@@ -81,6 +81,8 @@ All 50 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` a
 | `PR-8E` | 8 | `UpstreamPR_8E_DirichletOptFourCert.lean` | 162 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8F` | 8 | `UpstreamPR_8F_DipoleGramFiveCert.lean` | 172 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8G` | 8 | `UpstreamPR_8G_CotangentSixReciprocity.lean` | 209 | `[propext, Classical.choice, Quot.sound]` |
+| `PR-8H` | 8 | `UpstreamPR_8H_UniversalCotangentSymmetries.lean` | 119 | `[propext, Classical.choice, Quot.sound]` |
+| `PR-8I` | 8 | `UpstreamPR_8I_LogarithmicPlaqueDecayCriterion.lean` | 88 | `[propext, Classical.choice, Quot.sound]` |
 
 ## 4. Complete 14-Hub Zenodo Publication Index
 - **Hub 01 (Paper 0):** `10.5281/zenodo.24328033`
@@ -89,7 +91,7 @@ All 50 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` a
 - **Hub 04 (Paper C):** `10.5281/zenodo.24328039`
 - **Hub 05 (Paper D):** `10.5281/zenodo.24328045`
 - **Hub 06 (Paper E):** `10.5281/zenodo.24328047`
-- **Hub 07 (Master Lean 4 Repo & 50 Units):** `10.5281/zenodo.24329861` *(Concept DOI `10.5281/zenodo.24150107`)*
+- **Hub 07 (Master Lean 4 Repo & 52 Units):** `10.5281/zenodo.24329861` *(Concept DOI `10.5281/zenodo.24150107`)*
 - **Hub 08 (Paper F):** `10.5281/zenodo.24328918`
 - **Hub 09 (Paper G):** `10.5281/zenodo.24328921`
 - **Hub 10 (Paper H):** `10.5281/zenodo.24328927`

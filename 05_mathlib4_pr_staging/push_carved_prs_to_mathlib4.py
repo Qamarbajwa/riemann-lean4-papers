@@ -662,6 +662,30 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): exact N=6 Vasyunin sums in Q(sqrt(3)), K(3,6)=0, and G_24=0 decoupling",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuarteCotangentSix exact N=6 certificates",
     ),
+    PRSpec(
+        pr_id="PR-8H",
+        wave=8,
+        staged_file="UpstreamPR_8H_UniversalCotangentSymmetries.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8H_UniversalCotangentSymmetries",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteUniversalCotangent.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteUniversalCotangent",
+        branch="feat/baez-duarte-universal-cotangent",
+        base_branch="feat/baez-duarte-cotangent-six",
+        pr_title="feat(NumberTheory/LSeries): universal all-N Vasyunin cotangent symmetries and octave vanishing",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteUniversalCotangent all-N symmetries",
+    ),
+    PRSpec(
+        pr_id="PR-8I",
+        wave=8,
+        staged_file="UpstreamPR_8I_LogarithmicPlaqueDecayCriterion.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8I_LogarithmicPlaqueDecayCriterion",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteLogarithmicPlaqueDecay.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteLogarithmicPlaqueDecay",
+        branch="feat/baez-duarte-logarithmic-plaque-decay",
+        base_branch="feat/baez-duarte-universal-cotangent",
+        pr_title="feat(NumberTheory/LSeries): variational majorant and BBLR C/log(N) plaque decay bridge to RH",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteLogarithmicPlaqueDecay C/log N bridge",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

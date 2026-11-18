@@ -3,7 +3,7 @@
 **Title:** Pure Plaque Cauchy--Schwarz Bounds, Dirichlet Anchoring ($c_1 = -1$), Two-Dimensional Abel Telescoping, and the Plaque Vanishing Criterion  
 **Author:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Epistemic Invariant:** `NO_RH_PROOF = TRUE`  
-**Zenodo Hub 13 DOI:** [`10.5281/zenodo.24344631`](https://doi.org/10.5281/zenodo.24344631) *(earlier `10.5281/zenodo.24344084`, `10.5281/zenodo.24343525`, `10.5281/zenodo.24342906`, `10.5281/zenodo.24342619`, `10.5281/zenodo.24342096`, `10.5281/zenodo.24341228`, `10.5281/zenodo.24341007`, `10.5281/zenodo.24339838`)*
+**Zenodo Hub 13 DOI:** [`10.5281/zenodo.24345122`](https://doi.org/10.5281/zenodo.24345122) *(earlier `10.5281/zenodo.24344631`, `10.5281/zenodo.24344084`, `10.5281/zenodo.24343525`, `10.5281/zenodo.24342906`, `10.5281/zenodo.24342619`, `10.5281/zenodo.24342096`, `10.5281/zenodo.24341228`, `10.5281/zenodo.24341007`, `10.5281/zenodo.24339838`)*
 
 ## Contents
 - `paper_k_dirichlet_anchored_plaque_criterion.pdf` / `.tex` (5-page preprint + pure TikZ figure)
@@ -17,5 +17,6 @@
 - `UpstreamPR_8J_UnitPartitionHomogenization.lean` (`PR-8J`, 197 lines, max 100 chars)
 - `UpstreamPR_8K_SuperdiagonalAndOrthogonalTriple.lean` (`PR-8K`, 188 lines, max 100 chars)
 - `UpstreamPR_8L_PlaqueRowTelescopingAndSimplex.lean` (`PR-8L`, 133 lines, max 100 chars)
+- `UpstreamPR_8M_PointwiseDiscreteContinuityIdentity.lean` (`PR-8M`, 192 lines, max 98 chars)
 - `layer_c_dirichlet_locked_plaque_lab.py` & `layer_c_dirichlet_locked_plaque_results.json` (85-digit `mpmath` benchmark across $N \in \{4, 8, 12, 16, 24, 32, 48, 64\}$)
 - `layer_c_simplex_test_families_lab.py` & `layer_c_simplex_test_families_results.json` (85-digit explicit analytical simplex test families & Graph-Laplacian verification)

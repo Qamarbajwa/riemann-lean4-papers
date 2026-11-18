@@ -722,6 +722,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): 1D plaque row-sum telescoping and Graph-Laplacian simplex decomposition",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuartePlaqueRowTelescoping",
     ),
+    PRSpec(
+        pr_id="PR-8M",
+        wave=8,
+        staged_file="UpstreamPR_8M_PointwiseDiscreteContinuityIdentity.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8M_PointwiseDiscreteContinuityIdentity",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuartePointwiseContinuity.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuartePointwiseContinuity",
+        branch="feat/baez-duarte-pointwise-continuity",
+        base_branch="feat/baez-duarte-plaque-row-telescoping",
+        pr_title="feat(NumberTheory/LSeries): pointwise discrete-equals-continuous identity and top-half annihilation",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuartePointwiseContinuity",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

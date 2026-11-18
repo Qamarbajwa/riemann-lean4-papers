@@ -6,17 +6,17 @@
 **Repositories:**  
 - Lean 4 Codebase: https://github.com/Qamarbajwa/RiemannBlueprint  
 - Companion Papers & Benchmarks: https://github.com/Qamarbajwa/riemann-lean4-papers  
-- Fork Branch Archive (`55/55` branches): https://github.com/Qamarbajwa/mathlib4 (`ALLOW_UPSTREAM_BOT_ACTIONS = False`)
+- Fork Branch Archive (`56/56` branches): https://github.com/Qamarbajwa/mathlib4 (`ALLOW_UPSTREAM_BOT_ACTIONS = False`)
 
 ---
 
 ## 1. Summary for Referees
-This dossier pairs the unified master review (`paper_l_unified_arithmetic_lean4_master_review.pdf`) with all arithmetic Wave 4–8 Lean 4.35 verification units (`UpstreamPR_4G`–`4M`, `7A`–`7D`, `8A`–`8L`), 85-digit `mpmath` benchmarks (including BBLR $(\ln N) E^{(N)}$ scaling and explicit analytical simplex test families), and cryptographic checksums (`SHA256SUMS.txt`). Every formal theorem compiles under `leanprover--lean4---v4.35.0` with `0` `sorry`s, `0` `#lint` errors across 15 linters, and strictly standard axioms `[propext, Classical.choice, Quot.sound]`.
+This dossier pairs the unified master review (`paper_l_unified_arithmetic_lean4_master_review.pdf`) with all arithmetic Wave 4–8 Lean 4.35 verification units (`UpstreamPR_4G`–`4M`, `7A`–`7D`, `8A`–`8M`), 85-digit `mpmath` benchmarks (including BBLR $(\ln N) E^{(N)}$ scaling and explicit analytical simplex test families), and cryptographic checksums (`SHA256SUMS.txt`). Every formal theorem compiles under `leanprover--lean4---v4.35.0` with `0` `sorry`s, `0` `#lint` errors across 15 linters, and strictly standard axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## 2. One-Command Reproduction Protocol
 ```bash
-# Build core library and latest Wave 8 module (PR-8L)
-cd RiemannBlueprint && lake build RiemannBlueprint && lake build RiemannBlueprint.UpstreamPRs.UpstreamPR_8L_PlaqueRowTelescopingAndSimplex
+# Build core library and latest Wave 8 module (PR-8M)
+cd RiemannBlueprint && lake build RiemannBlueprint && lake build RiemannBlueprint.UpstreamPRs.UpstreamPR_8M_PointwiseDiscreteContinuityIdentity
 
 # Run 85-digit mpmath benchmark laboratories
 python layer_c_dirichlet_locked_plaque_lab.py
@@ -26,8 +26,8 @@ python layer_c_simplex_test_families_lab.py
 pytest test_monograph_audit.py -q
 ```
 
-## 3. Complete 55-Module Lean 4 Ledger (Waves 1–8)
-All 55 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` and mirrored in `MATHLIB4_PR_STAGING/`:
+## 3. Complete 56-Module Lean 4 Ledger (Waves 1–8)
+All 56 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` and mirrored in `MATHLIB4_PR_STAGING/`:
 
 | ID | Wave | Module File | Lines | Axioms |
 | :---: | :---: | :--- | :---: | :--- |
@@ -86,6 +86,7 @@ All 55 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` a
 | `PR-8J` | 8 | `UpstreamPR_8J_UnitPartitionHomogenization.lean` | 197 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8K` | 8 | `UpstreamPR_8K_SuperdiagonalAndOrthogonalTriple.lean` | 188 | `[propext, Classical.choice, Quot.sound]` |
 | `PR-8L` | 8 | `UpstreamPR_8L_PlaqueRowTelescopingAndSimplex.lean` | 133 | `[propext, Classical.choice, Quot.sound]` |
+| `PR-8M` | 8 | `UpstreamPR_8M_PointwiseDiscreteContinuityIdentity.lean` | 192 | `[propext, Classical.choice, Quot.sound]` |
 
 ## 4. Complete 14-Hub Zenodo Publication Index
 - **Hub 01 (Paper 0):** `10.5281/zenodo.24328033`
@@ -94,14 +95,14 @@ All 55 modules are located in `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/` a
 - **Hub 04 (Paper C):** `10.5281/zenodo.24328039`
 - **Hub 05 (Paper D):** `10.5281/zenodo.24328045`
 - **Hub 06 (Paper E):** `10.5281/zenodo.24328047`
-- **Hub 07 (Master Lean 4 Repo & 55 Units):** `10.5281/zenodo.24329861` *(Concept DOI `10.5281/zenodo.24150107`)*
+- **Hub 07 (Master Lean 4 Repo & 56 Units):** `10.5281/zenodo.24329861` *(Concept DOI `10.5281/zenodo.24150107`)*
 - **Hub 08 (Paper F):** `10.5281/zenodo.24328918`
 - **Hub 09 (Paper G):** `10.5281/zenodo.24328921`
 - **Hub 10 (Paper H):** `10.5281/zenodo.24328927`
 - **Hub 11 (Paper I):** `10.5281/zenodo.24328929`
-- **Hub 12 (Paper J):** `10.5281/zenodo.24344628` *(prev `24330500`, `24330400`)*
-- **Hub 13 (Paper K):** `10.5281/zenodo.24344631` *(prev `24344084`, `24343525`, `24342906`, `24342619`, `24342096`, `24341228`, `24341007`, `24339838`)*
-- **Hub 14 (Paper L — Unified Master Review):** Published live at `10.5281/zenodo.24344632` *(prev `24344093`, `24343534`, `24342950`, `24342626`, `24342101`, `24341718`, `24341498`; supplemented by `10.5281/zenodo.24329861`)*
+- **Hub 12 (Paper J):** `10.5281/zenodo.24345106` *(prev `24344628`, `24330500`, `24330400`)*
+- **Hub 13 (Paper K):** `10.5281/zenodo.24345122` *(prev `24344631`, `24344084`, `24343525`, `24342906`, `24342619`, `24342096`, `24341228`, `24341007`, `24339838`)*
+- **Hub 14 (Paper L — Unified Master Review):** Published live at `10.5281/zenodo.24345175` *(prev `24344632`, `24344093`, `24343534`, `24342950`, `24342626`, `24342101`, `24341718`, `24341498`; supplemented by `10.5281/zenodo.24329861`)*
 
 ---
 

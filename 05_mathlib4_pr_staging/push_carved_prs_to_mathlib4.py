@@ -794,6 +794,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): Mellin zero obstruction and off line Cauchy Schwarz L2 floor",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuarteMellinZeroFloor",
     ),
+    PRSpec(
+        pr_id="PR-8S",
+        wave=8,
+        staged_file="UpstreamPR_8S_MultiPrimeL2Superposition.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8S_MultiPrimeL2Superposition",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteMultiPrimeSuperposition.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteMultiPrimeSuperposition",
+        branch="feat/baez-duarte-multiprime-superposition",
+        base_branch="feat/baez-duarte-mellin-zero-floor",
+        pr_title="feat(NumberTheory/LSeries): multi-prime L2 energy superposition and planar-Mellin capstone",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteMultiPrimeSuperposition",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

@@ -1,0 +1,281 @@
+{
+  "schema_version": "1.0",
+  "lean_toolchain": "leanprover/lean4:v4.35.0",
+  "modular_units_count": 64,
+  "canonical_hubs_count": 14,
+  "hubs": [
+    {
+      "hub": "01",
+      "folder": "01_PAPER_0_GEOMETRIC_INTUITION_AND_CONES",
+      "title": "Geometric Intuition, Joined-Cone Zeta Visualizations, and the Genesis of the Lean 4 Riemann Blueprint",
+      "version": "v3.0.3",
+      "doi": "10.5281/zenodo.24354440",
+      "pdf": {
+        "filename": "paper_0_geometric_intuition_cones.pdf",
+        "sha256": "df36ab4286579e45be79f15ca3f43143e90b4f65016300578c305127f7d68d45"
+      },
+      "zip": {
+        "filename": "PAPER_0_SUBMISSION_PACKAGE.zip",
+        "sha256": "d2cdefd0108720ba8e0d2f54baa6059dabeefc28812deb9be15d8e0fcfa89580"
+      }
+    },
+    {
+      "hub": "02",
+      "folder": "02_PAPER_A_LITTLEWOOD_TAUBERIAN",
+      "title": "Formalizing Littlewood's Equivalence for the Riemann Hypothesis in Lean 4",
+      "version": "v3.0.2",
+      "doi": "10.5281/zenodo.24353571",
+      "pdf": {
+        "filename": "paper_a_littlewood.pdf",
+        "sha256": "6f91eef83659b41d38641d0d185e3b92a013b4e3b3072b1f0e5574bf14c74438"
+      },
+      "zip": {
+        "filename": "PAPER_A_SUBMISSION_PACKAGE.zip",
+        "sha256": "f66c4a4c449f80b5eb802fa043eb4b54033fa8231c4549f4d7bd68ad0bdfaa3b"
+      }
+    },
+    {
+      "hub": "03",
+      "folder": "03_PAPER_B_NYMAN_BEURLING_VASYUNIN",
+      "title": "Formalizing the Titchmarsh Fractional-Part Identity and the Forward Nyman-Beurling Criterion in Lean 4",
+      "version": "v3.0.2",
+      "doi": "10.5281/zenodo.24353573",
+      "pdf": {
+        "filename": "paper_b_nyman_beurling.pdf",
+        "sha256": "3f4de2ab8232561eb1be650577a8c5cdd3b33d4cb66269cb08b5b04b775b8e4d"
+      },
+      "zip": {
+        "filename": "PAPER_B_SUBMISSION_PACKAGE.zip",
+        "sha256": "0340c3a7d7ed2b357eeafab3918a7f70f4a1130417e6493029b332b96af31889"
+      }
+    },
+    {
+      "hub": "04",
+      "folder": "04_PAPER_C_ZERO_FREE_REGION",
+      "title": "Formalizing the de la Vall\u00e9e Poussin (1899) Unconditional Zero-Free Region for the Riemann Zeta Function in Lean 4",
+      "version": "v3.0.2",
+      "doi": "10.5281/zenodo.24353574",
+      "pdf": {
+        "filename": "paper_c_zero_free_region.pdf",
+        "sha256": "10f270125a4bc02adca557a5a37e556441b98a78507260c36f7df3473dc7670a"
+      },
+      "zip": {
+        "filename": "PAPER_C_SUBMISSION_PACKAGE.zip",
+        "sha256": "074a225dc1f8e505eaed68eb6a6e4c1773e2d68ccd236adc07c958b8f1f62801"
+      }
+    },
+    {
+      "hub": "05",
+      "folder": "05_PAPER_D_HARDY_CRITICAL_LINE_ZEROS",
+      "title": "Formalizing Hardy's (1914) Unconditional Theorem on Critical-Line Zeros of the Riemann Zeta Function in Lean 4",
+      "version": "v3.0.2",
+      "doi": "10.5281/zenodo.24353575",
+      "pdf": {
+        "filename": "paper_d_hardy_zeros.pdf",
+        "sha256": "f00aebf50436d904adf5feb5930e049ddd6bab1857e1463bdc4a3ca515be8a4b"
+      },
+      "zip": {
+        "filename": "PAPER_D_SUBMISSION_PACKAGE.zip",
+        "sha256": "a1bbe505b2f5a464185b4125599e5f4a2c8adb2cff7369c33d602302a605a3b7"
+      }
+    },
+    {
+      "hub": "06",
+      "folder": "06_PAPER_E_CONSTRUCTIVE_CANDIDATES_BENCHMARK",
+      "title": "Constructive Candidate Sequences and Cotangent Gram Matrix Benchmarks on the Baez-Duarte Affine Manifold in Lean 4",
+      "version": "v3.0.2",
+      "doi": "10.5281/zenodo.24353578",
+      "pdf": {
+        "filename": "paper_e_forward_candidates.pdf",
+        "sha256": "a41dfd08c51037dfc71d953d8559f844592d135f5686fc629ea634cbea4951fa"
+      },
+      "zip": {
+        "filename": "PAPER_E_SUBMISSION_PACKAGE.zip",
+        "sha256": "3e4b10fe81d71ee014d93503b0528cfe649edf409253b0c310fd5e94ad3587c2"
+      }
+    },
+    {
+      "hub": "07",
+      "folder": "07_MASTER_LEAN4_REPO_AND_MATHLIB4_PRS",
+      "title": "RiemannBlueprint: Axiom-Free Lean 4 Formalizations of Classical Analytic Number Theory and Modular Mathlib4 PRs (v3.0.12)",
+      "version": "v3.0.12",
+      "doi": "10.5281/zenodo.24353918",
+      "pdf": null,
+      "zip": {
+        "filename": "RiemannBlueprint_Verified_Lean4_v3.0.zip",
+        "sha256": "92ae2fe86b3bbaa0ae530367c1043440268bafcd816b509152809eafdbec8748"
+      }
+    },
+    {
+      "hub": "08",
+      "folder": "08_PAPER_F_MELLIN_ROUCHE_EQUIPARTITION",
+      "title": "Bidirectional Mellin-Space Nyman-Beurling Equivalence, Reciprocal Zeta Holomorphy, and Open-Strip Rouch\u00e9 and Equipartition Bridges in Lean 4",
+      "version": "v3.0.2",
+      "doi": "10.5281/zenodo.24353579",
+      "pdf": {
+        "filename": "paper_f_mellin_rouche_equipartition.pdf",
+        "sha256": "ae89196f35f8da8899b89b4ef303f6ee8401f8f83e0c43cdf1b707fb5863a713"
+      },
+      "zip": {
+        "filename": "PAPER_F_SUBMISSION_PACKAGE.zip",
+        "sha256": "373d87de972748ae1d3b3e52aeaf2e41b642b56b71faccd060341d64626592ff"
+      }
+    },
+    {
+      "hub": "09",
+      "folder": "09_PAPER_G_VON_KOCH_SPECTRAL_CLOSURE",
+      "title": "Unconditional Formalization of von Koch's Chebyshev Psi-Theorem and Modular Three-Frequency Forward Closure in Lean 4",
+      "version": "v3.0.2",
+      "doi": "10.5281/zenodo.24353580",
+      "pdf": {
+        "filename": "paper_g_von_koch_spectral_closure.pdf",
+        "sha256": "bd35a4461ff9649784fa553eb00756011a2d938b9cca7b5d2ae5b9c9e216bb6d"
+      },
+      "zip": {
+        "filename": "PAPER_G_SUBMISSION_PACKAGE.zip",
+        "sha256": "4410d916847502261373b0ac773abcc65385565fff50fdff73561938f598b139"
+      }
+    },
+    {
+      "hub": "10",
+      "folder": "10_PAPER_H_GRAM_INDEFINITENESS_SCHUR_ARB512",
+      "title": "Isolated Gram Indefiniteness, Sparse Cardinality Obstructions, and 512-Bit flint.arb Unwrapped Schur Diagnosis in Finite-Section BNBD and Weil Operators",
+      "version": "v3.0.2",
+      "doi": "10.5281/zenodo.24353581",
+      "pdf": {
+        "filename": "paper_h_gram_indefiniteness_schur_arb512.pdf",
+        "sha256": "17dddba701f795e6db41633c8c5939da26ce424e0d15d082d9f1d50ca1c9ece1"
+      },
+      "zip": {
+        "filename": "PAPER_H_SUBMISSION_PACKAGE.zip",
+        "sha256": "e89aed23bdc77e95c49b5eebfb44ca0410db91b00bcf17eb2b0e37d642163078"
+      }
+    },
+    {
+      "hub": "11",
+      "folder": "11_PAPER_I_PRIME_COMPOSITE_PARTITION_AUDIT",
+      "title": "Additive-Multiplicative Prime-Composite Partition, Critical-Strip Convergence Firewalls, and Verified Lean 4 Strip Quantifier Audits",
+      "version": "v3.0.3",
+      "doi": "10.5281/zenodo.24354445",
+      "pdf": {
+        "filename": "paper_i_prime_composite_partition_audit.pdf",
+        "sha256": "c5a869eba865efd744a79d19241a0d0a209290d121feffe48647dfbc36430276"
+      },
+      "zip": {
+        "filename": "PAPER_I_SUBMISSION_PACKAGE.zip",
+        "sha256": "d35af1452736dc420b29287531138035dc9e52939acbcb3598a645d72c133d2a"
+      }
+    },
+    {
+      "hub": "12",
+      "folder": "12_PAPER_J_PURE_PLAQUE_ASYMPTOTIC_FRONTIER",
+      "title": "Pure 4-Point Plaque Reduction, Anchor-Drive Cancellation, and the Diagonal/Off-Diagonal Asymptotic Frontier on A_N",
+      "version": "v3.0.7",
+      "doi": "10.5281/zenodo.24354446",
+      "pdf": {
+        "filename": "paper_j_pure_plaque_asymptotic_frontier.pdf",
+        "sha256": "e3681c3a76dd699dfa783e387c7ad6e3579a09834498f22748a4c5d9f95e7c47"
+      },
+      "zip": {
+        "filename": "PAPER_J_SUBMISSION_PACKAGE.zip",
+        "sha256": "8f9aee4e4e87431d63c841faf155f1ec147fede65d69669b7685cefbe9bfd37b"
+      }
+    },
+    {
+      "hub": "13",
+      "folder": "13_PAPER_K_DIRICHLET_ANCHORED_PLAQUE_CRITERION",
+      "title": "Pure Plaque Cauchy-Schwarz Bounds, Dirichlet Anchoring (c_1 = -1), Two-Dimensional Abel Telescoping, and the Plaque Vanishing Criterion",
+      "version": "v3.0.24",
+      "doi": "10.5281/zenodo.24354448",
+      "pdf": {
+        "filename": "paper_k_dirichlet_anchored_plaque_criterion.pdf",
+        "sha256": "ab0a49d82dc3da080086deecb44b43684ca225c8e01fad17f0d889d82726847a"
+      },
+      "zip": {
+        "filename": "PAPER_K_SUBMISSION_PACKAGE.zip",
+        "sha256": "7ea9990aa258b8aabf0249a25a2beca536a40d9216a915635e6892464811785e"
+      }
+    },
+    {
+      "hub": "14",
+      "folder": "14_PAPER_L_UNIFIED_ARITHMETIC_MASTER_REVIEW",
+      "title": "Unconditional Arithmetic Reductions, Exact Cotangent Reciprocity, and Lean 4 Formal Verification for the Classical and Nyman-Beurling Theory of the Riemann Zeta Function",
+      "version": "v3.0.23",
+      "doi": "10.5281/zenodo.24354470",
+      "pdf": {
+        "filename": "paper_l_unified_arithmetic_lean4_master_review.pdf",
+        "sha256": "e937e4821b3a8e08185d70d6bc18c97994aafc85d53f1278d0e9dc49a69ff7fd"
+      },
+      "zip": {
+        "filename": "PAPER_L_SUBMISSION_PACKAGE.zip",
+        "sha256": "2d33904d733392a8d7f6c444c1daba46fe06b12c2fdd0e8cecd269cc71cde207"
+      }
+    }
+  ],
+  "upstream_pr_modules": [
+    "UpstreamPR_1A_CriticalLineZeros.lean",
+    "UpstreamPR_1B_ZetaPoleAndRepulsion.lean",
+    "UpstreamPR_1C_ZetaRemainderSeries.lean",
+    "UpstreamPR_1D_ZetaPartialSummation.lean",
+    "UpstreamPR_1E_ZetaLogStripBound.lean",
+    "UpstreamPR_1F_ZetaZeroFreeRegion.lean",
+    "UpstreamPR_2B_HardyPsiAndThetaKernel.lean",
+    "UpstreamPR_2C_HardyThetaIteratedDeriv.lean",
+    "UpstreamPR_2D_CompletedZetaStripDecay.lean",
+    "UpstreamPR_2E_HardyGContourAndMellin.lean",
+    "UpstreamPR_2F_HardyEvenMomentIdentity.lean",
+    "UpstreamPR_2G_HardyCriticalLineZeros.lean",
+    "UpstreamPR_3A_VasyuninIntegral.lean",
+    "UpstreamPR_3B_VasyuninSmoothAndCotDefs.lean",
+    "UpstreamPR_3C_HarmonicCellAndAbelSum.lean",
+    "UpstreamPR_3D_StirlingAndHarmonicAsymptotics.lean",
+    "UpstreamPR_3E_CotangentMittagLefflerLimit.lean",
+    "UpstreamPR_3F_VasyuninCrossIntegral.lean",
+    "UpstreamPR_3G_MobiusCandidateFourCert.lean",
+    "UpstreamPR_3H_VariationalOptimumFour.lean",
+    "UpstreamPR_4A_AffineLagrangeProjection.lean",
+    "UpstreamPR_4B_AffineOrthogonalDecomp.lean",
+    "UpstreamPR_4C_HarmonicWaveletBasis.lean",
+    "UpstreamPR_4D_WaveletCotangentStencil.lean",
+    "UpstreamPR_4E_TangentCotangentPositivity.lean",
+    "UpstreamPR_4F_TangentRayleighQuotient.lean",
+    "UpstreamPR_4G_GlobalOptimumFour.lean",
+    "UpstreamPR_4H_WaveletRayleighRHCriterion.lean",
+    "UpstreamPR_4I_CumulativeWaveletDipole.lean",
+    "UpstreamPR_4J_FourPointDipoleKernel.lean",
+    "UpstreamPR_4K_GeneralWaveletCompleteness.lean",
+    "UpstreamPR_4L_DipoleQuadraticReduction.lean",
+    "UpstreamPR_4M_DipoleDiagonalAndSymmetry.lean",
+    "UpstreamPR_5A_ZetaLogDerivHolomorphy.lean",
+    "UpstreamPR_5B_VonKochChebyshevPsi.lean",
+    "UpstreamPR_5C_MellinNymanBeurlingIff.lean",
+    "UpstreamPR_6A_CompletedZetaDerivSymmetry.lean",
+    "UpstreamPR_6B_CriticalLinePenetrationBarrier.lean",
+    "UpstreamPR_6C_PrimeCompositeDirichletSplit.lean",
+    "UpstreamPR_7A_MellinKernelEnergyIdentity.lean",
+    "UpstreamPR_7B_RectangleContourSubdivision.lean",
+    "UpstreamPR_7C_PurePlaqueReduction.lean",
+    "UpstreamPR_7D_DiagonalOffDiagonalFrontier.lean",
+    "UpstreamPR_8A_PurePlaqueCauchySchwarz.lean",
+    "UpstreamPR_8B_DirichletAnchoredPlaque.lean",
+    "UpstreamPR_8C_PlaqueTwoDimTelescoping.lean",
+    "UpstreamPR_8D_PurePlaqueRHCriterion.lean",
+    "UpstreamPR_8E_DirichletOptFourCert.lean",
+    "UpstreamPR_8F_DipoleGramFiveCert.lean",
+    "UpstreamPR_8G_CotangentSixReciprocity.lean",
+    "UpstreamPR_8H_UniversalCotangentSymmetries.lean",
+    "UpstreamPR_8I_LogarithmicPlaqueDecayCriterion.lean",
+    "UpstreamPR_8J_UnitPartitionHomogenization.lean",
+    "UpstreamPR_8K_SuperdiagonalAndOrthogonalTriple.lean",
+    "UpstreamPR_8L_PlaqueRowTelescopingAndSimplex.lean",
+    "UpstreamPR_8M_PointwiseContinuityAndPeriodicity.lean",
+    "UpstreamPR_8N_HarmonicCellL2QuadratureAndPrimeJumps.lean",
+    "UpstreamPR_8O_PeriodicL2CellSumCompression.lean",
+    "UpstreamPR_8P_HarmonicSlabNonTermination.lean",
+    "UpstreamPR_8Q_PrimeCellL2EnergyFloor.lean",
+    "UpstreamPR_8R_MellinZeroObstructionFloor.lean",
+    "UpstreamPR_8S_MultiPrimeL2Superposition.lean",
+    "UpstreamPR_8T_DoubleConeL2FoldingAndFlux.lean",
+    "UpstreamPR_8U_EuclideanExhaustionTailBound.lean"
+  ]
+}

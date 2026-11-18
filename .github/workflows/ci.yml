@@ -1,0 +1,29 @@
+name: Benchmarks, Certificates, and Manifest CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify-certificates-and-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned dependencies
+        run: pip install -r requirements.txt
+
+      - name: Verify single-source manifest and SHA256SUMS integrity
+        run: python verify_manifest.py
+
+      - name: Run 85-digit mpmath continuity chain certificate
+        run: python 00_unified_master_review_paper_l/verify_n_to_continuity_chain.py

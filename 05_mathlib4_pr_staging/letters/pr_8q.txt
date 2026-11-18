@@ -1,0 +1,13 @@
+Hello everyone,
+
+This small pull request adds the exact adjacent harmonic cell defect identity and quantitative prime cell lower bound to Mathlib/NumberTheory/LSeries/BaezDuartePrimeCellEnergyFloor.lean.
+
+Right now, even after proving that every prime greater than N creates a step jump of size c 1 between cells p minus 1 and p, we only know qualitatively that the integral is strictly positive. By completing the square over two adjacent harmonic cell widths, we get a direct algebraic formula and an exact lower bound 1 / (2 * p^2) for every prime p > N under Dirichlet anchoring.
+
+Here is the school-style derivation step by step:
+
+Step 1: Write the sum of two adjacent cell energies a^2 / ((p - 1) * p) + b^2 / (p * (p + 1)) over the common denominator 2 * p^2 * (p - 1) * (p + 1).
+Step 2: Expand (b - a)^2 * (p^2 - 1) + ((p + 1) * a + (p - 1) * b)^2 and notice that the cross terms 2 * (p^2 - 1) * a * b cancel out completely, leaving the exact L2 defect identity.
+Step 3: Because the second square is always non-negative, the pair energy is at least (b - a)^2 / (2 * p^2), which gives 1 / (2 * p^2) whenever b - a = -1 at a prime p > N.
+
+ai is being used as a tool

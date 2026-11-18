@@ -770,6 +770,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): harmonic-slab non-termination and finite-truncation L2 positivity",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuarteHarmonicSlabNonTermination",
     ),
+    PRSpec(
+        pr_id="PR-8Q",
+        wave=8,
+        staged_file="UpstreamPR_8Q_PrimeCellL2EnergyFloor.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8Q_PrimeCellL2EnergyFloor",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuartePrimeCellEnergyFloor.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuartePrimeCellEnergyFloor",
+        branch="feat/baez-duarte-prime-cell-energy-floor",
+        base_branch="feat/baez-duarte-harmonic-slab-nontermination",
+        pr_title="feat(NumberTheory/LSeries): exact prime-cell L2 energy defect identity and 1/(2*p^2) tail floor",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuartePrimeCellEnergyFloor",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

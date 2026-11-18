@@ -60,7 +60,7 @@
       "status": "STAGED_LOCAL_DRY_RUN"
     }
   ],
-  "modular_units_count": 59,
+  "modular_units_count": 60,
   "waves": {
     "wave_1": ["PR-1A", "PR-3A", "PR-4A"],
     "wave_2": ["PR-1B", "PR-1C", "PR-1D", "PR-1E", "PR-1F"],
@@ -75,7 +75,7 @@
     "wave_7": ["PR-7A", "PR-7B", "PR-7C", "PR-7D"],
     "wave_8": [
       "PR-8A", "PR-8B", "PR-8C", "PR-8D", "PR-8E", "PR-8F", "PR-8G",
-      "PR-8H", "PR-8I", "PR-8J", "PR-8K", "PR-8L", "PR-8M", "PR-8N", "PR-8O", "PR-8P"
+      "PR-8H", "PR-8I", "PR-8J", "PR-8K", "PR-8L", "PR-8M", "PR-8N", "PR-8O", "PR-8P", "PR-8Q"
     ]
   }
 }

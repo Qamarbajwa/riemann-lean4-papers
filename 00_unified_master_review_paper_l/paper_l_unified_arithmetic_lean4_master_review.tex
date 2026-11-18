@@ -50,7 +50,7 @@
 \maketitle
 
 \begin{abstract}
-Under the standing epistemic invariant \texttt{NO\_RH\_PROOF = TRUE}, this master review consolidates an end-to-end formalization and numerical diagnostic program around the Riemann zeta function without claiming an unconditional proof of the Riemann Hypothesis. Fifty-two self-contained modular Lean~4.35 units (\texttt{UpstreamPR\_1A} through \texttt{UpstreamPR\_8I}) are verified with zero \texttt{sorry}s, zero errors across fifteen Mathlib and Batteries linters, and strictly standard axioms (\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}). The verified corpus spans both classical pillars---de~la~Vall\'ee~Poussin's 1899 zero-free region, Hardy's 1914 theorem on infinitely many critical-line zeros, Littlewood's Tauberian equivalence, von~Koch's Chebyshev $\psi$ equivalence, and bidirectional Mellin Nyman--Beurling criteria---and a complete finite-$N$ algebraic theory on the B\'aez--Duarte affine manifold. In this finite-$N$ theory, smooth logarithmic kernels and Euler--Mascheroni constants cancel identically on tangent vectors, reducing the Nyman--Beurling $L^2$ objective to a rank-two boundary drive plus a pure four-point cotangent plaque form. Enforcing the Dirichlet pole lock $c_1 = -1$ cancels the leading drive ambiguity and reduces the unit-drive squared distance to a two-dimensional telescoped kernel form whose vanishing---in particular along any sequence obeying a logarithmic $C / \ln N$ decay bound---implies the Riemann Hypothesis under Titchmarsh's Mellin identity. Beyond closed-form arithmetic reciprocity certificates for $N = 3, 4, 5, 6$, Lean~4 proves universal all-$N$ reflection reciprocity $V(a, a - b) = -V(a, b)$ and infinite octave orthogonality $K_{\mathrm{cot}}(k, 2k) = 0$ for every $k \in \N$. Complementary 85-digit \texttt{mpmath} and 512-bit \texttt{flint.arb} diagnostics corroborate all discrete identities to within $2.5 \times 10^{-85}$ and evaluate the BBLR logarithmic scaling products $(\ln N)E^{(N)}$ against $2 + \gamma - \ln(4\pi)$ while cleanly delineating the open asymptotic frontier as $N \to \infty$.
+Under the standing epistemic invariant \texttt{NO\_RH\_PROOF = TRUE}, this master review consolidates an end-to-end formalization and numerical diagnostic program around the Riemann zeta function without claiming an unconditional proof of the Riemann Hypothesis. Fifty-three self-contained modular Lean~4.35 units (\texttt{UpstreamPR\_1A} through \texttt{UpstreamPR\_8J}) are verified with zero \texttt{sorry}s, zero errors across fifteen Mathlib and Batteries linters, and strictly standard axioms (\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}). The verified corpus spans both classical pillars---de~la~Vall\'ee~Poussin's 1899 zero-free region, Hardy's 1914 theorem on infinitely many critical-line zeros, Littlewood's Tauberian equivalence, von~Koch's Chebyshev $\psi$ equivalence, and bidirectional Mellin Nyman--Beurling criteria---and a complete finite-$N$ algebraic theory on the B\'aez--Duarte affine manifold. In this finite-$N$ theory, smooth logarithmic kernels and Euler--Mascheroni constants cancel identically on tangent vectors, reducing the Nyman--Beurling $L^2$ objective to a rank-two boundary drive plus a pure four-point cotangent plaque form. Enforcing the Dirichlet pole lock $c_1 = -1$ cancels the leading drive ambiguity, induces the exact simplex unit-partition ($\sum_{k=2}^N c_k/k = 1$, $\sum_{m=1}^{N-2} \alpha_m = 1$) absorbing $1$ and $\pi L_{\mathrm{cot}}$ into the symmetric $N$-independent kernel $\mathcal{M}_{ab}$ (\texttt{unitDefectEntry}, with $\mathcal{M}_{12} = 1 - \pi/2 < 0$), and reduces the squared distance to a homogeneous simplex quadratic form or two-dimensional telescoped kernel whose vanishing---in particular along any sequence obeying a logarithmic $C / \ln N$ decay bound---implies the Riemann Hypothesis under Titchmarsh's Mellin identity. Beyond closed-form arithmetic reciprocity certificates for $N = 3, 4, 5, 6$, Lean~4 proves universal all-$N$ reflection reciprocity $V(a, a - b) = -V(a, b)$ and infinite octave orthogonality $K_{\mathrm{cot}}(k, 2k) = 0$ for every $k \in \N$. Complementary 85-digit \texttt{mpmath} and 512-bit \texttt{flint.arb} diagnostics corroborate all discrete identities to within $2.5 \times 10^{-85}$ and evaluate the BBLR logarithmic scaling products $(\ln N)E^{(N)}$ against $2 + \gamma - \ln(4\pi)$ while cleanly delineating the open asymptotic frontier as $N \to \infty$.
 \end{abstract}
 
 \noindent\textbf{Keywords:} Riemann Hypothesis, Lean~4 formal verification, Vasyunin--B\'aez--Duarte criterion, pure plaque kernel, Dirichlet anchoring, cotangent reciprocity, \texttt{NO\_RH\_PROOF = TRUE}.
@@ -69,7 +69,7 @@ Specifically, every mathematical result in the corpus falls into one of three st
 \item \textbf{Certified Numerical Diagnostics ($N \le 750$):} Eighty-five-digit \texttt{mpmath} quadratic optimization experiments for $N \in [4, 64]$, 192-bit \texttt{flint.arb} spectral indefiniteness proofs on separated Vasyunin kernels, and 512-bit unwrapped \texttt{flint.arb} Schur elimination on a $750$-mode truncation of Weil's quadratic form at $L=1$. None of these finite-horizon computations imply $N \to \infty$ convergence of $\mathcal{P}_N$ or global Weil positivity.
 \end{enumerate}
 
-Architecturally, the formal codebase in \texttt{RiemannBlueprint} (\texttt{leanprover--lean4---v4.35.0}) has been factored into \textbf{52 self-contained, linter-verified modular Lean~4 units} (\texttt{UpstreamPR\_1A} through \texttt{UpstreamPR\_8I}) organized across Waves~1--8 as an acyclic dependency DAG:
+Architecturally, the formal codebase in \texttt{RiemannBlueprint} (\texttt{leanprover--lean4---v4.35.0}) has been factored into \textbf{53 self-contained, linter-verified modular Lean~4 units} (\texttt{UpstreamPR\_1A} through \texttt{UpstreamPR\_8J}) organized across Waves~1--8 as an acyclic dependency DAG:
 \begin{itemize}[leftmargin=1.6em,itemsep=2pt]
 \item \textbf{Wave~1 (\texttt{1A}, \texttt{3A}, \texttt{4A}):} Self-contained roots for critical-line intermediate-value zero detection, Vasyunin $L^1/L^2$ fractional-part integrals, and affine Lagrange projection on $\mathcal{A}_N$.
 \item \textbf{Wave~2 (\texttt{1B}--\texttt{1F}):} Five-stage chain culminating in de~la~Vall\'ee~Poussin's unconditional zero-free region.
@@ -78,10 +78,10 @@ Architecturally, the formal codebase in \texttt{RiemannBlueprint} (\texttt{leanp
 \item \textbf{Wave~5 (\texttt{5A}--\texttt{5C}):} Reciprocal zeta holomorphy, von~Koch's Chebyshev $\psi$ forward implication, and bidirectional Mellin Nyman--Beurling equivalence.
 \item \textbf{Wave~6 (\texttt{6A}--\texttt{6C}):} Completed zeta derivative antisymmetry, equipartition at the $s=1/2$ fulcrum, strip penetration bounds, and prime--composite arithmetic partition.
 \item \textbf{Wave~7 (\texttt{7A}--\texttt{7D}):} Weighted Mellin $L^2$ energy identity, 4-segment rectangle contour subdivision, pure 4-point plaque extraction with anchor-drive cancellation, and diagonal/off-diagonal decomposition.
-\item \textbf{Wave~8 (\texttt{8A}--\texttt{8I}):} Pure plaque Cauchy--Schwarz lower bounds, Dirichlet anchoring ($c_1 = -1$), two-dimensional Abel telescoping, pure plaque RH equivalence, closed-form radical certificates for $N=4, 5, 6$, universal all-$N$ reflection symmetries ($K_{\mathrm{cot}}(k,2k)=0$), and the BBLR $C/\ln N$ decay bridge.
+\item \textbf{Wave~8 (\texttt{8A}--\texttt{8J}):} Pure plaque Cauchy--Schwarz lower bounds, Dirichlet anchoring ($c_1 = -1$), two-dimensional Abel telescoping, pure plaque RH equivalence, closed-form radical certificates for $N=4, 5, 6$, universal all-$N$ reflection symmetries ($K_{\mathrm{cot}}(k,2k)=0$), the BBLR $C/\ln N$ decay bridge, and homogeneous simplex unit-partition duality (\texttt{unitDefectEntry}).
 \end{itemize}
 
-All 52 modules are maintained as standalone verifiable artifacts in \texttt{Qamarbajwa/\allowbreak RiemannBlueprint}, the companion manuscript repository \texttt{Qamarbajwa/\allowbreak riemann-lean4-papers}, the 52-branch fork archive \texttt{Qamarbajwa/\allowbreak mathlib4}, and Zenodo Hubs~01--14, with automated upstream \texttt{leanprover-community/\allowbreak mathlib4} actions disabled (\texttt{ALLOW\_UPSTREAM\_BOT\_ACTIONS = False}).
+All 53 modules are maintained as standalone verifiable artifacts in \texttt{Qamarbajwa/\allowbreak RiemannBlueprint}, the companion manuscript repository \texttt{Qamarbajwa/\allowbreak riemann-lean4-papers}, the 53-branch fork archive \texttt{Qamarbajwa/\allowbreak mathlib4}, and Zenodo Hubs~01--14, with automated upstream \texttt{leanprover-community/\allowbreak mathlib4} actions disabled (\texttt{ALLOW\_UPSTREAM\_BOT\_ACTIONS = False}).
 
 \section{Classical Analytic and Arithmetic Pillars in Lean~4}\label{sec:classical}
 
@@ -454,11 +454,11 @@ $64$ & $-0.972540$ & $0.01139247$ & $0.01178662$ & $0.01335088$ & $0.62002332$ &
 \end{tabular}
 \end{table}
 
-\subsection{BBLR Logarithmic Scaling Diagnostics and the $C/\ln N$ Decay Bridge (\texttt{PR-8I})}\label{sec:open_frontier}
+\subsection{BBLR Logarithmic Scaling Diagnostics, $C/\ln N$ Decay Bridge, and Unit-Partition Kernel (\texttt{PR-8I}--\texttt{8J})}\label{sec:open_frontier}
 
-To connect discrete finite-$N$ plaque certificates with asymptotic Nyman--Beurling--B\'aez--Duarte theory, \texttt{UpstreamPR\_8I\_\allowbreak LogarithmicPlaqueDecayCriterion.lean} formalizes two explicit test-sequence sufficient conditions for RH assuming \texttt{TitchmarshMellinProperty}:
-\begin{theorem}[Variational Majorant and BBLR $C/\ln N$ Bridge to RH, \texttt{PR-8I}]\label{thm:log_decay_bridge}
-Assume \texttt{TitchmarshMellinProperty}. If there exists a sequence of tangent shifts $h : \N \to \N \to \R$ and a majorant $B : \N \to \R$ with $B(N) \to 0$ as $N \to \infty$ such that eventually $2 \le N$, $D_1(h_N, N) = 0$, $D_0(h_N, N) = 0$, $h_N(1) = 1$, $\pi L_{\mathrm{cot}}(h_N, N) = 1$, and $\mathcal{P}_N(h_N) \le B(N)$, then \texttt{PurePlaqueVanishingCriterion} and \texttt{\_root\_.\allowbreak RiemannHypothesis} hold (\texttt{riemannHypothesis\_\allowbreak of\_\allowbreak plaque\_majorant\_\allowbreak tendsto\_zero}). In particular, any eventual upper bound $\mathcal{P}_N(h_N) \le C / \ln N$ suffices (\texttt{riemannHypothesis\_\allowbreak of\_\allowbreak logarithmic\_plaque\_bound}).
+To connect discrete finite-$N$ plaque certificates with asymptotic Nyman--Beurling--B\'aez--Duarte theory, \texttt{UpstreamPR\_8I\_\allowbreak LogarithmicPlaqueDecayCriterion.lean} and \texttt{UpstreamPR\_8J\_\allowbreak UnitPartitionHomogenization.lean} formalize the variational logarithmic bridge alongside the exact homogeneous unit-defect simplex kernel:
+\begin{theorem}[Variational $C/\ln N$ Bridge and Homogeneous Simplex Kernel, \texttt{PR-8I}--\texttt{8J}]\label{thm:log_decay_bridge}
+Assume \texttt{TitchmarshMellinProperty}. (i) If there exists a sequence of tangent shifts $h : \N \to \N \to \R$ and a majorant $B : \N \to \R$ with $B(N) \to 0$ as $N \to \infty$ obeying eventually $2 \le N$, $D_1(h_N, N) = 0$, $D_0(h_N, N) = 0$, $h_N(1) = 1$, $\pi L_{\mathrm{cot}}(h_N, N) = 1$, and $\mathcal{P}_N(h_N) \le B(N)$ (e.g., $B(N) = C/\ln N$), then \texttt{PurePlaqueVanishingCriterion} and \texttt{\_root\_.\allowbreak RiemannHypothesis} hold (\texttt{riemannHypothesis\_\allowbreak of\_logarithmic\_plaque\_bound}). (ii) On $\mathcal{A}_N^{\mathrm{dir}}$ ($c_1 = -1$), unit-partition duality yields $\sum_{k=2}^N c_k/k = 1$, $\sum_{k=2}^N c_k = 3$, and $\sum_{m=1}^{N-2} \alpha_m = 1$; defining $\mathcal{M}_{ab} := 1 - \tfrac{\pi}{2}(\Delta\delta_a + \Delta\delta_b) + P(a,b)$ (\texttt{unitDefectEntry}, with $\mathcal{M}_{12} = 1 - \pi/2 < 0$), $1 - S_{\mathrm{cot}}(c,N) = \sum_{a,b=1}^{N-2} \alpha_a\alpha_b\mathcal{M}_{ab} \ge 0$, whose vanishing across simplex weights likewise implies RH (\texttt{riemannHypothesis\_\allowbreak of\_unitDefectEntry\_\allowbreak simplex\_vanishing}).
 \end{theorem}
 
 Empirically, the classical BBLR asymptotic constant governing best unconstrained approximation in the Nyman--Beurling space is $c_{\mathrm{BBLR}} := 2 + \gamma - \ln(4\pi) \approx 0.04619141793$. Table~\ref{tab:bblr_scaling} records the normalized 85-digit logarithmic scaling products $(\ln N)\cdot E^{(N)}$ computed in \texttt{layer\_c\_\allowbreak dirichlet\_\allowbreak locked\_\allowbreak plaque\_lab.py}. Across $N \in [8, 64]$, $(\ln N)\cdot E_{\mathrm{opt}}^{(N)}$ approaches $0.04738$, while $(\ln N)\cdot E_{\mathrm{dir}}^{(N)}$ and $(\ln N)\cdot E_{\mathrm{unit}}^{(N)}$ stabilize around $0.04902$ and $0.05553$---remaining strictly above $0$ and quantifying the exact logarithmic factor required beyond $N = 64$.
@@ -502,14 +502,14 @@ Accompanying high-precision interval diagnostics (detailed in Paper~H) isolate t
 \]
 As $N$ grows from $4$ to $64$, $E_{\mathrm{unit}}^{(N)} = \mathcal{P}_{\mathrm{unit}}^{(N)}$ decays from $0.1098$ to $0.01335$, following the slow logarithmic profile expected from Nyman--Beurling theory. Bridging from $N \le 64$ to arbitrary $\varepsilon > 0$ remains strictly open.
 
-\section{Complete 52-Module Lean~4 Verification Ledger and Reproducibility Guide}\label{sec:ledger}
+\section{Complete 53-Module Lean~4 Verification Ledger and Reproducibility Guide}\label{sec:ledger}
 
-Table~\ref{tab:52_modules} indexes all 52 Lean~4.35 modules in \texttt{RiemannBlueprint/\allowbreak RiemannBlueprint/\allowbreak UpstreamPRs/} (paired with the companion 14-hub Zenodo archive in Table~\ref{tab:14_hubs}). Every module compiles cleanly under \texttt{lake build} (\texttt{0} errors, \texttt{0} warnings), passes all 15 Mathlib/Batteries \texttt{\#lint} checks (\texttt{0} errors), and uses exclusively standard Lean axioms \texttt{[propext, Classical.choice, Quot.sound]} (denoted \texttt{Std} below).
+Table~\ref{tab:52_modules} indexes all 53 Lean~4.35 modules in \texttt{RiemannBlueprint/\allowbreak RiemannBlueprint/\allowbreak UpstreamPRs/} (paired with the companion 14-hub Zenodo archive in Table~\ref{tab:14_hubs}). Every module compiles cleanly under \texttt{lake build} (\texttt{0} errors, \texttt{0} warnings), passes all 15 Mathlib/Batteries \texttt{\#lint} checks (\texttt{0} errors), and uses exclusively standard Lean axioms \texttt{[propext, Classical.choice, Quot.sound]} (denoted \texttt{Std} below).
 
 \scriptsize
 \setlength{\tabcolsep}{3.5pt}
 \begin{longtable}{@{}ll>{\raggedright\arraybackslash}p{5.2cm}>{\raggedright\arraybackslash}p{6.8cm}cc@{}}
-\caption{Complete 52-module Lean~4.35 verification ledger (\texttt{UpstreamPR\_\allowbreak 1A}--\texttt{8I}, axioms \texttt{[propext, Classical.choice, Quot.sound]}).}
+\caption{Complete 53-module Lean~4.35 verification ledger (\texttt{UpstreamPR\_\allowbreak 1A}--\texttt{8J}, axioms \texttt{[propext, Classical.choice, Quot.sound]}).}
 \label{tab:52_modules}\\
 \toprule
 ID & W & Module File & Key Formalized Theorems & L & Ax \\
@@ -573,6 +573,7 @@ ID & W & Module File & Key Formalized Theorems & L & Ax \\
 \texttt{8G} & 8 & \texttt{UpstreamPR\_\allowbreak 8G\_\allowbreak CotangentSixReciprocity.lean} & \texttt{deltaCot\_\allowbreak six\_\allowbreak eq}, \texttt{unweightedKCot\_\allowbreak three\_\allowbreak six\_\allowbreak eq\_\allowbreak zero}, \texttt{dipoleGramEntry\_\allowbreak two\_\allowbreak four\_\allowbreak eq\_\allowbreak zero} & 209 & Std \\
 \texttt{8H} & 8 & \texttt{UpstreamPR\_\allowbreak 8H\_\allowbreak UniversalCotangentSymmetries.lean} & \texttt{vasyuninCotSum\_\allowbreak sub\_\allowbreak eq\_\allowbreak neg}, \texttt{vasyuninCotSum\_\allowbreak two\_\allowbreak mul\_\allowbreak self\_\allowbreak eq\_\allowbreak zero}, \texttt{unweightedKCot\_\allowbreak self\_\allowbreak two\_\allowbreak mul\_\allowbreak eq\_\allowbreak zero} & 119 & Std \\
 \texttt{8I} & 8 & \texttt{UpstreamPR\_\allowbreak 8I\_\allowbreak LogarithmicPlaqueDecayCriterion.lean} & \texttt{purePlaqueVanishing\_\allowbreak of\_\allowbreak majorant\_\allowbreak tendsto\_\allowbreak zero}, \texttt{riemannHypothesis\_\allowbreak of\_\allowbreak logarithmic\_\allowbreak plaque\_\allowbreak bound} & 88 & Std \\
+\texttt{8J} & 8 & \texttt{UpstreamPR\_\allowbreak 8J\_\allowbreak UnitPartitionHomogenization.lean} & \texttt{unitDefectEntry}, \texttt{one\_\allowbreak sub\_\allowbreak SCot\_\allowbreak eq\_\allowbreak sum\_\allowbreak unitDefectEntry\_\allowbreak ...}, \texttt{riemannHypothesis\_\allowbreak of\_\allowbreak unitDefectEntry\_\allowbreak ...} & 196 & Std \\
 \end{longtable}
 \normalsize
 
@@ -592,14 +593,14 @@ Hub & Deliverable & Live Zenodo DOI & Type \\
 04 & Paper~C: De~la~Vall\'ee~Poussin Zero-Free Region in Lean~4 & \texttt{10.5281/zenodo.24328039} & Preprint \\
 05 & Paper~D: Hardy (1914) Critical-Line Zeros in Lean~4 & \texttt{10.5281/zenodo.24328045} & Preprint \\
 06 & Paper~E: Constructive Candidates, Wavelets \& $N=4$ KKT & \texttt{10.5281/zenodo.24328047} & Preprint \\
-07 & \textbf{Master Lean~4 Repository (\texttt{RiemannBlueprint}, 52 Modules)} & \texttt{10.5281/zenodo.24329861} & Software \\
+07 & \textbf{Master Lean~4 Repository (\texttt{RiemannBlueprint}, 53 Modules)} & \texttt{10.5281/zenodo.24329861} & Software \\
 08 & Paper~F: Mellin Nyman--Beurling Converse \& Rouch\'e Bounds & \texttt{10.5281/zenodo.24328918} & Preprint \\
 09 & Paper~G: Unconditional Von~Koch Chebyshev $\psi$ Closure & \texttt{10.5281/zenodo.24328921} & Preprint \\
 10 & Paper~H: Gram Indefiniteness \& 512-Bit Arb Unwrapped Schur Audit & \texttt{10.5281/zenodo.24328927} & Preprint \\
 11 & Paper~I: Prime--Composite Partition \& Strip Convergence Firewall & \texttt{10.5281/zenodo.24328929} & Preprint \\
 12 & Paper~J: Pure 4-Point Plaque Reduction \& Diagonal Frontier & \texttt{10.5281/zenodo.24330500} & Preprint \\
 13 & Paper~K: Dirichlet Anchoring ($c_1=-1$) \& $N=4,5,6$ Certificates & \texttt{10.5281/zenodo.24341228} & Preprint \\
-14 & Paper~L: Unified Arithmetic \& Lean~4 Master Review (this paper) & \texttt{10.5281/zenodo.24341498} & Preprint \\
+14 & Paper~L: Unified Arithmetic \& Lean~4 Master Review (this paper) & \texttt{10.5281/zenodo.24341718} & Preprint \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -609,7 +610,7 @@ External referees can independently reproduce every Lean~4 kernel proof, linter 
 \begin{verbatim}
 cd RiemannBlueprint && lake build RiemannBlueprint
 lake build RiemannBlueprint.UpstreamPRs.\
-  UpstreamPR_8I_LogarithmicPlaqueDecayCriterion
+  UpstreamPR_8J_UnitPartitionHomogenization
 python layer_c_dirichlet_locked_plaque_lab.py
 python layer_c_dipole_asymptotic_lab.py
 pytest test_monograph_audit.py -q
@@ -629,7 +630,7 @@ E.~C.~Titchmarsh, \emph{The Theory of the Riemann Zeta-Function}, 2nd ed.\ (revi
 G.~H.~Hardy, Sur les z\'eros de la fonction $\zeta(s)$ de Riemann, \emph{C.\ R.\ Acad.\ Sci.\ Paris} \textbf{158} (1914), 1012--1014.
 
 \bibitem{RiemannBlueprint}
-Q.~Munawer, \emph{RiemannBlueprint: Axiom-Free Lean~4.35.0 Formalizations of Classical Analytic Number Theory} (52 Self-Contained Modular Units, \texttt{NO\_RH\_PROOF = TRUE}), Zenodo Master Archive Hub~07, DOI \href{https://doi.org/10.5281/zenodo.24329861}{10.5281/zenodo.24329861} (2026).
+Q.~Munawer, \emph{RiemannBlueprint: Axiom-Free Lean~4.35.0 Formalizations of Classical Analytic Number Theory} (53 Self-Contained Modular Units, \texttt{NO\_RH\_PROOF = TRUE}), Zenodo Master Archive Hub~07, DOI \href{https://doi.org/10.5281/zenodo.24329861}{10.5281/zenodo.24329861} (2026).
 \end{thebibliography}
 
 \end{document}

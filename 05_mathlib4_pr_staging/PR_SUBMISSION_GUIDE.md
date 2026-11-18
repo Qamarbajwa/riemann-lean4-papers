@@ -1,17 +1,17 @@
-# Modular Lean 4 Formalization Guide — Waves 1–8 (52 Self-Contained Units)
+# Modular Lean 4 Formalization Guide — Waves 1–8 (53 Self-Contained Units)
 
 **Author / Contributor:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Staging Directory:** `MATHLIB4_PR_STAGING/`  
 **Verified Build Mirror:** `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/`  
 **Automation Script:** `push_carved_prs_to_mathlib4.py`  
-**Fork Archive Target:** `Qamarbajwa/mathlib4` (`52` standalone `feat/*` branches; `ALLOW_UPSTREAM_BOT_ACTIONS = False` — never opens or comments on upstream PRs)  
-**Epistemic Invariant:** `NO_RH_PROOF = TRUE` (all 52 modules verify unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, exact `N = 4, 5, 6` certificates, all-`N` universal symmetries, or conditional RH bridges; none claim an unconditional RH proof)
+**Fork Archive Target:** `Qamarbajwa/mathlib4` (`53` standalone `feat/*` branches; `ALLOW_UPSTREAM_BOT_ACTIONS = False` — never opens or comments on upstream PRs)  
+**Epistemic Invariant:** `NO_RH_PROOF = TRUE` (all 53 modules verify unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, exact `N = 4, 5, 6` certificates, all-`N` universal symmetries, or conditional RH bridges; none claim an unconditional RH proof)
 
 ---
 
 ## Standalone Repository & Fork Archive Policy
 
-1. All 52 `UpstreamPR_1A`–`8I.lean` files are maintained as **52 self-contained, linter-verified modular Lean 4 formalization units** archived on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4`, and Zenodo (`10.5281/zenodo.24329861`).
+1. All 53 `UpstreamPR_1A`–`8J.lean` files are maintained as **53 self-contained, linter-verified modular Lean 4 formalization units** archived on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4`, and Zenodo (`10.5281/zenodo.24329861`).
 2. `ALLOW_UPSTREAM_BOT_ACTIONS = False` disables automated `gh pr create` and `gh pr comment` mutations against `leanprover-community/mathlib4`. `--inspect` and `--advance-queue` operate strictly as read-only local status monitors.
 3. Branches are pushed strictly to the user-owned fork `https://github.com/Qamarbajwa/mathlib4.git`.
 4. Every module registers cleanly as `public import Mathlib.NumberTheory.LSeries.<Name>` in `Mathlib.lean` (never before line 1 `module`).
@@ -19,13 +19,13 @@
 ### Fork Verification & Staging Commands
 
 ```bash
-# Dry-run import rewriting & line-length audit across all 52 modules
+# Dry-run import rewriting & line-length audit across all 53 modules
 python push_carved_prs_to_mathlib4.py --wave all --dry-run
 
 # Push carved branches from a local mathlib4 checkout to user-owned fork Qamarbajwa/mathlib4
 python push_carved_prs_to_mathlib4.py --mathlib-dir /path/to/mathlib4 --wave all --base-ref master --remote origin --push
 
-# Verify all 52 pushed feat/* branches on Qamarbajwa/mathlib4
+# Verify all 53 pushed feat/* branches on Qamarbajwa/mathlib4
 python push_carved_prs_to_mathlib4.py --check-remote-ci
 ```
 
@@ -300,3 +300,4 @@ Wave 5 covers Papers F & G:
 - **PR-8G** (`Mathlib/NumberTheory/LSeries/BaezDuarteCotangentSix.lean`, `feat/baez-duarte-cotangent-six`, stacked on `PR-8F`, 209 lines, max 100 chars): `vasyuninCotSum_six_eval`, `deltaCot_six_eq`, `vasyuninCotSum_two_six_eq_zero`, `vasyuninCotSum_three_six_eq_zero`, `vasyuninCotSum_four_six_eq_zero`, `unweightedKCot_two_six_eq`, `unweightedKCot_three_six_eq_zero`, `unweightedKCot_four_six_eq`, `dipoleGramEntry_add_succ_right`, `dipoleGramEntry_one_three_add_one_four_eq`, `dipoleGramEntry_one_four_eq`, `dipoleGramEntry_two_four_eq_zero`.
 - **PR-8H** (`Mathlib/NumberTheory/LSeries/BaezDuarteUniversalCotangent.lean`, `feat/baez-duarte-universal-cotangent`, stacked on `PR-8G`, 119 lines, max 97 chars): `vasyuninCotSum_mod_eq`, `vasyuninCotSum_dvd_right_eq_zero`, `fract_sub_mul_div_eq`, `vasyuninCotSum_sub_eq_neg`, `vasyuninCotSum_two_mul_self_eq_zero`, `unweightedKCot_self_two_mul_eq_zero`.
 - **PR-8I** (`Mathlib/NumberTheory/LSeries/BaezDuarteLogarithmicPlaqueDecay.lean`, `feat/baez-duarte-logarithmic-plaque-decay`, stacked on `PR-8H`, 86 lines, max 98 chars): `purePlaqueVanishing_of_majorant_tendsto_zero`, `riemannHypothesis_of_plaque_majorant_tendsto_zero`, `riemannHypothesis_of_logarithmic_plaque_bound`.
+- **PR-8J** (`Mathlib/NumberTheory/LSeries/BaezDuarteUnitPartitionKernel.lean`, `feat/baez-duarte-unit-partition-kernel`, stacked on `PR-8I`, 196 lines, max 100 chars): `sum_Icc_two_div_eq_one_of_isDirichletAnchored`, `sum_Icc_two_eq_three_of_isDirichletAnchored`, `sum_dipoleCoord_eq_one_of_isDirichletAnchored`, `unitDefectEntry`, `unitDefectEntry_comm`, `unitDefectEntry_eq_one_sub_drive_add_gram`, `unitDefectEntry_one_two_eq`, `one_sub_SCot_eq_sum_unitDefectEntry_of_isDirichletAnchored`, `sum_unitDefectEntry_nonneg_of_isDirichletAnchored`, `riemannHypothesis_of_unitDefectEntry_simplex_vanishing`.

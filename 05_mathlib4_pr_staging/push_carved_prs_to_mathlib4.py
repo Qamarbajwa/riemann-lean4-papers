@@ -686,6 +686,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): variational majorant and BBLR C/log(N) plaque decay bridge to RH",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuarteLogarithmicPlaqueDecay C/log N bridge",
     ),
+    PRSpec(
+        pr_id="PR-8J",
+        wave=8,
+        staged_file="UpstreamPR_8J_UnitPartitionHomogenization.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8J_UnitPartitionHomogenization",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteUnitPartitionKernel.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteUnitPartitionKernel",
+        branch="feat/baez-duarte-unit-partition-kernel",
+        base_branch="feat/baez-duarte-logarithmic-plaque-decay",
+        pr_title="feat(NumberTheory/LSeries): unit-partition duality and homogeneous unit-defect kernel on Dirichlet simplex",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteUnitPartitionKernel homogeneous simplex RH bridge",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

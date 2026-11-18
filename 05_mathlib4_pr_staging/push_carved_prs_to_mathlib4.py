@@ -526,6 +526,55 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): natural prime-composite partition and critical-strip RH equivalence",
         commit_msg="feat(NumberTheory/LSeries): add PrimeCompositeDirichletSplit and strip quantifier equivalence",
     ),
+    # Wave 7: Layers B & C (Mellin Kernel Energy, Rectangle Contour Subdivision, Pure Plaque, Off-Diagonal Frontier)
+    PRSpec(
+        pr_id="PR-7A",
+        wave=7,
+        staged_file="UpstreamPR_7A_MellinKernelEnergyIdentity.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_7A_MellinKernelEnergyIdentity",
+        target_relpath="Mathlib/NumberTheory/LSeries/MellinKernelEnergy.lean",
+        target_module="Mathlib.NumberTheory.LSeries.MellinKernelEnergy",
+        branch="feat/mellin-kernel-energy-identity",
+        base_branch="master",
+        pr_title="feat(NumberTheory/LSeries): Mellin weight kernel L2 energy identity and weighted Cauchy-Schwarz bound",
+        commit_msg="feat(NumberTheory/LSeries): add MellinKernelEnergy identity and L2 weighted inequality",
+    ),
+    PRSpec(
+        pr_id="PR-7B",
+        wave=7,
+        staged_file="UpstreamPR_7B_RectangleContourSubdivision.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_7B_RectangleContourSubdivision",
+        target_relpath="Mathlib/Analysis/Complex/RectangleContourSubdivision.lean",
+        target_module="Mathlib.Analysis.Complex.RectangleContourSubdivision",
+        branch="feat/rectangle-contour-subdivision",
+        base_branch="master",
+        pr_title="feat(Analysis/Complex): 4-segment oriented rectangle boundary integral and edge subdivisions",
+        commit_msg="feat(Analysis/Complex): add RectangleContourSubdivision horizontal and vertical splits",
+    ),
+    PRSpec(
+        pr_id="PR-7C",
+        wave=7,
+        staged_file="UpstreamPR_7C_PurePlaqueReduction.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_7C_PurePlaqueReduction",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuartePurePlaque.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuartePurePlaque",
+        branch="feat/baez-duarte-pure-plaque-reduction",
+        base_branch="feat/baez-duarte-dipole-diagonal",
+        pr_title="feat(NumberTheory/LSeries): pure 4-point plaque kernel and global anchor-drive cancellation on A_N",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuartePurePlaque global Rank-2 factorization",
+    ),
+    PRSpec(
+        pr_id="PR-7D",
+        wave=7,
+        staged_file="UpstreamPR_7D_DiagonalOffDiagonalFrontier.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_7D_DiagonalOffDiagonalFrontier",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteOffDiagonalFrontier.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteOffDiagonalFrontier",
+        branch="feat/baez-duarte-off-diagonal-frontier",
+        base_branch="feat/baez-duarte-pure-plaque-reduction",
+        pr_title="feat(NumberTheory/LSeries): positive diagonal dipole energy split and off-diagonal cancellation frontier",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteOffDiagonalFrontier diagonal/off-diagonal split",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {
@@ -565,7 +614,7 @@ def check_status(mathlib_dir: Optional[pathlib.Path]) -> None:
             mr = run_cmd(["git", "remote", "-v"], cwd=mathlib_dir)
             print((mr.stdout + mr.stderr).strip())
 
-    print(f"\n=== Carved PR Registry ({len(PR_REGISTRY)} modules across Waves 1-6) ===")
+    print(f"\n=== Carved PR Registry ({len(PR_REGISTRY)} modules across Waves 1-7) ===")
     for spec in PR_REGISTRY:
         staged = STAGING_DIR / spec.staged_file
         lines = len(staged.read_text(encoding="utf-8").splitlines()) if staged.is_file() else -1
@@ -724,7 +773,7 @@ def git_checked(cmd: List[str], cwd: pathlib.Path) -> subprocess.CompletedProces
 def main() -> int:
     parser = argparse.ArgumentParser(description="Stage, rewrite imports, and push carved PRs to mathlib4.")
     parser.add_argument("--mathlib-dir", type=pathlib.Path, default=None, help="Path to local mathlib4 clone.")
-    parser.add_argument("--wave", choices=["1", "2", "3", "4", "5", "6", "all"], default="1", help="Wave to process (default: 1).")
+    parser.add_argument("--wave", choices=["1", "2", "3", "4", "5", "6", "7", "all"], default="1", help="Wave to process (default: 1).")
     parser.add_argument("--pr", default=None, help="Optional comma-separated PR IDs (e.g. PR-3H) to filter.")
     parser.add_argument("--remote", default="origin", help="Git remote to push branches to (default: origin).")
     parser.add_argument("--repo-slug", default="Qamarbajwa/mathlib4", help="Fork owner/repo for --check-remote-ci / --check-ci.")

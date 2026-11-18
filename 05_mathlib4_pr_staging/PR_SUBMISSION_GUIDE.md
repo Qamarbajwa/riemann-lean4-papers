@@ -1,4 +1,4 @@
-# Upstream `mathlib4` PR Submission Guide — Waves 1–6 (39 Carved Modules)
+# Upstream `mathlib4` PR Submission Guide — Waves 1–7 (43 Carved Modules)
 
 **Author / Contributor:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Staging Directory:** `MATHLIB4_PR_STAGING/`  
@@ -281,3 +281,12 @@ Wave 5 covers Papers F & G:
 - **PR-6A** (`Mathlib/NumberTheory/LSeries/CompletedZetaDerivSymmetry.lean`, `feat/completed-zeta-deriv-symmetry`, root `master`, 202 lines, max 100 chars): `IsOnCriticalLine`, `reflection_preserves_critical_line`, `PrimeZeta`, `CompositeZeta`, `IsEquipartitionFulcrum`, `riemannZeta_eq_one_add_primeZeta_add_compositeZeta`, `zeta_at_equipartition_fulcrum`, `equipartition_fifty_fifty_split`, `zero_reflection_dichotomy`, `completedRiemannZeta_deriv_one_sub`, `completedRiemannZeta_deriv_at_half`, `completedRiemannZeta_deriv_critical_line_antisymm`.
 - **PR-6B** (`Mathlib/NumberTheory/LSeries/CriticalLinePenetrationBarrier.lean`, `feat/critical-line-penetration-barrier`, stacked on `PR-4A` + `PR-5C`, 250 lines, max 100 chars): `dirichletPoly`, `stripDefect`, `analyticOnNhd_dirichletPoly`, `analyticOnNhd_zeta_mul_dirichletPoly`, `ne_zero_of_norm_one_add_mul_lt_one`, `stripDefect_norm_lt_one_implies_ne_zero`, `inv_zeta_approx_error_eq`, `critical_line_penetration_lower_bound`, `stripDefect_eq_mul_mellin_residual`.
 - **PR-6C** (`Mathlib/NumberTheory/LSeries/PrimeCompositeDirichletSplit.lean`, `feat/prime-composite-dirichlet-split`, root `master`, 210 lines, max 100 chars): `natPrimes`, `natUnits`, `natComposites`, `nat_partition_dichotomy`, `bezout_identity`, `euclid_lemma`, `modulo_6_sieve_confinement`, `fermats_little_theorem`, `wilsons_theorem`, `InCriticalStrip`, `RiemannHypothesisStrip`, `zetaZeroReflectionSymmetry_unconditional`, `riemannHypothesis_iff_strip`.
+
+---
+
+## Wave 7 Dependency Stack (`PR-7A`–`PR-7D`, Layers B & C)
+
+- **PR-7A** (`Mathlib/NumberTheory/LSeries/MellinKernelEnergy.lean`, `feat/mellin-kernel-energy-identity`, root `master`, 125 lines, max 98 chars): `mellinWeight`, `integrableOn_sq_mellinWeight`, `integral_Ioc_sq_mellinWeight`, `integral_Ioc_mellinWeight_sq`, `sq_mellin_weighted_le_div_two_mul_sub_one`, `integral_Ioc_two_mul_mellin_le`.
+- **PR-7B** (`Mathlib/Analysis/Complex/RectangleContourSubdivision.lean`, `feat/rectangle-contour-subdivision`, root `master`, 107 lines, max 100 chars): `rectBoundaryIntegral`, `rectBoundaryIntegral_const`, `rectBoundaryIntegral_split_sigma`, `rectBoundaryIntegral_split_height`, `rectBoundaryIntegral_self_sigma`, `rectBoundaryIntegral_self_height`.
+- **PR-7C** (`Mathlib/NumberTheory/LSeries/BaezDuartePurePlaque.lean`, `feat/baez-duarte-pure-plaque-reduction`, stacked on `PR-4M`, 162 lines, max 100 chars): `dipolePlaqueEntry`, `dipolePlaqueEntry_comm`, `dipolePlaqueEntry_diag_eq`, `dipoleGramEntry_eq_boundary_add_plaque`, `QCot_eq_h_one_mul_linearCotDrive_add_plaque`, `SCot_eq_neg_c_one_mul_linearCotDrive_sub_plaque`.
+- **PR-7D** (`Mathlib/NumberTheory/LSeries/BaezDuarteOffDiagonalFrontier.lean`, `feat/baez-duarte-off-diagonal-frontier`, stacked on `PR-7C`, 97 lines, max 100 chars): `dipoleDiagEnergy`, `dipoleOffDiagEnergy`, `dipoleDiagEnergy_nonneg`, `QCot_eq_dipoleDiagEnergy_add_dipoleOffDiagEnergy`, `dipoleOffDiagEnergy_le_one_sub_dipoleDiagEnergy_of_mem_A_N`, `SCot_eq_drive_sub_diag_sub_offDiag`.

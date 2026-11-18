@@ -20,6 +20,7 @@
 - `UpstreamPR_8M_PointwiseContinuityAndPeriodicity.lean` (`PR-8M`, 232 lines, max 99 chars)
 - `UpstreamPR_8N_HarmonicCellL2QuadratureAndPrimeJumps.lean` (`PR-8N`, 207 lines, max 99 chars)
 - `UpstreamPR_8O_PeriodicL2CellSumCompression.lean` (`PR-8O`, 114 lines, max 100 chars)
+- `UpstreamPR_8P_HarmonicSlabNonTermination.lean` (`PR-8P`, 229 lines, max 98 chars)
 - `layer_c_dirichlet_locked_plaque_lab.py` & `layer_c_dirichlet_locked_plaque_results.json` (85-digit `mpmath` benchmark across $N \in \{4, 8, 12, 16, 24, 32, 48, 64\}$)
 - `layer_c_simplex_test_families_lab.py` & `layer_c_simplex_test_families_results.json` (85-digit explicit analytical simplex test families & Graph-Laplacian verification)
 - `layer_d_palindromic_period_lab.py` & `palindromic_period_certificates.json` (85-digit $L_4 = 12$ and $L = 60$ pointwise plateau, prime-jump, modulo-periodicity, and palindromic antisymmetry verification)

@@ -758,6 +758,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): periodic L2 cell-sum compression across residue classes modulo L_N",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuartePeriodicQuadrature",
     ),
+    PRSpec(
+        pr_id="PR-8P",
+        wave=8,
+        staged_file="UpstreamPR_8P_HarmonicSlabNonTermination.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8P_HarmonicSlabNonTermination",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteHarmonicSlabNonTermination.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteHarmonicSlabNonTermination",
+        branch="feat/baez-duarte-harmonic-slab-nontermination",
+        base_branch="feat/baez-duarte-periodic-quadrature",
+        pr_title="feat(NumberTheory/LSeries): harmonic-slab non-termination and finite-truncation L2 positivity",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteHarmonicSlabNonTermination",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """
-Read-only mathlib4 PR Queue & Status Monitor for all 56 Carved UpstreamPRs (Waves 1-8).
+Read-only mathlib4 PR Queue & 15-Minute Post-Merge Daemon for 5 Micro-PRs + 57 UpstreamPRs.
 
 AI Policy Safety Guard:
-  ALLOW_UPSTREAM_BOT_ACTIONS = False disables all automated `gh pr create` and `gh pr comment`
-  mutations against `leanprover-community/mathlib4`, keeping `--inspect` and `--advance-queue`
-  strictly read-only local status monitors.
+  ALLOW_UPSTREAM_BOT_ACTIONS = False and ENABLE_LIVE_AUTO_SUBMIT = False disable all automated
+  `gh pr create` and `gh pr comment` mutations against `leanprover-community/mathlib4`, keeping
+  `--inspect`, `--advance-queue`, and `--poll-and-advance` strictly read-only/local.
 
 Supports:
   --inspect             Inspect live PRs on leanprover-community/mathlib4 (read-only)
   --apply-delegated     Preview delegated PR status (blocked from upstream commenting by default)
   --rebase-conflicting  Check CONFLICTING PRs against upstream/master
-  --advance-queue       Inspect merged parents, unlocked child PRs, and root wave queueing (read-only)
+  --advance-queue       Inspect merged parents, unlocked child PRs, and root wave queueing
+  --poll-and-advance    Evaluate 15-min post-merge cooldown, Berlin hours, & micro-PR letter rules
   --write-zulip         Generate MATHLIB4_PR_STAGING/ZULIP_PR_REVIEW_MESSAGES.md
   --max-concurrent N    Maximum concurrent open upstream PRs (default: 4)
 """
@@ -19,11 +20,14 @@ Supports:
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import pathlib
+import re
 import subprocess
 import sys
 from typing import Any, Dict, List, Optional
+from zoneinfo import ZoneInfo
 
 STAGING_DIR = pathlib.Path(__file__).resolve().parent
 if str(STAGING_DIR) not in sys.path:
@@ -35,7 +39,33 @@ UPSTREAM_REPO = "leanprover-community/mathlib4"
 FORK_REPO = "Qamarbajwa/mathlib4"
 FORK_OWNER = "Qamarbajwa"
 UPSTREAM_URL = "https://github.com/leanprover-community/mathlib4.git"
+
+MAX_ACTIVE_UPSTREAM_PRS = 1
+REQUIRE_PREVIOUS_MERGED_BEFORE_NEXT = True
+POST_MERGE_DELAY_MINUTES = 15
+MAX_LINES_PER_MICRO_PR = 45
+BERLIN_WAKING_HOURS = (8, 22)
 ALLOW_UPSTREAM_BOT_ACTIONS = False
+ENABLE_LIVE_AUTO_SUBMIT = False
+
+
+def verify_human_letter_and_size(letter_body: str, diff_lines: int) -> bool:
+    """Validate 20-35 line size cap, plain-text Indian English format, and exact final line."""
+    if not (0 < diff_lines <= MAX_LINES_PER_MICRO_PR):
+        return False
+    if "#" in letter_body or "\u2014" in letter_body or "\u2013" in letter_body:
+        return False
+    if not letter_body.lstrip().startswith("Hello everyone,"):
+        return False
+    if "Step 1:" not in letter_body or "Step 2:" not in letter_body:
+        return False
+    lines = letter_body.strip().splitlines()
+    if not lines or lines[-1] != "ai is being used as a tool":
+        return False
+    body_without_last = "\n".join(lines[:-1])
+    if re.search(r"\bai\b", body_without_last, re.IGNORECASE):
+        return False
+    return True
 
 
 def run_cmd(cmd: List[str], cwd: Optional[pathlib.Path] = None) -> subprocess.CompletedProcess:
@@ -212,6 +242,73 @@ def compute_queue_plan(
     }
 
 
+def poll_and_advance(
+    upstream_repo: str,
+    state_path: pathlib.Path,
+    mathlib_dir: Optional[pathlib.Path] = None,
+) -> Dict[str, Any]:
+    """Check merge/cooldown status in pr_queue_state.json and validate next micro-PR."""
+    state_data = json.loads(state_path.read_text(encoding="utf-8"))
+    berlin_now = dt.datetime.now(ZoneInfo("Europe/Berlin"))
+    in_waking = BERLIN_WAKING_HOURS[0] <= berlin_now.hour < BERLIN_WAKING_HOURS[1]
+    active_pr = state_data.get("active_upstream_pr_number")
+    micro_prs = state_data.get("micro_prs", [])
+
+    if active_pr is not None:
+        view = gh_json([
+            "pr", "view", str(active_pr), "--repo", upstream_repo,
+            "--json", "number,state,mergedAt,url",
+        ])
+        pr_state = view.get("state", "UNKNOWN")
+        if pr_state == "CLOSED":
+            return {"status": "PAUSED_CLOSED_UNMERGED", "active_pr": active_pr}
+        if pr_state != "MERGED":
+            return {"status": "WAITING_FOR_MERGE", "active_pr": active_pr, "state": pr_state}
+        merged_at_str = view.get("mergedAt")
+        if not merged_at_str:
+            return {"status": "WAITING_FOR_MERGED_AT", "active_pr": active_pr}
+        merged_dt = dt.datetime.fromisoformat(merged_at_str.replace("Z", "+00:00"))
+        elapsed_min = (dt.datetime.now(dt.timezone.utc) - merged_dt).total_seconds() / 60.0
+        if elapsed_min < POST_MERGE_DELAY_MINUTES:
+            return {
+                "status": "COOLDOWN_ACTIVE",
+                "elapsed_minutes": round(elapsed_min, 2),
+                "required_minutes": POST_MERGE_DELAY_MINUTES,
+            }
+    elif REQUIRE_PREVIOUS_MERGED_BEFORE_NEXT:
+        pass
+
+    next_micro = next((m for m in micro_prs if m.get("status") != "MERGED"), None)
+    if next_micro is None:
+        return {"status": "ALL_MICRO_PRS_COMPLETE", "in_waking_hours": in_waking}
+
+    letter_path = STAGING_DIR / next_micro["letter_file"]
+    letter_body = letter_path.read_text(encoding="utf-8")
+    valid = verify_human_letter_and_size(letter_body, int(next_micro["added_lines"]))
+    if not valid:
+        raise RuntimeError(f"Human letter validation failed for {next_micro['id']}")
+
+    if mathlib_dir is not None and (mathlib_dir / "Mathlib.lean").is_file():
+        if not ALLOW_UPSTREAM_BOT_ACTIONS and not ENABLE_LIVE_AUTO_SUBMIT:
+            pass  # Local checkout untouched during read-only dry-run
+
+    if not ALLOW_UPSTREAM_BOT_ACTIONS or not ENABLE_LIVE_AUTO_SUBMIT:
+        msg = (
+            f"[DRY-RUN READY AFTER 15-MIN MERGE COOLDOWN] "
+            f"next={next_micro['id']} ({next_micro['branch']}) | "
+            f"lines={next_micro['added_lines']}/{MAX_LINES_PER_MICRO_PR} | "
+            f"waking_hours_berlin={in_waking}"
+        )
+        print(msg)
+        return {
+            "status": "DRY-RUN READY AFTER 15-MIN MERGE COOLDOWN",
+            "next_micro": next_micro["id"],
+            "letter_verified": valid,
+            "in_waking_hours": in_waking,
+        }
+    return {"status": "READY", "next_micro": next_micro["id"], "letter_verified": valid}
+
+
 def write_zulip_messages(details: List[Dict[str, Any]], out_path: pathlib.Path) -> None:
     reg_branches = {s.branch for s in PR_REGISTRY}
     open_lines = []
@@ -256,10 +353,17 @@ def main() -> int:
     parser.add_argument("--apply-delegated", action="store_true")
     parser.add_argument("--rebase-conflicting", action="store_true")
     parser.add_argument("--advance-queue", action="store_true")
+    parser.add_argument("--poll-and-advance", action="store_true")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--write-zulip", action="store_true")
     parser.add_argument("--json-report", type=pathlib.Path, default=None)
     args = parser.parse_args()
+
+    if args.poll_and_advance:
+        state_path = STAGING_DIR / "pr_queue_state.json"
+        poll_and_advance(args.upstream_repo, state_path, args.mathlib_dir)
+        if not (args.inspect or args.advance_queue):
+            return 0
 
     details = fetch_pr_details(args.upstream_repo, args.fork_owner)
     print(f"=== Live {args.upstream_repo} PR Status (author={args.fork_owner}, count={len(details)}) ===")

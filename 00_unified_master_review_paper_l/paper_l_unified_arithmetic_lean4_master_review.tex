@@ -67,7 +67,7 @@ Establishing a rigid separation between unconditionally proved theorems, conditi
 \item \textbf{High-Precision Finite-Section Diagnostics ($N \le 750$):} Eighty-five-digit \texttt{mpmath} quadratic programs and explicit analytical test families on $\mathcal{A}_N$ ($4 \le N \le 64$), 192-bit \texttt{flint.arb} spectral indefiniteness proofs on separated kernels, and 512-bit unwrapped $LDL^T$ congruence on a $750$-mode Weil truncation ($L=1$).
 \end{enumerate}
 
-All formal proofs have been independently checked by the Lean~4.35.0 kernel across $56$ self-contained modular files~\cite{deMouraUllrich2021,mathlibCommunity2020,MunawerRiemannBlueprint2026} indexed completely in the Formal Concordance Ledger (Section~\ref{sec:ledger}), with zero incomplete proofs (\texttt{sorry}) and strictly standard foundational axioms (\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}).
+All formal proofs have been independently checked by the Lean~4.35.0 kernel across $57$ self-contained modular files~\cite{deMouraUllrich2021,mathlibCommunity2020,MunawerRiemannBlueprint2026} indexed completely in the Formal Concordance Ledger (Section~\ref{sec:ledger}), with zero incomplete proofs (\texttt{sorry}) and strictly standard foundational axioms (\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}).
 
 \section{Classical Analytic and Arithmetic Pillars}\label{sec:classical}
 
@@ -160,6 +160,7 @@ For every $N \ge 2$, $c \in \mathcal{A}_N^{\mathrm{dir}}$ ($c_1 = -1$), and $h =
 \begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
 \item $\mathcal{P}_N(h) \ge -\tfrac{1}{4}$ globally, and $\mathcal{P}_N(h) \ge (\pi L_{\mathrm{cot}}(h,N))^2 - \pi L_{\mathrm{cot}}(h,N) \ge 0$ whenever $\pi L_{\mathrm{cot}}(h,N) \ge 1$. Along the unit-drive hyperplane $\pi L_{\mathrm{cot}}(h,N) = 1$, $E_N(c) = \mathcal{P}_N(h) \ge 0$.
 \item Everywhere on $\mathcal{A}_N^{\mathrm{dir}}$, $E_N(c) = 1 - S_{\mathrm{cot}}(c,N) = \sum_{a,b=1}^{N-2} \alpha_a(c)\alpha_b(c)\mathcal{M}_{ab} \ge 0$, with off-diagonal entry $\mathcal{M}_{12} = 1 - \tfrac{\pi}{2} < 0$. Pointwise, $D_{\mathrm{cell}}(n) = A_c(n)$ and $r_N(x) = D_{\mathrm{cell}}(n) = A_c(n)$ whenever $n \le \tfrac{1}{x} < n+1$ ($n \ge 1$), annihilating $r_N(x) = 0$ on $(1/2, 1]$; for any $L$ divisible by $1,\dots,N$, $A_c(n+L)=A_c(n)$, $A_c(L-1-m) = -A_c(m)$ ($m < L$), and $\sum_{m=0}^{L-1} A_c(m) = 0$.
+\item \emph{[Lean: PR-8N].} Across $N \ge 3$ and $c \in \mathcal{A}_N^{\mathrm{dir}}$, the dyadic cell $(1/3, 1/2]$ locks to $D_{\mathrm{cell}}(2) = r_N(x) = c_2 - 1$, the ternary cell $(1/4, 1/3]$ locks to $D_{\mathrm{cell}}(3) = c_2 + c_3 - 2$, every prime $p \le N$ exhibits exact step jump $\Delta_{\mathrm{div}}(c,N,p) = c_p - 1$, and reflected $L$-period entries take $A_c(L-3) = 1 - c_2$ and $A_c(L-4) = 2 - c_2 - c_3$.
 \item Two-dimensional Abel summation ($K_{\mathrm{cot}}(2,2) = 0$) expresses the plaque form directly in $c_3,\dots,c_N$:
 \begin{equation}\label{eq:telescoped}
 \mathcal{P}_N(h) = \sum_{j=3}^N \sum_{k=3}^N \frac{c_j c_k}{jk}\bigl(K_{\mathrm{cot}}(j,k) - K_{\mathrm{cot}}(j,2) - K_{\mathrm{cot}}(2,k)\bigr).
@@ -177,7 +178,8 @@ Table~\ref{tab:exact_certs} records exact closed-form arithmetic evaluations cer
 \caption{Exact closed-form arithmetic certificates across $N \in \{3, 4, 5, 6\}$.}
 \label{tab:exact_certs}
 \vspace{4pt}
-\small
+\footnotesize
+\setlength{\tabcolsep}{4.5pt}
 \renewcommand{\arraystretch}{1.18}
 \begin{tabular}{@{}llll@{}}
 \toprule
@@ -248,6 +250,49 @@ $6$ & 4D Decoupling & $\widetilde{G}_{14} = \tfrac{\pi}{\sqrt{3}} - \pi\cot(\tfr
 \label{fig:phase_and_stems}
 \end{figure}
 
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.95]
+  \begin{scope}[xshift=0cm, yshift=0cm]
+    \draw[->] (0,0) -- (6.0,0) node[right,font=\scriptsize] {$x$};
+    \draw[->] (0,-1.55) -- (0,1.65) node[above,font=\scriptsize] {$r_4(x) = A_{c^*}(n)$};
+    \draw[gray!35,dashed] (0,0) -- (5.8,0);
+    \foreach \lbl/\xp in {1/5.50, \tfrac{1}{2}/2.75, \tfrac{1}{3}/1.83, \tfrac{1}{4}/1.375} {
+      \draw (\xp,0) -- (\xp,-0.08) node[below,font=\tiny] {$\lbl$};
+    }
+    \draw[teal!80!black,ultra thick] (2.75,0.0) -- (5.50,0.0);
+    \node[teal!80!black,font=\tiny,above] at (4.12,0.08) {$n=1$: $r_4=0$};
+    \draw[blue!75!black,ultra thick] (1.83,-0.54) -- (2.75,-0.54);
+    \node[blue!75!black,font=\tiny,below] at (2.29,-0.58) {$c_2{-}1$};
+    \draw[blue!75!black,ultra thick] (1.375,-0.32) -- (1.83,-0.32);
+    \draw[red!75!black,dashed] (1.83,-0.54) -- (1.83,-0.32);
+    \draw[orange!85!black,ultra thick] (1.10,0.86) -- (1.375,0.86);
+    \node[orange!85!black,font=\tiny,above] at (1.24,0.88) {$n=4$};
+    \node[font=\scriptsize,below] at (2.9,-1.85) {(a) Top-half annihilation and prime jumps on $(0,1]$};
+  \end{scope}
+
+  \begin{scope}[xshift=7.4cm, yshift=0cm]
+    \draw[->] (-0.3,0) -- (5.8,0) node[right,font=\scriptsize] {$m$};
+    \draw[->] (0,-1.55) -- (0,1.65) node[above,font=\scriptsize] {$A_{c^*}(m)$ ($L_4=12$)};
+    \draw[red!75!black,dashed] (2.475,-1.45) -- (2.475,1.45);
+    \node[red!75!black,font=\tiny,above] at (2.475,1.45) {$m{+}m'=11$};
+    \foreach \m/\v in {0/1.25, 1/0.0, 2/-0.48, 3/-0.29, 4/0.77, 5/-0.48, 6/0.48, 7/-0.77, 8/0.29, 9/0.48, 10/0.0, 11/-1.25} {
+      \pgfmathsetmacro{\xp}{0.45*\m}
+      \draw (\xp,0) -- (\xp,-0.07);
+      \draw[blue!75!black,thick] (\xp,0) -- (\xp,\v);
+      \fill[blue!75!black] (\xp,\v) circle (1.7pt);
+    }
+    \node[font=\tiny,below] at (0,-0.08) {$0$};
+    \node[font=\tiny,below] at (2.25,-0.08) {$5$};
+    \node[font=\tiny,below] at (2.70,-0.08) {$6$};
+    \node[font=\tiny,below] at (4.95,-0.08) {$11$};
+    \node[font=\scriptsize,below] at (2.75,-1.85) {(b) Palindromic period $A_{c^*}(11-m) = -A_{c^*}(m)$};
+  \end{scope}
+\end{tikzpicture}
+\caption{Pointwise cell plateaus and $L_4 = 12$ palindromic periodicity for the exact Dirichlet $N=4$ optimum $c^*$ (\texttt{layer\_d\_\allowbreak palindromic\_\allowbreak period\_\allowbreak lab.py}): (a) $D_1 = 0$ eliminates the continuous $x$-slope and locks $r_4(x) = 0$ on $(1/2,1]$; (b) modular antisymmetry pairs $A_{c^*}(m)$ against $-A_{c^*}(11-m)$ across the period midpoint, certified to $3.55 \times 10^{-84}$.}
+\label{fig:pointwise_continuity_palindromic}
+\end{figure}
+
 \subsection{Why Adjacent Dipoles Never Collide ($\widetilde{G}_{m, m+1} = 0$) and Graph-Laplacian Structure}
 
 Across arbitrary $a, b, k \in \N$ without coprimality restrictions, Vasyunin cotangent sums obey modulo periodicity $V(a, b \bmod a) = V(a, b)$ and $V(a, a+b) = V(a, b)$, divisibility vanishing $a \mid b \implies V(a, b) = 0$, reflection antisymmetry $V(a, a-b) = -V(a,b)$ ($b \le a$), and consequently infinite octave orthogonality $K_{\mathrm{cot}}(k, 2k) = K_{\mathrm{cot}}(2k, k) = 0$ for every $k \in \N$. This mechanism explains a striking rigidity across every scale $m \ge 1$: why do consecutive cumulative dipoles $v^{(m)}$ and $v^{(m+1)}$ never collide in the Vasyunin inner product? Their supports $\{1,2,m+1,m+2\}$ and $\{1,2,m+2,m+3\}$ intersect on the intermediate conductor $x = m+2$. Evaluating the unweighted cross-cotangent matrix pairs $(m+1, m+2)$, $(m+1, m+3)$, $(m+2, m+2)$, $(m+2, m+3)$ reduces every Vasyunin sum to arguments differing from $m+2$ by $\pm 1$ or $\pm 2$; periodicity $V(x, x+r) = V(x, r)$ and reflection $V(x, x-r) = -V(x, r)$ cancel all cross-terms identically against $\delta_{\mathrm{cot}}(m+3)-\delta_{\mathrm{cot}}(m+1)$, leaving $\widetilde{G}_{m, m+1} = 0$ for every $m \ge 1$.
@@ -270,7 +315,7 @@ Letting $R_a^{(N)} := \sum_{b=1}^{N-2}\mathcal{M}_{ab}$, every $c \in \mathcal{A
 
 \section{High-Precision Diagnostics and Horizon Cancellation}\label{sec:numerics}
 
-Eighty-five-digit \texttt{mpmath} experiments across $N \in \{4, 8, 12, 16, 24, 32, 48, 64\}$ confirm~\eqref{eq:telescoped} to $2.69 \times 10^{-86}$,~\eqref{eq:scot_plaque} to $2.41 \times 10^{-85}$, and the row-sum / Graph-Laplacian laws of Theorem~\ref{thm:log_decay_bridge} to $2.35 \times 10^{-83}$ and $1.54 \times 10^{-85}$. Figure~\ref{fig:trajectories} compares unconstrained minimization ($E_{\mathrm{opt}}$), Dirichlet anchoring ($E_{\mathrm{dir}}$), and the unit-drive Dirichlet slice ($E_{\mathrm{unit}}$); across $N \le 64$, $c_{1,\mathrm{opt}}^{(N)}$ approaches $-1$ ($-0.9539$ at $N=8$ to $-0.9725$ at $N=64$), narrowing the Dirichlet penalty at $N=64$ to $3.46\%$.
+Eighty-five-digit \texttt{mpmath} experiments across $N \in \{4, 8, 12, 16, 24, 32, 48, 64\}$ confirm~\eqref{eq:telescoped} to $2.69 \times 10^{-86}$,~\eqref{eq:scot_plaque} to $2.41 \times 10^{-85}$, and the row-sum / Graph-Laplacian laws of Theorem~\ref{thm:log_decay_bridge} to $2.35 \times 10^{-83}$ and $1.54 \times 10^{-85}$; pointwise cell plateaus ($L_4 = 12$ and $L = 60$) in \texttt{layer\_d\_\allowbreak palindromic\_\allowbreak period\_\allowbreak lab.py} verify modulo periodicity to $3.55 \times 10^{-84}$ and palindromic reflection to $2.05 \times 10^{-85}$ (Figure~\ref{fig:pointwise_continuity_palindromic}). Figure~\ref{fig:trajectories} compares unconstrained minimization ($E_{\mathrm{opt}}$), Dirichlet anchoring ($E_{\mathrm{dir}}$), and the unit-drive Dirichlet slice ($E_{\mathrm{unit}}$); across $N \le 64$, $c_{1,\mathrm{opt}}^{(N)}$ approaches $-1$ ($-0.9539$ at $N=8$ to $-0.9725$ at $N=64$), narrowing the Dirichlet penalty at $N=64$ to $3.46\%$.
 
 \begin{figure}[ht]
 \centering
@@ -339,14 +384,14 @@ $64$ & $0.047380$ & $0.049019$ & $0.055525$ & $0.040056$ & $0.015434$ & $-1.1671
 
 At 50-digit and 192-/512-bit \texttt{flint.arb} precision, separated $G_{\mathrm{smooth}}$ ($24/50$ negative eigenvalues at $N=50$) and separated $G_{\mathrm{cot}}$ ($2/50$ negative eigenvalues) are individually indefinite, whereas $G_{\mathrm{smooth}}+G_{\mathrm{cot}}$ and the restriction to $\mathcal{A}_N^0$ remain positive; unwrapped 512-bit Schur congruence certifies $12/12$ positive $LDL^T$ pivots across the $750$-mode $L=1$ Weil matrix ($\min \underline{D}_k = +2.3269 \times 10^{-22}$). Bridging finite horizons $N \le 64$ to arbitrary $\varepsilon > 0$ in~\eqref{eq:telescoped} remains open.
 
-\section{56-Module Lean~4 Formal Concordance Ledger}\label{sec:ledger}
+\section{57-Module Lean~4 Formal Concordance Ledger}\label{sec:ledger}
 
-Table~\ref{tab:52_modules} indexes all $56$ verified Lean~4.35 modules in \texttt{RiemannBlueprint/\allowbreak RiemannBlueprint/\allowbreak UpstreamPRs/} (paired with Zenodo Hubs~01--14~\cite{MunawerRiemannBlueprint2026}; axioms strictly \texttt{[propext, Classical.choice, Quot.sound]}, denoted \texttt{Std}).
+Table~\ref{tab:52_modules} indexes all $57$ verified Lean~4.35 modules in \texttt{RiemannBlueprint/\allowbreak RiemannBlueprint/\allowbreak UpstreamPRs/} (paired with Zenodo Hubs~01--14~\cite{MunawerRiemannBlueprint2026}; axioms strictly \texttt{[propext, Classical.choice, Quot.sound]}, denoted \texttt{Std}).
 
 \scriptsize
 \setlength{\tabcolsep}{3.5pt}
 \begin{longtable}{@{}ll>{\raggedright\arraybackslash}p{5.2cm}>{\raggedright\arraybackslash}p{6.8cm}cc@{}}
-\caption{Complete 56-module Lean~4.35 formal concordance (\texttt{UpstreamPR\_\allowbreak 1A}--\texttt{8M}, axioms \texttt{[propext, Classical.choice, Quot.sound]}).}
+\caption{Complete 57-module Lean~4.35 formal concordance (\texttt{UpstreamPR\_\allowbreak 1A}--\texttt{8N}, axioms \texttt{[propext, Classical.choice, Quot.sound]}).}
 \label{tab:52_modules}\\
 \toprule
 ID & W & Module File & Key Formalized Theorems & L & Ax \\
@@ -368,7 +413,7 @@ ID & W & Module File & Key Formalized Theorems & L & Ax \\
 \texttt{1F} & 2 & \texttt{UpstreamPR\_\allowbreak 1F\_\allowbreak ZetaZeroFreeRegion.lean} & \texttt{deLaValleePoussin\_\allowbreak zero\_\allowbreak free\_\allowbreak region\_\allowbreak unconditional} & 205 & Std \\
 \texttt{3B} & 3 & \texttt{UpstreamPR\_\allowbreak 3B\_\allowbreak VasyuninSmoothAndCotDefs.lean} & \texttt{GSmooth}, \texttt{vasyuninGCot}, \texttt{vasyuninCotSum} & 241 & Std \\
 \texttt{3C} & 3 & \texttt{UpstreamPR\_\allowbreak 3C\_\allowbreak HarmonicCellAndAbelSum.lean} & \texttt{sum\_\allowbreak Ico\_\allowbreak abel}, \texttt{cross\_\allowbreak partial\_\allowbreak exact\_\allowbreak identity} & 259 & Std \\
-\texttt{3D} & 3 & \texttt{UpstreamPR\_\allowbreak 3D\_\allowbreak StirlingAndHarmonicAsymptotics.lean} & \texttt{tendsto\_\allowbreak stirling\_\allowbreak log\_\allowbreak term}, \texttt{nat\_\allowbreak div\_\allowbreak sub\_\allowbreak pred\_\allowbreak div} & 209 & Std \\
+\texttt{3D} & 3 & \texttt{UpstreamPR\_\allowbreak 3D\_\allowbreak Stirling\allowbreak And\allowbreak Harmonic\allowbreak Asymptotics.lean} & \texttt{tendsto\_\allowbreak stirling\_\allowbreak log\_\allowbreak term}, \texttt{nat\_\allowbreak div\_\allowbreak sub\_\allowbreak pred\_\allowbreak div} & 209 & Std \\
 \texttt{3E} & 3 & \texttt{UpstreamPR\_\allowbreak 3E\_\allowbreak CotangentMittagLefflerLimit.lean} & \texttt{tendsto\_\allowbreak cotApproxSum} & 221 & Std \\
 \texttt{3F} & 3 & \texttt{UpstreamPR\_\allowbreak 3F\_\allowbreak VasyuninCrossIntegral.lean} & \texttt{affine\_\allowbreak l2\_\allowbreak dist\_\allowbreak eq\_\allowbreak one\_\allowbreak sub\_\allowbreak scot} & 193 & Std \\
 \texttt{3G} & 3 & \texttt{UpstreamPR\_\allowbreak 3G\_\allowbreak MobiusCandidateFourCert.lean} & \texttt{cCandidateMobius\_\allowbreak four\_\allowbreak eval}, \texttt{SCot\_\allowbreak cCandidateMobius\_\allowbreak four\_\allowbreak eq} & 188 & Std \\
@@ -395,7 +440,7 @@ ID & W & Module File & Key Formalized Theorems & L & Ax \\
 \texttt{5B} & 5 & \texttt{UpstreamPR\_\allowbreak 5B\_\allowbreak VonKochChebyshevPsi.lean} & \texttt{VonKochRemainderBound}, \texttt{vonKoch\_\allowbreak implies\_\allowbreak rh} & 250 & Std \\
 \texttt{5C} & 5 & \texttt{UpstreamPR\_\allowbreak 5C\_\allowbreak MellinNymanBeurlingIff.lean} & \texttt{TitchmarshMellinProperty}, \texttt{riemannHypothesis\_\allowbreak iff\_\allowbreak mellin\_\allowbreak ...} & 250 & Std \\
 \texttt{6A} & 6 & \texttt{UpstreamPR\_\allowbreak 6A\_\allowbreak CompletedZetaDerivSymmetry.lean} & \texttt{completedRiemannZeta\_\allowbreak deriv\_\allowbreak one\_\allowbreak sub}, \texttt{equipartition\_\allowbreak fifty\_\allowbreak fifty\_\allowbreak split} & 202 & Std \\
-\texttt{6B} & 6 & \texttt{UpstreamPR\_\allowbreak 6B\_\allowbreak CriticalLinePenetrationBarrier.lean} & \texttt{stripDefect\_\allowbreak norm\_\allowbreak lt\_\allowbreak one\_\allowbreak implies\_\allowbreak ne\_\allowbreak zero} & 250 & Std \\
+\texttt{6B} & 6 & \texttt{UpstreamPR\_\allowbreak 6B\_\allowbreak Critical\allowbreak Line\allowbreak Penetration\allowbreak Barrier.lean} & \texttt{stripDefect\_\allowbreak norm\_\allowbreak lt\_\allowbreak one\_\allowbreak implies\_\allowbreak ne\_\allowbreak zero} & 250 & Std \\
 \texttt{6C} & 6 & \texttt{UpstreamPR\_\allowbreak 6C\_\allowbreak PrimeCompositeDirichletSplit.lean} & \texttt{nat\_\allowbreak partition\_\allowbreak dichotomy}, \texttt{riemannHypothesis\_\allowbreak iff\_\allowbreak strip} & 210 & Std \\
 \texttt{7A} & 7 & \texttt{UpstreamPR\_\allowbreak 7A\_\allowbreak MellinKernelEnergyIdentity.lean} & \texttt{integral\_\allowbreak Ioc\_\allowbreak sq\_\allowbreak mellinWeight}, \texttt{integral\_\allowbreak Ioc\_\allowbreak two\_\allowbreak mul\_\allowbreak mellin\_\allowbreak le} & 125 & Std \\
 \texttt{7B} & 7 & \texttt{UpstreamPR\_\allowbreak 7B\_\allowbreak RectangleContourSubdivision.lean} & \texttt{rectBoundaryIntegral\_\allowbreak split\_\allowbreak sigma}, \texttt{rectBoundaryIntegral\_\allowbreak split\_\allowbreak height} & 107 & Std \\
@@ -409,11 +454,12 @@ ID & W & Module File & Key Formalized Theorems & L & Ax \\
 \texttt{8F} & 8 & \texttt{UpstreamPR\_\allowbreak 8F\_\allowbreak DipoleGramFiveCert.lean} & \texttt{dipoleGramEntry\_\allowbreak two\_\allowbreak three\_\allowbreak eq\_\allowbreak zero}, \texttt{dipoleGramEntry\_\allowbreak one\_\allowbreak three\_\allowbreak eq} & 172 & Std \\
 \texttt{8G} & 8 & \texttt{UpstreamPR\_\allowbreak 8G\_\allowbreak CotangentSixReciprocity.lean} & \texttt{deltaCot\_\allowbreak six\_\allowbreak eq}, \texttt{unweightedKCot\_\allowbreak three\_\allowbreak six\_\allowbreak eq\_\allowbreak zero}, \texttt{dipoleGramEntry\_\allowbreak two\_\allowbreak four\_\allowbreak eq\_\allowbreak zero} & 209 & Std \\
 \texttt{8H} & 8 & \texttt{UpstreamPR\_\allowbreak 8H\_\allowbreak UniversalCotangentSymmetries.lean} & \texttt{vasyuninCotSum\_\allowbreak add\_\allowbreak self\_\allowbreak right}, \texttt{vasyuninCotSum\_\allowbreak sub\_\allowbreak eq\_\allowbreak neg}, \texttt{unweightedKCot\_\allowbreak self\_\allowbreak two\_\allowbreak mul\_\allowbreak eq\_\allowbreak zero} & 125 & Std \\
-\texttt{8I} & 8 & \texttt{UpstreamPR\_\allowbreak 8I\_\allowbreak LogarithmicPlaqueDecayCriterion.lean} & \texttt{purePlaqueVanishing\_\allowbreak of\_\allowbreak majorant\_\allowbreak tendsto\_\allowbreak zero}, \texttt{riemannHypothesis\_\allowbreak of\_\allowbreak logarithmic\_\allowbreak plaque\_\allowbreak bound} & 88 & Std \\
+\texttt{8I} & 8 & \texttt{UpstreamPR\_\allowbreak 8I\_\allowbreak Logarithmic\allowbreak Plaque\allowbreak Decay\allowbreak Criterion.lean} & \texttt{purePlaque\allowbreak Vanishing\_\allowbreak of\_\allowbreak majorant\_\allowbreak tendsto\_\allowbreak zero}, \texttt{riemann\allowbreak Hypothesis\_\allowbreak of\_\allowbreak logarithmic\_\allowbreak plaque\_\allowbreak bound} & 88 & Std \\
 \texttt{8J} & 8 & \texttt{UpstreamPR\_\allowbreak 8J\_\allowbreak Unit\allowbreak Partition\allowbreak Homogenization.lean} & \texttt{sum\_\allowbreak dipoleCoord\_\allowbreak eq\_\allowbreak one\_\allowbreak of\_\allowbreak isDirichlet\allowbreak Anchored}, \texttt{unitDefectEntry\_\allowbreak one\_\allowbreak two\_\allowbreak eq}, \texttt{one\_\allowbreak sub\_\allowbreak SCot\_\allowbreak eq\_\allowbreak sum\_\allowbreak unitDefectEntry\_\allowbreak ...} & 197 & Std \\
 \texttt{8K} & 8 & \texttt{UpstreamPR\_\allowbreak 8K\_\allowbreak Superdiagonal\allowbreak And\allowbreak Orthogonal\allowbreak Triple.lean} & \texttt{vasyuninCotSum\_\allowbreak le\_\allowbreak nine\_\allowbreak fold}, \texttt{dipoleGramEntry\_\allowbreak self\_\allowbreak succ\_\allowbreak eq\_\allowbreak zero}, \texttt{QCot\_\allowbreak span\_\allowbreak two\_\allowbreak three\_\allowbreak four\_\allowbreak eq\_\allowbreak sum\_\allowbreak sq} & 188 & Std \\
 \texttt{8L} & 8 & \texttt{UpstreamPR\_\allowbreak 8L\_\allowbreak Plaque\allowbreak Row\allowbreak Telescoping\allowbreak And\allowbreak Simplex.lean} & \texttt{sum\_\allowbreak Icc\_\allowbreak dipolePlaqueEntry\_\allowbreak self\_\allowbreak eq}, \texttt{sum\_\allowbreak Icc\_\allowbreak unitDefectEntry\_\allowbreak right\_\allowbreak eq}, \texttt{sum\_\allowbreak mul\_\allowbreak mul\_\allowbreak eq\_\allowbreak row\_\allowbreak sum\_\allowbreak sub\_\allowbreak ...} & 133 & Std \\
 \texttt{8M} & 8 & \texttt{UpstreamPR\_\allowbreak 8M\_\allowbreak Pointwise\allowbreak Continuity\allowbreak And\allowbreak Periodicity.lean} & \texttt{continuousNymanResidual\_\allowbreak eq\_\allowbreak modularCellResidual}, \texttt{modularCellResidual\_\allowbreak periodic}, \texttt{modularCellResidual\_\allowbreak palindromic\_\allowbreak neg}, \texttt{sum\_Ico\_\allowbreak modularCellResidual\_\allowbreak eq\_\allowbreak zero} & 232 & Std \\
+\texttt{8N} & 8 & \texttt{UpstreamPR\_\allowbreak 8N\_\allowbreak Prime\allowbreak Harmonic\allowbreak And\allowbreak Selberg\allowbreak Mobius\allowbreak Cells.lean} & \texttt{discreteCellResidual\_\allowbreak two\_\allowbreak eq}, \texttt{divisorStepJump\_\allowbreak prime}, \texttt{discreteCellResidual\_\allowbreak three\_\allowbreak eq}, \texttt{selberg\_\allowbreak continuousNymanResidual\_\allowbreak palindromic\_\allowbreak bridge} & 171 & Std \\
 \end{longtable}
 \normalsize
 

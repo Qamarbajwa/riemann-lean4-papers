@@ -1,0 +1,16 @@
+Hello everyone,
+
+This small pull request adds two small trigonometric identities, Real.cot_pi_sub_div_eq_neg_cot and Real.cot_pi_half_dyadic_eq_zero, to Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean.
+
+When folding symmetric trigonometric sums at arguments pi * b / a and pi * (a - b) / a, rewriting Real.cos_pi_sub and Real.sin_pi_sub repeatedly introduces redundant denominator gymnastics, and the dyadic midpoint case a = 2 * b has to be proved manually each time. These two lemmas close both small gaps.
+
+Here is the school-style derivation:
+
+Step 1: Split the angle difference as
+  pi * (a - b) / a = pi - pi * b / a.
+Step 2: Using cos(pi - theta) = -cos(theta) and sin(pi - theta) = sin(theta), divide both expressions:
+  cos(pi - theta) / sin(pi - theta) = -(cos(theta) / sin(theta)).
+Step 3: When a = 2 * b with b != 0, the angle becomes pi * b / (2 * b) = pi / 2.
+Step 4: Since cos(pi / 2) = 0, cot(pi / 2) = 0 immediately.
+
+ai is being used as a tool

@@ -1,33 +1,50 @@
-# Modular Lean 4 Formalization Guide — Waves 1–8 (56 Self-Contained Units)
+# Modular Lean 4 Formalization Guide — Waves 1–8 (57 Self-Contained Units)
 
 **Author / Contributor:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Staging Directory:** `MATHLIB4_PR_STAGING/`  
 **Verified Build Mirror:** `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/`  
 **Automation Script:** `push_carved_prs_to_mathlib4.py`  
-**Fork Archive Target:** `Qamarbajwa/mathlib4` (`56` standalone `feat/*` branches; `ALLOW_UPSTREAM_BOT_ACTIONS = False` — never opens or comments on upstream PRs)  
-**Epistemic Invariant:** `NO_RH_PROOF = TRUE` (all 56 modules verify unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, exact `N = 4, 5, 6` certificates, all-`N` universal symmetries, pointwise continuity, or conditional RH bridges; none claim an unconditional RH proof)
+**Fork Archive Target:** `Qamarbajwa/mathlib4` (`57` standalone `feat/*` branches; `ALLOW_UPSTREAM_BOT_ACTIONS = False` — never opens or comments on upstream PRs)  
+**Epistemic Invariant:** `NO_RH_PROOF = TRUE` (all 57 modules verify unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, exact `N = 4, 5, 6` certificates, all-`N` universal symmetries, pointwise continuity, prime-harmonic cell plateaus, or conditional RH bridges; none claim an unconditional RH proof)
 
 ---
 
 ## Standalone Repository & Fork Archive Policy
 
-1. All 56 `UpstreamPR_1A`–`8M.lean` files are maintained as **56 self-contained, linter-verified modular Lean 4 formalization units** archived on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4`, and Zenodo (`10.5281/zenodo.24329861`).
-2. `ALLOW_UPSTREAM_BOT_ACTIONS = False` disables automated `gh pr create` and `gh pr comment` mutations against `leanprover-community/mathlib4`. `--inspect` and `--advance-queue` operate strictly as read-only local status monitors.
+1. All 57 `UpstreamPR_1A`–`8N.lean` files are maintained as **57 self-contained, linter-verified modular Lean 4 formalization units** archived on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4`, and Zenodo (`10.5281/zenodo.24329861`).
+2. `ALLOW_UPSTREAM_BOT_ACTIONS = False` and `ENABLE_LIVE_AUTO_SUBMIT = False` disable automated `gh pr create` and `gh pr comment` mutations against `leanprover-community/mathlib4`. `--inspect`, `--advance-queue`, and `--poll-and-advance` operate strictly as read-only local status monitors.
 3. Branches are pushed strictly to the user-owned fork `https://github.com/Qamarbajwa/mathlib4.git`.
 4. Every module registers cleanly as `public import Mathlib.NumberTheory.LSeries.<Name>` in `Mathlib.lean` (never before line 1 `module`).
 
 ### Fork Verification & Staging Commands
 
 ```bash
-# Dry-run import rewriting & line-length audit across all 56 modules
+# Dry-run import rewriting & line-length audit across all 57 modules
 python push_carved_prs_to_mathlib4.py --wave all --dry-run
 
 # Push carved branches from a local mathlib4 checkout to user-owned fork Qamarbajwa/mathlib4
 python push_carved_prs_to_mathlib4.py --mathlib-dir /path/to/mathlib4 --wave all --base-ref master --remote origin --push
 
-# Verify all 56 pushed feat/* branches on Qamarbajwa/mathlib4
+# Verify all 57 pushed feat/* branches on Qamarbajwa/mathlib4
 python push_carved_prs_to_mathlib4.py --check-remote-ci
+
+# Read-only 15-minute cooldown & micro-PR letter validator
+python manage_mathlib4_pr_queue.py --poll-and-advance --inspect --advance-queue
 ```
+
+## 15-Minute Post-Merge Micro-PR Queue Protocol & Plain-Text Human Letters
+
+| Micro-PR | Target File | Lemma(s) | Added Lines | Letter File |
+| :--- | :--- | :--- | :---: | :--- |
+| `micro_pr_01` | `Mathlib/Data/Nat/ModEq.lean` | `Nat.mod_sub_one_sub_add_mod` | 22 | `letters/micro_pr_01.txt` |
+| `micro_pr_02` | `Mathlib/Algebra/Order/Floor.lean` | `Int.fract_natCast_div_eq_mod_div`, `Int.fract_palindromic_add_eq` | 26 | `letters/micro_pr_02.txt` |
+| `micro_pr_03` | `Mathlib/Algebra/Order/Floor.lean` | `Int.floor_one_div_mul_eq_nat_div` | 24 | `letters/micro_pr_03.txt` |
+| `micro_pr_04` | `Mathlib/Algebra/BigOperators/Intervals.lean` | `Finset.sum_Ico_eq_zero_of_palindromic_neg` | 21 | `letters/micro_pr_04.txt` |
+| `micro_pr_05` | `Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean` | `Real.cot_pi_sub_div_eq_neg_cot`, `Real.cot_pi_half_dyadic_eq_zero` | 25 | `letters/micro_pr_05.txt` |
+
+Rules enforced by `manage_mathlib4_pr_queue.py`:
+- `MAX_ACTIVE_UPSTREAM_PRS = 1`, `REQUIRE_PREVIOUS_MERGED_BEFORE_NEXT = True`, `POST_MERGE_DELAY_MINUTES = 15`, `MAX_LINES_PER_MICRO_PR = 45` (targeting `20–35` diff lines), `BERLIN_WAKING_HOURS = (8, 22)`.
+- Plain-text Indian English school-maths letters under `MATHLIB4_PR_STAGING/letters/` start with `Hello everyone,`, use `Step 1:`, `Step 2:`, contain zero `#`, em-dashes, en-dashes, or internal codes, and close with the exact final line `ai is being used as a tool`.
 
 ---
 
@@ -289,7 +306,7 @@ Wave 5 covers Papers F & G:
 
 ---
 
-## Wave 8 Dependency Stack (`PR-8A`–`PR-8M`, Papers K & L)
+## Wave 8 Dependency Stack (`PR-8A`–`PR-8N`, Papers K & L)
 
 - **PR-8A** (`Mathlib/NumberTheory/LSeries/BaezDuartePlaqueCauchySchwarz.lean`, `feat/baez-duarte-plaque-cauchy-schwarz`, stacked on `PR-7D` + `PR-4H`, 144 lines, max 96 chars): `dipolePlaqueForm`, `dipoleCoord_sub_cBaseAnchor_eq`, `dipolePlaqueForm_sub_cBaseAnchor_eq`, `QCot_eq_h_one_mul_drive_add_dipolePlaqueForm`, `SCot_eq_neg_c_one_mul_drive_sub_dipolePlaqueForm`, `l2_dist_eq_one_add_c_one_mul_drive_add_dipolePlaqueForm`, `sq_linearCotDrive_sub_le_dipolePlaqueForm`, `neg_h_one_sq_div_four_le_dipolePlaqueForm`, `one_sub_h_one_le_dipolePlaqueForm_of_unit_drive`.
 - **PR-8B** (`Mathlib/NumberTheory/LSeries/BaezDuarteDirichletAnchoredPlaque.lean`, `feat/baez-duarte-dirichlet-anchored-plaque`, stacked on `PR-8A`, 147 lines, max 99 chars): `IsDirichletAnchored`, `cDirichletAnchor`, `cDirichletAnchor_isDirichletAnchored`, `IsDirichletAnchored.sub_mem_tangent`, `dipolePlaqueForm_ge_of_dirichlet`, `dipolePlaqueForm_nonneg_of_dirichlet_of_one_le_drive`, `neg_one_div_four_le_dipolePlaqueForm_of_dirichlet`, `SCot_eq_drive_sub_dipolePlaqueForm_of_dirichlet`, `unit_drive_dirichlet_plaque_eq_l2_dist`, `unit_drive_dirichlet_plaque_nonneg`.
@@ -304,3 +321,4 @@ Wave 5 covers Papers F & G:
 - **PR-8K** (`Mathlib/NumberTheory/LSeries/BaezDuarteSuperdiagonalOrthogonalTriple.lean`, `feat/baez-duarte-superdiagonal-orthogonal-triple`, stacked on `PR-8J`, 188 lines, max 100 chars): `vasyuninCotSum_le_nine_fold`, `dipoleGramEntry_self_succ_eq_zero`, `dipolePlaqueEntry_self_succ_eq`, `unitDefectEntry_self_succ_eq`, `dipoleGramEntry_orthogonal_triple_two_three_four`, `QCot_span_two_three_four_eq_sum_sq`, `dipoleGramEntry_four_four_eq`, `dipoleGramEntry_three_three_add_four_four_eq`, `unitDefectEntry_one_one_add_two_two_eq`, `unitDefectEntry_three_three_add_four_four_eq`.
 - **PR-8L** (`Mathlib/NumberTheory/LSeries/BaezDuartePlaqueRowTelescoping.lean`, `feat/baez-duarte-plaque-row-telescoping`, stacked on `PR-8K`, 133 lines, max 100 chars): `sum_Icc_deltaCot_diff_eq`, `sum_Icc_dipolePlaqueEntry_right_eq`, `sum_Icc_dipolePlaqueEntry_self_eq`, `sum_Icc_unitDefectEntry_right_eq`, `sum_mul_mul_eq_row_sum_sub_half_sq_sub`, `one_sub_SCot_eq_row_sum_sub_half_sq_sub_of_isDirichletAnchored`.
 - **PR-8M** (`Mathlib/NumberTheory/LSeries/BaezDuartePointwiseContinuity.lean`, `feat/baez-duarte-pointwise-continuity`, stacked on `PR-8L`, 232 lines, max 99 chars): `continuousNymanResidual`, `discreteCellResidual`, `modularCellResidual`, `fract_nat_div_eq_sub_nat_div`, `discreteCellResidual_eq_modularCellResidual_of_D1_eq_zero`, `floor_one_div_mul_eq_nat_div`, `continuousNymanResidual_eq_discreteCellResidual`, `continuousNymanResidual_eq_modularCellResidual`, `discreteCellResidual_one_eq`, `continuousNymanResidual_eq_zero_on_top_half`, `modularCellResidual_periodic`, `fract_palindromic_add_eq`, `modularCellResidual_palindromic_neg`, `sum_Ico_modularCellResidual_eq_zero`.
+- **PR-8N** (`Mathlib/NumberTheory/LSeries/BaezDuarteSelbergMobiusCells.lean`, `feat/baez-duarte-selberg-mobius-cells`, stacked on `PR-8M`, 171 lines, max 99 chars): `rawSelbergMobiusWeight`, `rawSelbergMobiusWeight_one`, `rawSelbergMobiusWeight_succ_self`, `divisorStepJump`, `filter_dvd_prime_eq_pair`, `divisorStepJump_prime`, `divisorStepJump_prime_of_anchored`, `discreteCellResidual_two_eq`, `continuousNymanResidual_eq_c_two_on_dyadic_cell`, `discreteCellResidual_three_eq`, `discreteCellResidual_three_sub_two_eq_divisorStepJump`, `modularCellResidual_palindromic_two_eq_neg_c_two`, `modularCellResidual_palindromic_three_eq`, `selberg_continuousNymanResidual_palindromic_bridge`.

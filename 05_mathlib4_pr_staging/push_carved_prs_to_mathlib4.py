@@ -734,6 +734,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): pointwise continuity, modular duality, and palindromic periodicity",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuartePointwiseContinuity",
     ),
+    PRSpec(
+        pr_id="PR-8N",
+        wave=8,
+        staged_file="UpstreamPR_8N_PrimeHarmonicAndSelbergMobiusCells.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8N_PrimeHarmonicAndSelbergMobiusCells",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteSelbergMobiusCells.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteSelbergMobiusCells",
+        branch="feat/baez-duarte-selberg-mobius-cells",
+        base_branch="feat/baez-duarte-pointwise-continuity",
+        pr_title="feat(NumberTheory/LSeries): prime-harmonic cell plateaus, palindromic mirrors, and Selberg bridge",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteSelbergMobiusCells",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

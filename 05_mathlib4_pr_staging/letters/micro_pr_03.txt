@@ -1,0 +1,15 @@
+Hello everyone,
+
+This small pull request adds Int.floor_one_div_mul_eq_nat_div to Mathlib/Algebra/Order/Floor.lean.
+
+When working with step functions of the form floor(1 / (k * x)) on half-open unit intervals n <= 1 / x < n + 1, users currently repeat the same inequalities multiplying by k and applying Int.floor_eq_iff each time. Packaging this interval collapse into a single reusable lemma closes that gap cleanly.
+
+Here is the step-by-step derivation:
+
+Step 1: From n <= 1 / x < n + 1 and k >= 1, divide by the positive real number k:
+  n / k <= 1 / (k * x) < (n + 1) / k.
+Step 2: In natural numbers, integer division satisfies (n / k) * k <= n, so in R we get (n / k : R) <= n / k <= 1 / (k * x).
+Step 3: Similarly, the division remainder inequality gives n + 1 <= (n / k + 1) * k, which implies (n + 1) / k <= (n / k : R) + 1.
+Step 4: Combining both bounds gives (n / k : R) <= 1 / (k * x) < (n / k : R) + 1, so Int.floor (1 / (k * x)) equals (n / k : Z) by Int.floor_eq_iff.
+
+ai is being used as a tool

@@ -19,9 +19,9 @@ keywords:
   - analytic-number-theory
   - nyman-beurling
 abstract: >-
-  Thematic micro-paper suite (Papers 0 and A through K) and staged Wave 1-8 mathlib4
-  pull requests (48 extracted modules) verified in Lean 4.35.0 with zero custom axioms
-  and zero sorry. Maintains NO_RH_PROOF = TRUE.
+  Thematic micro-paper suite (Papers 0 and A through K) and 49 self-contained,
+  linter-verified modular Lean 4 formalization units (Waves 1-8) verified in
+  Lean 4.35.0 with zero custom axioms and zero sorry. Maintains NO_RH_PROOF = TRUE.
 identifiers:
   - type: doi
     value: "10.5281/zenodo.24329861"

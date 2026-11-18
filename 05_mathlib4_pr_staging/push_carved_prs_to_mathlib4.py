@@ -638,6 +638,18 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): exact closed-form (31/108)*pi Dirichlet-anchored optimum on A_4",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuarteDirichletOptFour exact radical-free N=4 certificate",
     ),
+    PRSpec(
+        pr_id="PR-8F",
+        wave=8,
+        staged_file="UpstreamPR_8F_DipoleGramFiveCert.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8F_DipoleGramFiveCert",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteDipoleGramFive.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteDipoleGramFive",
+        branch="feat/baez-duarte-dipole-gram-five",
+        base_branch="feat/baez-duarte-dirichlet-opt-four",
+        pr_title="feat(NumberTheory/LSeries): closed-form N=5 dipole Gram entries and reciprocity orthogonality",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteDipoleGramFive closed-form N=5 certificates",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {

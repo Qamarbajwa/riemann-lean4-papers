@@ -17,17 +17,18 @@
    - [`paper_e_wavelet_dipole_rayleigh`](./03_nyman_beurling_baez_duarte_wavelets/paper_e_wavelet_dipole_rayleigh/) — Zenodo DOI: [`10.5281/zenodo.24328047`](https://doi.org/10.5281/zenodo.24328047)
    - [`paper_f_mellin_converse_and_rouche`](./03_nyman_beurling_baez_duarte_wavelets/paper_f_mellin_converse_and_rouche/) — Zenodo DOI: [`10.5281/zenodo.24328918`](https://doi.org/10.5281/zenodo.24328918)
    - [`paper_j_pure_plaque_asymptotic_frontier`](./03_nyman_beurling_baez_duarte_wavelets/paper_j_pure_plaque_asymptotic_frontier/) — Zenodo DOI: [`10.5281/zenodo.24330500`](https://doi.org/10.5281/zenodo.24330500)
-   - [`paper_k_dirichlet_anchored_plaque`](./03_nyman_beurling_baez_duarte_wavelets/paper_k_dirichlet_anchored_plaque/) — Zenodo DOI: [`10.5281/zenodo.24339838`](https://doi.org/10.5281/zenodo.24339838)
+   - [`paper_k_dirichlet_anchored_plaque`](./03_nyman_beurling_baez_duarte_wavelets/paper_k_dirichlet_anchored_plaque/) — Zenodo DOI: [`10.5281/zenodo.24341007`](https://doi.org/10.5281/zenodo.24341007) *(earlier `v3.0.1`: `10.5281/zenodo.24339838`)*
 4. **[`04_spectral_diagnostics_and_audits`](./04_spectral_diagnostics_and_audits/)**
    - [`paper_h_gram_indefiniteness_arb512`](./04_spectral_diagnostics_and_audits/paper_h_gram_indefiniteness_arb512/) — Zenodo DOI: [`10.5281/zenodo.24328927`](https://doi.org/10.5281/zenodo.24328927)
    - [`paper_i_prime_composite_partition`](./04_spectral_diagnostics_and_audits/paper_i_prime_composite_partition/) — Zenodo DOI: [`10.5281/zenodo.24328929`](https://doi.org/10.5281/zenodo.24328929)
 5. **[`05_mathlib4_pr_staging`](./05_mathlib4_pr_staging/)**
-   - 48 atomic `UpstreamPR_1A`–`8E` modules (Waves 1–8), [`PR_SUBMISSION_GUIDE.md`](./05_mathlib4_pr_staging/PR_SUBMISSION_GUIDE.md), and [`push_carved_prs_to_mathlib4.py`](./05_mathlib4_pr_staging/push_carved_prs_to_mathlib4.py)
+   - 49 self-contained, linter-verified modular Lean 4 formalization units (`UpstreamPR_1A`–`8F`, Waves 1–8), [`PR_SUBMISSION_GUIDE.md`](./05_mathlib4_pr_staging/PR_SUBMISSION_GUIDE.md), and [`push_carved_prs_to_mathlib4.py`](./05_mathlib4_pr_staging/push_carved_prs_to_mathlib4.py)
    - **Master Lean 4 Hub 07 DOI:** [`10.5281/zenodo.24329861`](https://doi.org/10.5281/zenodo.24329861) (Concept DOI [`10.5281/zenodo.24150107`](https://doi.org/10.5281/zenodo.24150107))
    - **Lean 4 Repository:** https://github.com/Qamarbajwa/RiemannBlueprint
    - **Citation Metadata:** [`CITATION.cff`](./CITATION.cff)
 
-## Open Upstream `mathlib4` Pull Requests (Wave 1)
+## Standalone Repository & Archived Wave 1 Reference Policy
+All 49 modular Lean 4 units (`UpstreamPR_1A`–`8F`) are maintained as standalone verifiable artifacts on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4` (49 fork branches), and Zenodo, with automated upstream `leanprover-community/mathlib4` actions disabled (`ALLOW_UPSTREAM_BOT_ACTIONS = False`). Earlier Wave 1 fork-branch references:
 - **PR-1A** (`feat/critical-line-zeros`): [#46127](https://github.com/leanprover-community/mathlib4/pull/46127)
 - **PR-3A** (`feat/vasyunin-integral`): [#46128](https://github.com/leanprover-community/mathlib4/pull/46128)
 - **PR-4A** (`feat/baez-duarte-projection`): [#46129](https://github.com/leanprover-community/mathlib4/pull/46129)

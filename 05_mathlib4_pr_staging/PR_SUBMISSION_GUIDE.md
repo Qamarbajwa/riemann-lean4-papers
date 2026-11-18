@@ -1,36 +1,32 @@
-# Upstream `mathlib4` PR Submission Guide — Waves 1–7 (43 Carved Modules)
+# Modular Lean 4 Formalization Guide — Waves 1–8 (49 Self-Contained Units)
 
 **Author / Contributor:** Qamar Munawer (Brandenburg University of Technology Cottbus–Senftenberg)  
 **Staging Directory:** `MATHLIB4_PR_STAGING/`  
 **Verified Build Mirror:** `RiemannBlueprint/RiemannBlueprint/UpstreamPRs/`  
 **Automation Script:** `push_carved_prs_to_mathlib4.py`  
-**Fork -> Upstream Target:** `Qamarbajwa/mathlib4` -> `leanprover-community/mathlib4` (`master`)  
-**Epistemic Invariant:** `NO_RH_PROOF = TRUE` (all Wave 1–4 theorems are unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, `N = 4` certificates, or Hilbert/projection lemmas; none prove RH)
+**Fork Archive Target:** `Qamarbajwa/mathlib4` (`49` standalone `feat/*` branches; `ALLOW_UPSTREAM_BOT_ACTIONS = False` — never opens or comments on upstream PRs)  
+**Epistemic Invariant:** `NO_RH_PROOF = TRUE` (all 49 modules verify unconditional classical identities, Hardy 1914 critical-line zeros, zero-free region estimates, Vasyunin cross-integrals, exact `N = 4` / `N = 5` certificates, or conditional RH bridges; none claim an unconditional RH proof)
 
 ---
 
-## Post-June 2025 Fork PR & Automated CI Workflow
+## Standalone Repository & Fork Archive Policy
 
-Under the post-June 2025 `leanprover-community/mathlib4` contribution model:
-1. Contributors push branches to their personal fork (`https://github.com/Qamarbajwa/mathlib4.git`) and open PRs directly against `leanprover-community/mathlib4:master` without requesting write permissions on Zulip.
-2. CI and `.olean` caching run automatically on fork PRs.
-3. Workflow labels such as `LLM-generated` are applied automatically by commenting `LLM-generated` on the opened PR (`push_carved_prs_to_mathlib4.py --create-pr` posts this comment immediately after `gh pr create`).
-4. Every new Lean 4.35 module must be registered alphabetically as `public import Mathlib.NumberTheory.LSeries.<Name>` inside the `public import Mathlib.` block of `Mathlib.lean` (never before line 1 `module`).
+1. All 49 `UpstreamPR_1A`–`8F.lean` files are maintained as **49 self-contained, linter-verified modular Lean 4 formalization units** archived on `Qamarbajwa/RiemannBlueprint`, `Qamarbajwa/mathlib4`, and Zenodo (`10.5281/zenodo.24329861`).
+2. `ALLOW_UPSTREAM_BOT_ACTIONS = False` disables automated `gh pr create` and `gh pr comment` mutations against `leanprover-community/mathlib4`. `--inspect` and `--advance-queue` operate strictly as read-only local status monitors.
+3. Branches are pushed strictly to the user-owned fork `https://github.com/Qamarbajwa/mathlib4.git`.
+4. Every module registers cleanly as `public import Mathlib.NumberTheory.LSeries.<Name>` in `Mathlib.lean` (never before line 1 `module`).
 
-### Automated Wave 1–4 Commands
+### Fork Verification & Staging Commands
 
 ```bash
-# Dry-run import rewriting & line-length audit across all 21 staged PRs
+# Dry-run import rewriting & line-length audit across all 49 modules
 python push_carved_prs_to_mathlib4.py --wave all --dry-run
 
-# Push carved branches from a mathlib4 checkout/worktree to personal fork
-python push_carved_prs_to_mathlib4.py --mathlib-dir /path/to/mathlib4 --wave all --base-ref master --remote fork --push
+# Push carved branches from a local mathlib4 checkout to user-owned fork Qamarbajwa/mathlib4
+python push_carved_prs_to_mathlib4.py --mathlib-dir /path/to/mathlib4 --wave all --base-ref master --remote origin --push
 
-# Open Wave 1 fork PRs against leanprover-community/mathlib4 and post "LLM-generated" comment
-python push_carved_prs_to_mathlib4.py --wave 1 --create-pr
-
-# Monitor fork branch heads, open upstream PRs, and live CI check runs
-python push_carved_prs_to_mathlib4.py --check-ci
+# Verify all 49 pushed feat/* branches on Qamarbajwa/mathlib4
+python push_carved_prs_to_mathlib4.py --check-remote-ci
 ```
 
 ---
@@ -300,3 +296,4 @@ Wave 5 covers Papers F & G:
 - **PR-8C** (`Mathlib/NumberTheory/LSeries/BaezDuartePlaqueTelescoping.lean`, `feat/baez-duarte-plaque-telescoping`, stacked on `PR-8B`, 168 lines, max 100 chars): `unweightedKCot_two_two_eq_zero`, `sum_Icc_dipolePlaqueEntry_eq`, `dipolePlaqueForm_eq_telescoped_kernel`, `dipolePlaqueForm_sub_cBaseAnchor_eq_telescoped_kernel`, `SCot_eq_drive_sub_telescoped_kernel_of_dirichlet`.
 - **PR-8D** (`Mathlib/NumberTheory/LSeries/BaezDuartePurePlaqueRHCriterion.lean`, `feat/baez-duarte-pure-plaque-rh-criterion`, stacked on `PR-8C` + `PR-5C` + `PR-7A`, 239 lines, max 100 chars): `PurePlaqueVanishingCriterion`, `TelescopedPlaqueVanishingCriterion`, `purePlaqueVanishing_iff_telescoped`, `mellin_l2_floor_of_zeta_zero`, `purePlaque_floor_of_zeta_zero`, `riemannHypothesis_of_purePlaque_vanishing`, `riemannHypothesis_of_telescoped_plaque_vanishing`.
 - **PR-8E** (`Mathlib/NumberTheory/LSeries/BaezDuarteDirichletOptFour.lean`, `feat/baez-duarte-dirichlet-opt-four`, stacked on `PR-8D`, 162 lines, max 99 chars): `cDirichletOptFour`, `cDirichletOptFour_isDirichletAnchored`, `SCot_eq_dirichlet_four_sub_sq`, `SCot_cDirichletOptFour_eq`, `SCot_le_cDirichletOptFour_of_isDirichletAnchored_four`, `one_sub_31_div_108_pi_le_l2_dist_of_isDirichletAnchored_four`.
+- **PR-8F** (`Mathlib/NumberTheory/LSeries/BaezDuarteDipoleGramFive.lean`, `feat/baez-duarte-dipole-gram-five`, stacked on `PR-8E`, 172 lines, max 98 chars): `dipoleGramEntry_two_three_eq_zero`, `vasyuninCotSum_five_one_eq`, `vasyuninCotSum_five_two_eq`, `dipoleGramEntry_one_three_eq`, `dipoleGramEntry_three_three_eq`, `dipolePlaqueEntry_two_three_eq`.

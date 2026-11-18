@@ -46,7 +46,8 @@ CANONICAL_CONCEPT_IDS = {
     "24339837", "24341497",
 }
 
-NON_TARGET_IDS = {24241971, 24353862, 24354239}
+NON_TARGET_IDS = {24241971, 24353862, 24354239, 24354741}
+NON_TARGET_CONCEPTS = {"24241970", "24327876", "24329779"}
 
 LEGACY_OPEN_PAPER_IDS = {
     23839336,  # Paper II (pre-audit L=700)
@@ -54,10 +55,11 @@ LEGACY_OPEN_PAPER_IDS = {
     23839388,  # Paper IV (pre-audit L=800)
     23839464,  # Paper VI (pre-audit v1.4)
     23839498,  # Paper VII (pre-audit v1.1)
-    23839519,  # Paper VIII (contains NO_RH_PROOF / pre-audit)
-    23839550,  # Paper IX (contains NO_RH_PROOF / pre-audit)
-    23839575,  # Paper X (contains NO_RH_PROOF / pre-audit)
-    23839652,  # Paper XII (contains NO_RH_PROOF / pre-audit)
+    23839519,  # Paper VIII (pre-audit)
+    23839550,  # Paper IX (pre-audit)
+    23839575,  # Paper X (pre-audit)
+    23839652,  # Paper XII (pre-audit)
+    24151468,  # Pre-v3.0 Edition 2.2.0 draft
 }
 
 
@@ -89,7 +91,7 @@ def triage(apply_changes: bool = False) -> Dict[str, Any]:
             dep_id = int(d["id"])
             submitted = bool(d.get("submitted", False))
             meta = d.get("metadata", {})
-            if not submitted and dep_id not in CANONICAL_HUB_IDS and dep_id not in NON_TARGET_IDS:
+            if not submitted and dep_id not in CANONICAL_HUB_IDS and dep_id not in NON_TARGET_IDS and str(d.get("conceptrecid", "")) not in NON_TARGET_CONCEPTS:
                 concept_str = str(d.get("conceptrecid", ""))
                 is_published_prior = False
                 if concept_str in CANONICAL_CONCEPT_IDS:
@@ -151,7 +153,7 @@ def triage(apply_changes: bool = False) -> Dict[str, Any]:
                 pass
         if dep_id in CANONICAL_HUB_IDS:
             status_tag = "[KEPT & VERIFIED]"
-        elif dep_id in NON_TARGET_IDS:
+        elif dep_id in NON_TARGET_IDS or concept_str in NON_TARGET_CONCEPTS:
             status_tag = "[UNRELATED PROJECT - KEPT]"
         elif concept_str in CANONICAL_CONCEPT_IDS:
             status_tag = "[SUPERSEDED / PRIOR HUB VERSION]"

@@ -575,6 +575,56 @@ PR_REGISTRY: List[PRSpec] = [
         pr_title="feat(NumberTheory/LSeries): positive diagonal dipole energy split and off-diagonal cancellation frontier",
         commit_msg="feat(NumberTheory/LSeries): add BaezDuarteOffDiagonalFrontier diagonal/off-diagonal split",
     ),
+    # Wave 8: Pure Plaque Cauchy-Schwarz, Dirichlet-Anchored Positivity, 2D Telescoping & RH Criterion
+    PRSpec(
+        pr_id="PR-8A",
+        wave=8,
+        staged_file="UpstreamPR_8A_PurePlaqueCauchySchwarz.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8A_PurePlaqueCauchySchwarz",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuartePlaqueCauchySchwarz.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuartePlaqueCauchySchwarz",
+        branch="feat/baez-duarte-plaque-cauchy-schwarz",
+        base_branch="feat/baez-duarte-off-diagonal-frontier",
+        pr_title="feat(NumberTheory/LSeries): pure plaque quadratic form and Cauchy-Schwarz lower bound on A_N^0",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuartePlaqueCauchySchwarz unconditional plaque floor",
+    ),
+    PRSpec(
+        pr_id="PR-8B",
+        wave=8,
+        staged_file="UpstreamPR_8B_DirichletAnchoredPlaque.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8B_DirichletAnchoredPlaque",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuarteDirichletAnchoredPlaque.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuarteDirichletAnchoredPlaque",
+        branch="feat/baez-duarte-dirichlet-anchored-plaque",
+        base_branch="feat/baez-duarte-plaque-cauchy-schwarz",
+        pr_title="feat(NumberTheory/LSeries): Dirichlet-anchored (c_1 = -1) plaque positivity and L2 energy law",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuarteDirichletAnchoredPlaque positivity on c_1 = -1",
+    ),
+    PRSpec(
+        pr_id="PR-8C",
+        wave=8,
+        staged_file="UpstreamPR_8C_PlaqueTwoDimTelescoping.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8C_PlaqueTwoDimTelescoping",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuartePlaqueTelescoping.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuartePlaqueTelescoping",
+        branch="feat/baez-duarte-plaque-telescoping",
+        base_branch="feat/baez-duarte-dirichlet-anchored-plaque",
+        pr_title="feat(NumberTheory/LSeries): 2D discrete Abel telescoping identity for the pure cotangent plaque",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuartePlaqueTelescoping kernel reduction on {3..N}^2",
+    ),
+    PRSpec(
+        pr_id="PR-8D",
+        wave=8,
+        staged_file="UpstreamPR_8D_PurePlaqueRHCriterion.lean",
+        blueprint_module="RiemannBlueprint.UpstreamPRs.UpstreamPR_8D_PurePlaqueRHCriterion",
+        target_relpath="Mathlib/NumberTheory/LSeries/BaezDuartePurePlaqueRHCriterion.lean",
+        target_module="Mathlib.NumberTheory.LSeries.BaezDuartePurePlaqueRHCriterion",
+        branch="feat/baez-duarte-pure-plaque-rh-criterion",
+        base_branch="feat/baez-duarte-plaque-telescoping",
+        merge_branches=("feat/mellin-nyman-beurling-iff", "feat/mellin-kernel-energy-identity"),
+        pr_title="feat(NumberTheory/LSeries): pure plaque and 2D-telescoped kernel vanishing criteria for RH",
+        commit_msg="feat(NumberTheory/LSeries): add BaezDuartePurePlaqueRHCriterion equivalence bridge",
+    ),
 ]
 
 IMPORT_MAP: Dict[str, str] = {
@@ -614,7 +664,7 @@ def check_status(mathlib_dir: Optional[pathlib.Path]) -> None:
             mr = run_cmd(["git", "remote", "-v"], cwd=mathlib_dir)
             print((mr.stdout + mr.stderr).strip())
 
-    print(f"\n=== Carved PR Registry ({len(PR_REGISTRY)} modules across Waves 1-7) ===")
+    print(f"\n=== Carved PR Registry ({len(PR_REGISTRY)} modules across Waves 1-8) ===")
     for spec in PR_REGISTRY:
         staged = STAGING_DIR / spec.staged_file
         lines = len(staged.read_text(encoding="utf-8").splitlines()) if staged.is_file() else -1
@@ -773,7 +823,7 @@ def git_checked(cmd: List[str], cwd: pathlib.Path) -> subprocess.CompletedProces
 def main() -> int:
     parser = argparse.ArgumentParser(description="Stage, rewrite imports, and push carved PRs to mathlib4.")
     parser.add_argument("--mathlib-dir", type=pathlib.Path, default=None, help="Path to local mathlib4 clone.")
-    parser.add_argument("--wave", choices=["1", "2", "3", "4", "5", "6", "7", "all"], default="1", help="Wave to process (default: 1).")
+    parser.add_argument("--wave", choices=["1", "2", "3", "4", "5", "6", "7", "8", "all"], default="1", help="Wave to process (default: 1).")
     parser.add_argument("--pr", default=None, help="Optional comma-separated PR IDs (e.g. PR-3H) to filter.")
     parser.add_argument("--remote", default="origin", help="Git remote to push branches to (default: origin).")
     parser.add_argument("--repo-slug", default="Qamarbajwa/mathlib4", help="Fork owner/repo for --check-remote-ci / --check-ci.")
@@ -844,7 +894,10 @@ def main() -> int:
             git_checked(["git", "checkout", base_ref], cwd=mdir)
             git_checked(["git", "checkout", "-B", spec.branch], cwd=mdir)
             for mb in spec.merge_branches:
-                merge_res = run_cmd(["git", "merge", "--no-edit", "-X", "ours", mb], cwd=mdir)
+                merge_res = run_cmd(
+                    ["git", "merge", "--no-edit", "--allow-unrelated-histories", "-X", "ours", mb],
+                    cwd=mdir,
+                )
                 if merge_res.returncode != 0:
                     print(merge_res.stdout + merge_res.stderr, file=sys.stderr)
                     return merge_res.returncode

@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use these papers, numerical benchmarks, or staged Lean 4 PRs, please cite this repository."
-title: "Riemann-Lean4-Papers: Thematic Companion Suite and Mathlib4 PR Staging (Papers 0 and A-J)"
+title: "Riemann-Lean4-Papers: Thematic Companion Suite and Mathlib4 PR Staging (Papers 0 and A-K)"
 version: "3.0.0"
 date-released: "2026-11-18"
 license: "Apache-2.0"
@@ -19,8 +19,8 @@ keywords:
   - analytic-number-theory
   - nyman-beurling
 abstract: >-
-  Thematic micro-paper suite (Papers 0 and A through J) and staged Wave 1-7 mathlib4
-  pull requests (43 extracted modules) verified in Lean 4.35.0 with zero custom axioms
+  Thematic micro-paper suite (Papers 0 and A through K) and staged Wave 1-8 mathlib4
+  pull requests (47 extracted modules) verified in Lean 4.35.0 with zero custom axioms
   and zero sorry. Maintains NO_RH_PROOF = TRUE.
 identifiers:
   - type: doi

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Autonomous mathlib4 PR Queue & Review Manager for all 43 Carved UpstreamPRs (Waves 1-7).
+Autonomous mathlib4 PR Queue & Review Manager for all 47 Carved UpstreamPRs (Waves 1-8).
 
 Supports:
   --inspect             Inspect live PRs on leanprover-community/mathlib4 (#46127-#46129 & any open)
@@ -278,7 +278,7 @@ def main() -> int:
 
     plan = compute_queue_plan(details, args.max_concurrent)
     if args.advance_queue or args.inspect:
-        print("\n=== 43-Branch DAG Queue Plan ===")
+        print("\n=== 47-Branch DAG Queue Plan ===")
         print(
             f"  open={plan['open_count']} | merged={plan['merged_count']} | "
             f"max_concurrent={plan['max_concurrent']} | available_slots={plan['available_slots']}"

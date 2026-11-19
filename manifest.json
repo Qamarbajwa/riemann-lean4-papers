@@ -97,13 +97,13 @@
     {
       "hub": "07",
       "folder": "07_MASTER_LEAN4_REPO_AND_MATHLIB4_PRS",
-      "title": "RiemannBlueprint: Axiom-Free Lean 4 Formalizations of Classical Analytic Number Theory and Identity-Matrix Linear Algebra (v3.0.14)",
-      "version": "v3.0.14",
+      "title": "RiemannBlueprint: Axiom-Free Lean 4 Formalizations of Classical Analytic Number Theory and Identity-Matrix Linear Algebra (v3.0.15)",
+      "version": "v3.0.15",
       "doi": "10.5281/zenodo.24357255",
       "pdf": null,
       "zip": {
         "filename": "RiemannBlueprint_Verified_Lean4_v3.0.zip",
-        "sha256": "c71ad560bc6d58df1dafa21a84384dc84d834d6775de1288e628e63b6f637b3e"
+        "sha256": "8746fbd53681d184fccdead81eb52c49ad2d1e16827b31d9cebf3865844950be"
       }
     },
     {
@@ -189,26 +189,26 @@
       "doi": "10.5281/zenodo.24354448",
       "pdf": {
         "filename": "paper_k_dirichlet_anchored_plaque_criterion.pdf",
-        "sha256": "d9740f3a4cd14e9dfb49096e7a7b5309d852f4a0b40cd627b4c675ddd9d650f7"
+        "sha256": "3b2288f6a73f4c5e6879825b1e728b23ee72f7e03f087ee6e5d498fedbde2396"
       },
       "zip": {
         "filename": "PAPER_K_SUBMISSION_PACKAGE.zip",
-        "sha256": "0d2aeec60b1375b078db9fccdb6428f0e99d729e40d8bdaee56ba49b1f2d08ab"
+        "sha256": "edfd5b74727b668d1512e89366ec2f3da30581fbb12447467a8e9b1f9b7a2ba1"
       }
     },
     {
       "hub": "14",
       "folder": "14_PAPER_L_UNIFIED_ARITHMETIC_MASTER_REVIEW",
       "title": "Unconditional Arithmetic Reductions, Exact Cotangent Reciprocity, and Lean 4 Formal Verification for the Classical and Nyman-Beurling Theory of the Riemann Zeta Function",
-      "version": "v3.0.25",
+      "version": "v3.0.26",
       "doi": "10.5281/zenodo.24357280",
       "pdf": {
         "filename": "paper_l_unified_arithmetic_lean4_master_review.pdf",
-        "sha256": "73adc008adb99bbb8419eb52a73766a1a3fd6b8b279750777483bfded531fc24"
+        "sha256": "168c5eab644b82781e9bf8c08650824dcf0e6de366896912c0ff0efd9d43f0a3"
       },
       "zip": {
         "filename": "PAPER_L_SUBMISSION_PACKAGE.zip",
-        "sha256": "e2fe73ea487c8c02d17204cb4be729a28f98e30af114baa755a8e3a9bc024c6a"
+        "sha256": "395f6d8c420cba11a028591b4267729ef4e72f4edcf996a7ce232d276db0f8a3"
       }
     }
   ],

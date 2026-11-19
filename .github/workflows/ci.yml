@@ -27,3 +27,6 @@ jobs:
 
       - name: Run 85-digit mpmath continuity chain certificate
         run: python 00_unified_master_review_paper_l/verify_n_to_continuity_chain.py
+
+      - name: Run 55-digit matrix factorization and half-observation verifier
+        run: python verify_matrix_half_observation.py

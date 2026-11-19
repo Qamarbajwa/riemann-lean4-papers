@@ -76,10 +76,17 @@ Helmut Maier and Michael~Th. Rassias, \emph{Generalizations of a cotangent sum
   associated to the {E}stermann zeta function}, Communications in Contemporary
   Mathematics \textbf{18} (2016), no.~1, 1550078.
 
+\bibitem{MunawerPaperM2026}
+Qamar Munawer, \emph{Matrix factorization, half-observation laws, wavefunction
+  matrices, and spectral criteria for the {B}{\'a}ez--{D}uarte / {R}iemann zeta
+  system}, Zenodo Preprint Archive (Paper~M), 2026, Concept DOI
+  10.5281/zenodo.24357106.
+
 \bibitem{MunawerRiemannBlueprint2026}
-Qamar Munawer, \emph{{RiemannBlueprint}: Formally verified modular {L}ean
-  4.35.0 arithmetic framework surrounding the {R}iemann zeta function}, Zenodo
-  Software Archive Hub~07, 2026.
+\bysame, \emph{{RiemannBlueprint}: Formally verified modular {L}ean 4.35.0
+  arithmetic framework surrounding the {R}iemann zeta function}, Zenodo
+  Software Archive Hub~07, 2026, Concept DOI 10.5281/zenodo.24150107; prev
+  10.5281/zenodo.24353918.
 
 \bibitem{Nyman1950}
 Bertil Nyman, \emph{On the one-dimensional translation group and semi-group in

@@ -97,13 +97,13 @@
     {
       "hub": "07",
       "folder": "07_MASTER_LEAN4_REPO_AND_MATHLIB4_PRS",
-      "title": "RiemannBlueprint: Axiom-Free Lean 4 Formalizations of Classical Analytic Number Theory and Modular Mathlib4 PRs (v3.0.12)",
-      "version": "v3.0.12",
-      "doi": "10.5281/zenodo.24353918",
+      "title": "RiemannBlueprint: Axiom-Free Lean 4 Formalizations of Classical Analytic Number Theory and Modular Mathlib4 PRs (v3.0.13)",
+      "version": "v3.0.13",
+      "doi": "10.5281/zenodo.24357255",
       "pdf": null,
       "zip": {
         "filename": "RiemannBlueprint_Verified_Lean4_v3.0.zip",
-        "sha256": "92ae2fe86b3bbaa0ae530367c1043440268bafcd816b509152809eafdbec8748"
+        "sha256": "e8360bf8e78bd23ae9719441310f1d1a4f1ad2fd2791b8462b1a578f5a67e81a"
       }
     },
     {
@@ -200,15 +200,15 @@
       "hub": "14",
       "folder": "14_PAPER_L_UNIFIED_ARITHMETIC_MASTER_REVIEW",
       "title": "Unconditional Arithmetic Reductions, Exact Cotangent Reciprocity, and Lean 4 Formal Verification for the Classical and Nyman-Beurling Theory of the Riemann Zeta Function",
-      "version": "v3.0.23",
-      "doi": "10.5281/zenodo.24354470",
+      "version": "v3.0.24",
+      "doi": "10.5281/zenodo.24357280",
       "pdf": {
         "filename": "paper_l_unified_arithmetic_lean4_master_review.pdf",
-        "sha256": "e937e4821b3a8e08185d70d6bc18c97994aafc85d53f1278d0e9dc49a69ff7fd"
+        "sha256": "081cde43147df9e532b6ef94e61f7672de4d75362d3913ea226d5fa46ebdd66f"
       },
       "zip": {
         "filename": "PAPER_L_SUBMISSION_PACKAGE.zip",
-        "sha256": "2d33904d733392a8d7f6c444c1daba46fe06b12c2fdd0e8cecd269cc71cde207"
+        "sha256": "6a9fa8aa99b895a58b6fb20195ea8865cadca6550e90427b80cbf2940746767d"
       }
     }
   ],

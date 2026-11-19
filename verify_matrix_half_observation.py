@@ -420,11 +420,35 @@ def main() -> None:
         assert abs(sum(c_vec[k] / k for k in range(1, N + 1))) < tol_eq, f"D1 != 0 at N={N}"
         assert abs(sum(c_vec[k] for k in range(1, N + 1)) - 2) < tol_eq, f"D0 != 2 at N={N}"
 
+        # Verify S_N^T G_aug S_N == M_N, E_dir - E_free formula, and 1^T G_tilde^{-1} 1 <= 2
+        G_aug = mp.zeros(dim + 1, dim + 1)
+        G_aug[0, 0] = mp.mpf(1)
+        for i in range(dim):
+            G_aug[0, i + 1] = -mp.pi * u[i]
+            G_aug[i + 1, 0] = -mp.pi * u[i]
+            for j in range(dim):
+                G_aug[i + 1, j + 1] = G[i, j]
+        S_lift = mp.zeros(dim + 1, dim)
+        for j in range(dim):
+            S_lift[0, j] = mp.mpf(1)
+            S_lift[j + 1, j] = mp.mpf(1)
+        assert max_abs_diff(S_lift.T * G_aug * S_lift, M_mat) < tol_eq, f"S^T G_aug S != M_{N}"
+        u_col = mp.matrix([[u[i]] for i in range(dim)])
+        ones_col = mp.matrix([[mp.mpf(1)] for _ in range(dim)])
+        g_inv_u = mp.lu_solve(G, u_col)
+        g_inv_1 = mp.lu_solve(G, ones_col)
+        sum_af = mp.pi * sum(g_inv_u[i, 0] for i in range(dim))
+        denom_g1 = sum(g_inv_1[i, 0] for i in range(dim))
+        assert denom_g1 <= mp.mpf(2) + tol_eq, f"1^T G^-1 1 > 2 at N={N}: {denom_g1}"
+        e_free = mp.mpf(1) - (mp.pi ** 2) * sum(u[i] * g_inv_u[i, 0] for i in range(dim))
+        gap_rhs = ((mp.mpf(1) - sum_af) ** 2) / denom_g1
+        assert abs((e_dir - e_free) - gap_rhs) < tol_eq, f"E_dir - E_free mismatch at N={N}"
+
         p_list = primes_in_range(N, 500)
         prime_floor = sum(mp.mpf(1) / (2 * p * p) for p in p_list)
         assert e_dir > prime_floor, f"Simplex optimum {e_dir} below prime floor {prime_floor} at N={N}"
 
-        if N in (4, 6):
+        if N in (4, 6, 8, 12, 16, 24):
             opt_data[N] = (alpha, c_vec, e_dir)
 
         dt = time.perf_counter() - t_n
@@ -483,6 +507,92 @@ def main() -> None:
             )
             print(f"[PASS] N={N}, M={M:>4}: E_M={mp.nstr(e_m, 12)}, "
                   f"E_dir - E_M={mp.nstr(tail, 6)} <= B^2/(M+1)={mp.nstr(bound, 6)}")
+
+    # 7. Basal 50/50 Clock, O_{2K} Parity Observation Matrix, & Palindromic Projectors
+    print("\n--- Basal 50/50 Clock, O_{2K} Channel Split, & Palindromic Projectors ---")
+    c_base = [mp.mpf(0), mp.mpf(-2), mp.mpf(4)]
+    for n in range(1, 1001):
+        val = discrete_residual(c_base, 2, n)
+        assert val == mp.mpf((-1) ** n), f"A_base({n}) = {val} != (-1)^n"
+    for s in [mp.mpf("0.7") + 3j, mp.mpf("0.6") + mp.mpf("14.1347251417") * 1j]:
+        eta_s = (1 - mp.power(2, 1 - s)) * mp.zeta(s)
+        rhs_eta = (1 - 2 * eta_s) / s
+        rhs_baez = (1 + mp.zeta(s) * (-2 + 4 * mp.power(2, -s))) / s
+        assert abs(rhs_eta - rhs_baez) < mp.mpf("1e-48")
+    print("[PASS] cBaseAnchor gives A_base(n) = (-1)^n (n=1..1000) and M[b](s) = (1-2*eta(s))/s")
+
+    # Explicit O_{2K} orthogonality, O_{2K} b_{2K}, and W_tilde = O W O^T at K = 16
+    K_mat = 16
+    O_mat = mp.zeros(2 * K_mat, 2 * K_mat)
+    W_sub = mp.zeros(2 * K_mat, 2 * K_mat)
+    inv_sqrt2 = mp.mpf(1) / mp.sqrt(2)
+    b_sub = mp.matrix([[mp.mpf((-1) ** (i + 1))] for i in range(2 * K_mat)])
+    for k in range(K_mat):
+        O_mat[2 * k, 2 * k] = inv_sqrt2
+        O_mat[2 * k, 2 * k + 1] = inv_sqrt2
+        O_mat[2 * k + 1, 2 * k] = -inv_sqrt2
+        O_mat[2 * k + 1, 2 * k + 1] = inv_sqrt2
+    for i in range(2 * K_mat):
+        W_sub[i, i] = mp.mpf(1) / ((i + 1) * (i + 2))
+    assert max_abs_diff(O_mat * O_mat.T, mp.eye(2 * K_mat)) < tol_eq
+    Ob = O_mat * b_sub
+    for k in range(K_mat):
+        assert abs(Ob[2 * k, 0]) < tol_eq
+        assert abs(Ob[2 * k + 1, 0] - mp.sqrt(2)) < tol_eq
+    W_tilde = O_mat * W_sub * O_mat.T
+    for i in range(2 * K_mat):
+        for j in range(2 * K_mat):
+            if i // 2 == j // 2:
+                p = i // 2 + 1
+                exp_v = (mp.mpf(1) / (4 * p * p - 1) if i == j
+                         else -mp.mpf(1) / (2 * p * (4 * p * p - 1)))
+            else:
+                exp_v = mp.mpf(0)
+            assert abs(W_tilde[i, j] - exp_v) < tol_eq
+    print(f"[PASS] O_{{2K}} (K={K_mat}) orthogonal, O_{{2K}} b_{{2K}} = [0, sqrt(2), ...], and "
+          "W_tilde = O W O^T block formula verified (< 1e-45)")
+
+    # Palindromic 50/50 projectors P_+ and P_- at H = 5, 12
+    for H in (5, 12):
+        n_full = 2 * H
+        J_full = mp.zeros(n_full, n_full)
+        W_full = mp.zeros(n_full, n_full)
+        for i in range(n_full):
+            J_full[i, n_full - 1 - i] = mp.mpf(1)
+            W_full[i, i] = mp.mpf(1) / ((i + 1) * (i + 2))
+        P_plus = mp.mpf("0.5") * (mp.eye(n_full) + J_full)
+        P_minus = mp.mpf("0.5") * (mp.eye(n_full) - J_full)
+        tr_plus = sum(P_plus[i, i] for i in range(n_full))
+        tr_minus = sum(P_minus[i, i] for i in range(n_full))
+        assert abs(tr_plus - H) < tol_eq and abs(tr_minus - H) < tol_eq
+        W_odd = mp.mpf("0.5") * (W_full - J_full * W_full * J_full)
+        assert max_abs_diff(P_minus * W_odd * P_minus, mp.zeros(n_full, n_full)) < tol_eq
+    print("[PASS] Palindromic projectors P_+, P_- (tr = H, P_- W_odd P_- = 0) verified")
+
+    # Channel decomposition table across N in {4, 6, 8, 12, 16, 24} at K = 2000 (M = 4000)
+    K_chan = 2000
+    print(f"{'N':>4} {'E_tot(M=4000)':>16} {'E_mean %':>10} {'E_alt %':>10} {'E_cross %':>11}")
+    for N in (4, 6, 8, 12, 16, 24):
+        _, c_vec, _ = opt_data[N]
+        e_mean = mp.mpf(0)
+        e_alt = mp.mpf(0)
+        e_cross = mp.mpf(0)
+        e_tot = mp.mpf(0)
+        for k in range(1, K_chan + 1):
+            n1, n2 = 2 * k - 1, 2 * k
+            r1 = discrete_residual(c_vec, N, n1)
+            r2 = discrete_residual(c_vec, N, n2)
+            y_mean = (r1 + r2) * inv_sqrt2
+            y_alt = (r2 - r1) * inv_sqrt2
+            w_avg = mp.mpf(1) / (4 * k * k - 1)
+            w_diff = -mp.mpf(1) / (2 * k * (4 * k * k - 1))
+            e_mean += w_avg * (y_mean ** 2)
+            e_alt += w_avg * (y_alt ** 2)
+            e_cross += 2 * w_diff * y_mean * y_alt
+            e_tot += (r1 ** 2) / (n1 * (n1 + 1)) + (r2 ** 2) / (n2 * (n2 + 1))
+        assert abs((e_mean + e_alt + e_cross) - e_tot) < tol_eq
+        print(f"{N:>4} {mp.nstr(e_tot, 10):>16} {mp.nstr(100 * e_mean / e_tot, 4):>10} "
+              f"{mp.nstr(100 * e_alt / e_tot, 4):>10} {mp.nstr(100 * e_cross / e_tot, 4):>11}")
 
     total_t = time.perf_counter() - t0
     print("=" * 78)

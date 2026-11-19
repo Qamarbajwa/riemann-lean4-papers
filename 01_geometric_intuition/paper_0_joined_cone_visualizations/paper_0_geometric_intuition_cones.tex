@@ -62,14 +62,14 @@ This companion paper provides a conceptual and methodological guide to Papers~A-
 
 Every researcher enters analytic number theory along a different cognitive path. Some think first in terms of contour shifts, Tauberian kernels, or Banach-space functional analysis; others think spatially, examining how an analytic function bends, winds, pinches, and balances across the complex plane before writing down inequalities. Constructing geometric cone embeddings at high precision makes the competition between prime powers and composites immediately visible as $\sigma = \operatorname{Re}(s)$ approaches the critical strip.
 
-In exploratory scripts developed at the outset of this program---specifically \texttt{composite\_\allowbreak zeta\_\allowbreak and\_\allowbreak prime\_\allowbreak duality.py} and \texttt{zeta\_\allowbreak bicone\_\allowbreak unfolding\_\allowbreak and\_\allowbreak dual\_\allowbreak sheet.py}---this visual strategy surfaced three recurring geometric pictures that subsequently organized the entire Lean~4 architecture:
+In exploratory scripts developed at the outset of this program, specifically \texttt{composite\_\allowbreak zeta\_\allowbreak and\_\allowbreak prime\_\allowbreak duality.py} and \texttt{zeta\_\allowbreak bicone\_\allowbreak unfolding\_\allowbreak and\_\allowbreak dual\_\allowbreak sheet.py}, this visual strategy surfaced three recurring geometric pictures that subsequently organized the entire Lean~4 architecture:
 \begin{enumerate}[noitemsep]
     \item \textbf{A Prime--Composite Equilibrium Horizon Outside the Strip:} Partitioning the Dirichlet sum $\zeta(s) - 1 = P(s) + \zeta_{\mathrm{comp}}(s)$ into prime powers $P(s) = \sum_{p} p^{-s}$ and composite integers $\zeta_{\mathrm{comp}}(s)$ reveals a sharp $50/50$ crossover at $s^* \approx 1.44653762$, where $P(s^*) = \zeta_{\mathrm{comp}}(s^*) \approx 0.92409539$. For $\operatorname{Re}(s) > s^*$, $\zeta(s) - 1$ is dominated by its prime backbone; as $\sigma \downarrow 1^+$, the composite harmonics surge and carry the logarithmic pole.
     \item \textbf{Helicoidal Bicone Pinching on the Critical Line:} Embedding the critical-strip modulus $|\zeta(\sigma+it)|$ radially onto a symmetric double cone $r_\sigma(t) = \kappa |t|\,|\zeta(\sigma+it)|$ for $t \in [-\gamma_{50}, \gamma_{50}]$ ($\gamma_{50} \approx 143.1118$) showed visually why $\sigma = 1/2$ is topologically distinguished. Along $\sigma = 1/2$, every nontrivial zero pinches both the upper ($t > 0$) and lower ($t < 0$) cones tightly to the central zero axis ($R_{1/2}(\pm\gamma_k) < 10^{-70}$). Shifting off-line even slightly to $\sigma = 0.55$ or $\sigma = 0.65$ lifts every lobe off the axis, creating a rigid open collar ($\min_{k \le 50} R_{0.55}(\gamma_k) \approx 0.192273 > 0$, $\min_{k \le 50} R_{0.65}(\gamma_k) \approx 0.554235 > 0$).
     \item \textbf{Symmetric Cones Meeting Across $\operatorname{Re}(s) = 1/2$:} Plotting the completed zeta function $\xi(s) = \frac{1}{2}s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)$ across $0 \le \sigma \le 1$ turns the functional equation $\xi(1-s) = \xi(s)$ into a literal geometric joint: two mirror-image cones across the critical strip meeting along the symmetry axis $\operatorname{Re}(s) = 1/2$.
 \end{enumerate}
 
-Crucially, these plots did not prove a theorem on their own---and in fact, one early heuristic expectation failed dramatically when tested against exact arithmetic and formal proof (Section~\ref{sec:wall}). Yet visual experiments accomplished something indispensable: they identified \emph{which} exact algebraic identities and Hilbert-space projections were structurally stable enough to survive formal verification in Lean~4.
+Crucially, these plots did not prove a theorem on their own, and in fact, one early heuristic expectation failed dramatically when tested against exact arithmetic and formal proof (Section~\ref{sec:wall}). Yet visual experiments accomplished something indispensable: they identified \emph{which} exact algebraic identities and Hilbert-space projections were structurally stable enough to survive formal verification in Lean~4.
 
 % ============================================================================
 \section{The Joined Two-Cone Experiment \& Zeta Visualizations}\label{sec:cones}
@@ -81,7 +81,7 @@ To make the bridge from spatial intuition to formalized Lean~4 declarations tran
 
 Figure~\ref{fig:joined_cones} places side by side the two foundational geometric guards of the critical strip:
 \begin{itemize}[noitemsep]
-    \item \textbf{Left Panel (Joined Two-Cone Symmetry):} Over the strip $0 \le \sigma \le 1$ and height $t \in [-33, 33]$, contours of $\log_{10}(|\xi(\sigma+it)| / |\xi(1+it)|)$ display exact bilateral symmetry around $\sigma = 1/2$. The forward Euler/Dirichlet cone opening rightward across $\sigma > 1/2$ (and extending past the $1$-line to the prime--composite $50/50$ horizon $s^* \approx 1.447$) joins its reflected dual cone $\xi(1-s) = \xi(s)$ along the central waist $\sigma = 1/2$. In Lean~4, this reflection involution is captured directly by \texttt{one\_sub\_criticalLine} and \texttt{completedRiemannZeta\_\allowbreak criticalLine\_neg} in \texttt{UpstreamPR\_1A\_CriticalLineZeros.lean}:
+    \item \textbf{Left Panel (Joined Two-Cone Symmetry):} Over the strip $0 \le \sigma \le 1$ and height $t \in [-33, 33]$, contours of $\log_{10}(|\xi(\sigma+it)| / |\xi(1+it)|)$ display exact bilateral symmetry around $\sigma = 1/2$. The forward Euler/Dirichlet cone opening rightward across $\sigma > 1/2$ (and extending past the $1$-line to the prime--composite $50/50$ horizon $s^* \approx 1.447$) joins its reflected dual cone $\xi(1-s) = \xi(s)$ along the central waist $\sigma = 1/2$. In Lean~4, this reflection involution is captured directly by \texttt{one\_sub\_criticalLine} and \texttt{completedRiemannZeta\_\allowbreak criticalLine\_neg} in \texttt{CriticalLineZeros.lean}:
     \begin{equation}
         \operatorname{criticalLine}(t) = \frac{1}{2} + it, \qquad 1 - \operatorname{criticalLine}(t) = \operatorname{criticalLine}(-t), \qquad \Lambda(1 - s) = \Lambda(s).
     \end{equation}
@@ -124,7 +124,7 @@ While Figure~\ref{fig:joined_cones} explains where zeros \emph{can} and \emph{ca
 \end{figure}
 
 % ============================================================================
-\section{Where Intuition Meets the Analytic Wall --- And Why Lean~4 Was Necessary}\label{sec:wall}
+\section{Where Intuition Meets the Analytic Wall: And Why Lean~4 Was Necessary}\label{sec:wall}
 % ============================================================================
 
 Looking at the downward curves in Figure~\ref{fig:critical_and_scot}, an intuitive researcher might easily be tempted to extrapolate $E_{\mathrm{opt}}(N) \to 0$ as $N \to \infty$ and conclude that proving completeness on $\mathcal{A}_N$ should be straightforward. In fact, quantitative inspection of the cone experiments exposed the exact opposite: \emph{finite visualizations can conceal subtle analytic blowups that only rigorous proof-assistant discipline forces into the open.}
@@ -136,7 +136,7 @@ Three concrete lessons from the project illustrate why Lean~4 became indispensab
         \kappa(G_4) = 30.75 \;\longrightarrow\; \kappa(G_8) = 112.63 \;\longrightarrow\; \kappa(G_{16}) = 544.35, \\
         \kappa(G_{32}) = 2{,}726.05 \;\longrightarrow\; \kappa(G_{64}) = 11{,}555.80.
     \end{gather*}
-    At the same time, driving $E_{\mathrm{opt}}(N)$ from $0.024715$ ($N=8$) down to $0.008243$ ($N=256$) forces the coefficient norm $\|c^{(N)}_{\mathrm{opt}}\|_2$ upward monotonically from $1.8734$ to $5.0863$ (and to $5.6594$ for $\alpha = 2$ M\"obius weights). By Bettin--Conrey reciprocity, controlling $1 - S_{\mathrm{cot}}(c^{(N)}, N)$ uniformly as $\|c^{(N)}\|_2 \to \infty$ runs squarely into the twisted fourth moment of $\zeta(1/2 + it)$---a genuine barrier well beyond elementary asymptotics.
+    At the same time, driving $E_{\mathrm{opt}}(N)$ from $0.024715$ ($N=8$) down to $0.008243$ ($N=256$) forces the coefficient norm $\|c^{(N)}_{\mathrm{opt}}\|_2$ upward monotonically from $1.8734$ to $5.0863$ (and to $5.6594$ for $\alpha = 2$ M\"obius weights). By Bettin--Conrey reciprocity, controlling $1 - S_{\mathrm{cot}}(c^{(N)}, N)$ uniformly as $\|c^{(N)}\|_2 \to \infty$ runs squarely into the twisted fourth moment of $\zeta(1/2 + it)$, a genuine barrier well beyond elementary asymptotics.
     \item \textbf{Boundary Amplification ($\det(U_4)^{-1} \approx 664.38\times$):} Geometric intuition also suggested eliminating all four rank-$4$ boundary terms $(D_0, D_0', D_1, D_1')$ simultaneously via the $4 \times 4$ Clay--Galerkin matrix $U_4$. Formalizing \texttt{det\_U4\_eq\_log\_ratio} in \texttt{Section8\_\allowbreak VasyuninBDR.lean} and running the $80$-digit benchmark uncovered why single-ray $U_4$ updates behave erratically ($E(64) = 0.9270$, jumping back to $E(256) = 5.4618$ for the harmonic seed):
     \[
         \det(U_4) = \frac{\ln 2}{24} \ln\!\left(\frac{256}{243}\right) \approx 0.00150517 \quad \Longrightarrow \quad \det(U_4)^{-1} \approx 664.38.
@@ -160,8 +160,8 @@ $N$ & $E_{\mathrm{opt}}(N)$ ($\mathcal{A}_N$) & $\|c_{\mathrm{opt}}^{(N)}\|_2$ &
 16  & $0.01795885$ & $2.1635$ & $0.03463284$ & $544.35$     & $4.8012 \times 10^{-2}$ \\
 32  & $0.01408463$ & $2.5848$ & $0.02294467$ & $2{,}726.05$  & $2.4631 \times 10^{-2}$ \\
 64  & $0.01139247$ & $3.1306$ & $0.01630580$ & $11{,}555.80$ & $1.4184 \times 10^{-2}$ \\
-128 & $0.00967077$ & $3.8792$ & $0.01399341$ & ---          & $9.5125 \times 10^{-3}$ \\
-256 & $0.00824337$ & $5.0863$ & $0.01321787$ & ---          & $7.1464 \times 10^{-3}$ \\
+128 & $0.00967077$ & $3.8792$ & $0.01399341$ &:          & $9.5125 \times 10^{-3}$ \\
+256 & $0.00824337$ & $5.0863$ & $0.01321787$ &:          & $7.1464 \times 10^{-3}$ \\
 \bottomrule
 \end{tabular}
 \caption{$80$-digit benchmark metrics (\texttt{forward\_weights\_results.json}, \texttt{cmi\_audit\_vasyunin\_gn64\_results.json}) illustrating logarithmic decay of $E(N) = 1 - S_{\mathrm{cot}}(c^{(N)}, N)$ paired with $\ell^2$-norm growth and superlinear Gram ill-conditioning $\kappa(G_N)$.}
@@ -206,9 +206,9 @@ Guided by the visual geometry of Sections~\ref{sec:thinking}--\ref{sec:wall}, th
 \label{tab:suite_map}
 \end{table}
 
-Alongside Papers~A--E, self-contained atomic slices of this formalization have been extracted into \texttt{MATHLIB4\_PR\_STAGING/} for upstream contribution to \texttt{mathlib4}---beginning with Series~1 (\texttt{UpstreamPR\_\allowbreak 1A\_\allowbreak CriticalLineZeros.lean}, \texttt{UpstreamPR\_\allowbreak 3A\_\allowbreak VasyuninIntegral.lean}, and \texttt{UpstreamPR\_\allowbreak 4A\_\allowbreak AffineLagrangeProjection.lean}), each strictly under $250$ lines, $\le 99$ characters per line, with zero custom project imports and zero \texttt{\#lint} warnings.
+Alongside Papers~A--E, the corresponding Lean~4 files are organized as standalone modules in \texttt{RiemannBlueprint/Modules/}.lean}, \texttt{VasyuninIntegral.lean}, and \texttt{AffineLagrangeProjection.lean}), each strictly under $250$ lines, $\le 99$ characters per line, with zero custom project imports and zero \texttt{\#lint} warnings.
 
-In summary, visual cone geometry served its highest scientific purpose here: not as a substitute for proof, but as an intuition engine that revealed the symmetric waist at $\operatorname{Re}(s) = 1/2$, the $3$-$4$-$1$ repulsion cone at $\operatorname{Re}(s) = 1$, and the affine collapse on $\mathcal{A}_N$---while exposing the numerical and spectral walls where formal verification in Lean~4 becomes essential.
+In summary, visual cone geometry served its highest scientific purpose here: not as a substitute for proof, but as an intuition engine that revealed the symmetric waist at $\operatorname{Re}(s) = 1/2$, the $3$-$4$-$1$ repulsion cone at $\operatorname{Re}(s) = 1$, and the affine collapse on $\mathcal{A}_N$, while exposing the numerical and spectral walls where formal verification in Lean~4 becomes essential.
 
 \begin{thebibliography}{9}
 \raggedright

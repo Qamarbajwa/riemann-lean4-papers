@@ -104,10 +104,10 @@ Five tightly coupled Mathlib-style modules decompose the asymptotic Nyman--Beurl
 \centering
 \begin{tikzpicture}[node distance=1.1cm and 1.3cm,
   box/.style={draw=blue!60!black, rounded corners=3pt, fill=blue!5, align=center, font=\small, inner sep=6pt}]
-  \node[box] (p1) {\textbf{Pillar I: \texttt{LinearMomentLimit}}\\
+  \node[box] (p1) {\textbf{Component I: \texttt{LinearMomentLimit}}\\
     $I_1(c,N) = -2\mathcal{M}(c,N)$\\
     $|\mathcal{M}-1| \le C_1/\ln N$};
-  \node[box, right=1.8cm of p1] (p2) {\textbf{Pillar II: 3-Frequency Split}\\
+  \node[box, right=1.8cm of p1] (p2) {\textbf{Component II: 3-Frequency Split}\\
     $\rho(t) = (1/4 + t^2)^{-1}$\\
     $J_{\mathrm{low}} + J_{\mathrm{mid}} + J_{\mathrm{high}}$};
   \node[box, below=1.0cm of p2, font=\scriptsize] (stages) {
@@ -126,10 +126,10 @@ Five tightly coupled Mathlib-style modules decompose the asymptotic Nyman--Beurl
 \label{fig:five_stage_closure}
 \end{figure}
 
-\subsection{Pillar I: Exact Linear Logarithmic Moment Identity}
+\subsection{Component I: Exact Linear Logarithmic Moment Identity}
 Defining the logarithmic moment $\mathcal{M}(c, N) \coloneqq \sum_{k=1}^N c_k (\ln k)/k$ (\texttt{logMoment}) in \texttt{MathlibPR\_\allowbreak LinearMomentLimit.lean} ($195$ lines), exact algebraic expansion yields \texttt{projectAffine\_\allowbreak logMoment} ($\mathcal{M}(\Pi_{\mathcal{A}_N} u, N) = \mathcal{M}(u, N) - \lambda_1 S_{\ln,2}(N) - \lambda_0 S_{\ln,1}(N)$) and the Euler--Mascheroni decoupling identity \texttt{linearCrossTerm\_\allowbreak eq\_\allowbreak neg\_\allowbreak two\_\allowbreak mul\_\allowbreak logMoment}: on $\mathcal{A}_N$, $I_1(c, N) = -2\mathcal{M}(c, N)$, so $|\mathcal{M}(c, N) - 1| \le C_1 / \ln N$ implies $I_1(c, N) \le -2 + 2C_1 / \ln N$ (\texttt{linearCrossTerm\_\allowbreak sandwich\_\allowbreak of\_\allowbreak logMoment\_\allowbreak bound}), with specializations to $c_{\mathrm{mob}}^{(N)}$ and $c_{\mathrm{sel}}^{(N)}$.
 
-\subsection{Pillar II: Resolvent Weights and Three-Frequency Spectral Absorption}
+\subsection{Component II: Resolvent Weights and Three-Frequency Spectral Absorption}
 For the canonical Plancherel resolvent weight $\rho(t) \coloneqq 1 / (1/4 + t^2)$ (\texttt{spectralWeight}), three scale-absorption lemmas are proved unconditionally in Lean~4:
 \begin{itemize}[noitemsep]
   \item \textbf{High-Frequency Tail (\texttt{SpectralTailBound.lean}, $233$ lines):} For $|t| \ge N \ge 1$, $\rho(t) \le 1/t^2$ (\texttt{spectralWeight\_\allowbreak le\_\allowbreak inv\_\allowbreak sq}) and $\rho(t) \le 1/N^2$ (\texttt{spectralWeight\_\allowbreak tail\_\allowbreak le}), while $C/N \le C/\ln N$ (\texttt{div\_\allowbreak nat\_\allowbreak le\_\allowbreak div\_\allowbreak log}) absorbs $O(1/N)$ tails into $O(1/\ln N)$.
@@ -138,7 +138,7 @@ For the canonical Plancherel resolvent weight $\rho(t) \coloneqq 1 / (1/4 + t^2)
 \end{itemize}
 
 \subsection{Stage 5: Master Forward Closure}
-In \texttt{MathlibPR\_\allowbreak ForwardClosure.lean} ($237$ lines), combining Pillars~I and~II inside \texttt{ForwardPillarSynthesis} defines
+In \texttt{MathlibPR\_\allowbreak ForwardClosure.lean} ($237$ lines), combining Components~I and~II inside \texttt{ForwardPillarSynthesis} defines
 \begin{equation}
 C_{\mathrm{tot}} \coloneqq 2 C_1 + \frac{C_{\mathrm{low}}}{\ln 2} + C_{\mathrm{mid}} + C_{\mathrm{hi}} > 0 \qquad (\texttt{forwardClosureConstant})
 \end{equation}
@@ -158,7 +158,7 @@ All modules reported here compile cleanly under \texttt{lake build} ($3{,}803$ j
 \midrule
 \texttt{Section7\_SpectralBridge.lean} & 636 & 31 & Uncond.\ Von Koch forward (\texttt{vonKoch\_implies\_rh}) \\
 \texttt{MathlibPR\_LittlewoodMertens.lean}$^*$ & 342 & 6 & Contains \texttt{of\_chebyshevPsi\_sub\_self\_isBigO} \\
-\texttt{MathlibPR\_LinearMomentLimit.lean} & 195 & 13 & Uncond.\ $I_1(c,N) = -2\mathcal{M}(c,N)$ + Pillar~I \\
+\texttt{MathlibPR\_LinearMomentLimit.lean} & 195 & 13 & Uncond.\ $I_1(c,N) = -2\mathcal{M}(c,N)$ + Component~I \\
 \texttt{MathlibPR\_SpectralTailBound.lean} & 233 & 13 & High-freq.\ $\rho(t) \le 1/N^2$ + 3-freq.\ split \\
 \texttt{MathlibPR\_MontgomeryVaughan.lean} & 279 & 13 & Low-freq.\ $(\ln N)^{-2} \le (\ln 2 \cdot \ln N)^{-1}$ \\
 \texttt{MathlibPR\_SelbergSieveBound.lean} & 215 & 7 & Mid-freq.\ $\rho(t) < (\ln N)^{-4}$ + \texttt{variational\_domination} \\

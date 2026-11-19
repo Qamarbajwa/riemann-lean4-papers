@@ -18,8 +18,10 @@ public import Mathlib.NumberTheory.LSeries.Nonvanishing
 /-!
 # De la Vallée Poussin's (1899) Classical Unconditional Zero-Free Region
 
-This file formalizes the classical zero-free region for the Riemann zeta function:
-1. Specialization of the 3-4-1 trigonometric product inequality to `riemannZeta`:
+This file formalizes a classical zero-free region for the Riemann zeta function with exponent
+`log^9(|t| + 2)`:
+1. Specialization of Mathlib's 3-4-1 trigonometric product inequality
+   (`norm_LFunction_product_ge_one`) to `riemannZeta`:
    `‖ζ(1 + x)³ · ζ(1 + x + i y)⁴ · ζ(1 + x + 2 i y)‖ ≥ 1` for `x > 0`.
 2. Separation into individual norms: `1 ≤ ‖ζ(1 + x)‖³ · ‖ζ(1 + x + i y)‖⁴ · ‖ζ(1 + x + 2 i y)‖`.
 3. Laurent expansion connection via `riemannZeta₀`: `ζ(1 + x) = x⁻¹ + ζ₀(1 + x)`.
@@ -27,6 +29,14 @@ This file formalizes the classical zero-free region for the Riemann zeta functio
 5. Analytical zero repulsion: deduction of the positive distance `δ ≥ c / ln⁹(|y| + 2)`
    from the combined product and pole estimates.
 6. The unconditional zero-free boundary: `ζ(σ + i t) ≠ 0` whenever `σ ≥ 1 - c / ln⁹(|t| + 2)`.
+
+**Prior-Art Credit & Comparison:**
+`AlexKontorovich/PrimeNumberTheoremAnd` (`PrimeNumberTheoremAnd/ZetaBounds.lean`, `ZetaZeroFree9`)
+already formalized the `log^9 |t|` zero-free region (`1 - A / log^9 |t| ≤ σ < 1` for `3 < |t|`)
+via the 3-4-1 inequality and a `log^2 |t|` derivative/strip estimate, whereas `mathlib4` provides
+`riemannZeta_ne_zero_of_one_le_re` (`1 ≤ Re s`) and `norm_LFunction_product_ge_one`. The proof here
+arrives at the same `log^9` exponent by combining Mathlib's `norm_LFunction_product_ge_one` with
+Cauchy's derivative estimate on a horizontal segment (`|t| ≥ 2`, `log (|t| + 2) ^ 9`).
 -/
 
 @[expose] public section

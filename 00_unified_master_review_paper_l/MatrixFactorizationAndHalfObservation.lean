@@ -8,7 +8,7 @@ import Mathlib.LinearAlgebra.Matrix.Symmetric
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.NumberTheory.ArithmeticFunction.Moebius
 import RiemannBlueprint.UnconditionalTitchmarshBridge
-import RiemannBlueprint.UpstreamPRs.UpstreamPR_8U_EuclideanExhaustionTailBound
+import RiemannBlueprint.Modules.EuclideanExhaustionTailBound
 
 /-!
 # Matrix Factorization, Exact Möbius–Difference Inversion, and Half-Observation Laws
@@ -2066,5 +2066,136 @@ theorem riemannHypothesis_of_unitDefectMatrix_groundState_vanishing_unconditiona
   obtain ⟨N, lam, v, hN, heig, hunit, hsum, hlt⟩ := h_gs ε hε
   have h := unitDefectMatrix_eigenvector_simplex_energy lam v heig hunit hsum
   exact ⟨N, (1 / dotProduct (onesVec (N - 2)) v) • v, hN, h.1, h.2.symm ▸ hlt⟩
+
+/-- **Wavefunction Gram Quadratic Form Identity**: for any `α : Fin (N - 2) → ℝ`,
+`αᵀ (Ω_{M,N}ᵀ Ω_{M,N}) α = ‖Ω_{M,N} α‖₂²`. -/
+theorem anchoredWave_gram_quadForm_eq_norm_sq {M N : ℕ} (α : Fin (N - 2) → ℝ) :
+    dotProduct α (((anchoredWaveMatrix M N).transpose * anchoredWaveMatrix M N).mulVec α) =
+      dotProduct ((anchoredWaveMatrix M N).mulVec α) ((anchoredWaveMatrix M N).mulVec α) := by
+  rw [← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, Matrix.vecMul_transpose]
+
+/-- **Wavefunction Gram Nonnegativity**: `0 ≤ αᵀ (Ω_{M,N}ᵀ Ω_{M,N}) α` for all `α`. -/
+theorem anchoredWave_gram_quadForm_nonneg {M N : ℕ} (α : Fin (N - 2) → ℝ) :
+    0 ≤ dotProduct α (((anchoredWaveMatrix M N).transpose * anchoredWaveMatrix M N).mulVec α) := by
+  rw [anchoredWave_gram_quadForm_eq_norm_sq]
+  exact Finset.sum_nonneg fun i _ => mul_self_nonneg _
+
+/-- **Variational Inverse-Quadratic Identity**: for any symmetric matrix `M` with `M w = 1` and
+`1ᵀ w ≠ 0`, every simplex weight `1ᵀ α = 1` decomposes orthogonally around `α* = w / (1ᵀ w)` as
+`αᵀ M α = 1 / (1ᵀ w) + (α - α*)ᵀ M (α - α*)`. -/
+theorem variational_inverse_quadForm_identity {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ)
+    (hMsym : M.IsSymm) (w α : Fin n → ℝ) (hMw : M.mulVec w = onesVec n)
+    (hsum : dotProduct (onesVec n) w ≠ 0) (hα : dotProduct (onesVec n) α = 1) :
+    let αStar : Fin n → ℝ := (1 / dotProduct (onesVec n) w) • w
+    dotProduct α (M.mulVec α) =
+      1 / dotProduct (onesVec n) w + dotProduct (α - αStar) (M.mulVec (α - αStar)) := by
+  intro αStar
+  have hM_αStar : M.mulVec αStar = (1 / dotProduct (onesVec n) w) • onesVec n := by
+    dsimp [αStar]
+    rw [Matrix.mulVec_smul, hMw]
+  have h_α_αStar : dotProduct α (M.mulVec αStar) = 1 / dotProduct (onesVec n) w := by
+    rw [hM_αStar, dotProduct_smul, smul_eq_mul, dotProduct_comm α (onesVec n), hα, mul_one]
+  have h_αStar_α : dotProduct αStar (M.mulVec α) = 1 / dotProduct (onesVec n) w := by
+    have hsym_dot : dotProduct αStar (M.mulVec α) = dotProduct α (M.mulVec αStar) := by
+      simp only [dotProduct, Matrix.mulVec, Finset.mul_sum]
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+      rw [hMsym.apply i j]
+      ring
+    rw [hsym_dot, h_α_αStar]
+  have h_αStar_αStar : dotProduct αStar (M.mulVec αStar) = 1 / dotProduct (onesVec n) w := by
+    rw [hM_αStar]
+    dsimp [αStar]
+    rw [dotProduct_smul, smul_dotProduct, smul_eq_mul, smul_eq_mul, dotProduct_comm w (onesVec n)]
+    field_simp [hsum]
+  have h_expand : dotProduct (α - αStar) (M.mulVec (α - αStar)) =
+      dotProduct α (M.mulVec α) - dotProduct α (M.mulVec αStar) -
+        dotProduct αStar (M.mulVec α) + dotProduct αStar (M.mulVec αStar) := by
+    rw [Matrix.mulVec_sub, dotProduct_sub, sub_dotProduct, sub_dotProduct]
+    ring
+  rw [h_α_αStar, h_αStar_α, h_αStar_αStar] at h_expand
+  linarith
+
+/-- **Variational Inverse-Quadratic Lower Bound**: if `M` is additionally positive semidefinite,
+then `1 / (1ᵀ w) ≤ αᵀ M α` for every simplex weight `1ᵀ α = 1`. -/
+theorem variational_inverse_quadForm_ge {n : ℕ} (M : Matrix (Fin n) (Fin n) ℝ)
+    (hMsym : M.IsSymm) (hM_psd : ∀ x : Fin n → ℝ, 0 ≤ dotProduct x (M.mulVec x))
+    (w α : Fin n → ℝ) (hMw : M.mulVec w = onesVec n)
+    (hsum : dotProduct (onesVec n) w ≠ 0) (hα : dotProduct (onesVec n) α = 1) :
+    1 / dotProduct (onesVec n) w ≤ dotProduct α (M.mulVec α) := by
+  have h := variational_inverse_quadForm_identity M hMsym w α hMw hsum hα
+  dsimp at h
+  have hnn := hM_psd (α - (1 / dotProduct (onesVec n) w) • w)
+  linarith
+
+/-- **Orthogonal Gram–Schmidt Innovation Telescoping Identity**: for any unit-norm vacuum
+vector `b` (`‖b‖₂² = 1`) and orthogonal innovation sequence `{φ_k}_{k=3}^N` with couplings
+`ρ_k = ⟨b, φ_k⟩` and nonzero norms `s_k = ⟨φ_k, φ_k⟩`, the residual energy equals
+`1 - ∑_{k=3}^N ρ_k² / s_k`. -/
+theorem orthogonal_innovation_telescoping_energy {n : ℕ} (b : Fin n → ℝ)
+    (hb : dotProduct b b = 1) (φ : ℕ → (Fin n → ℝ))
+    (hφ_orth : ∀ i j, i ≠ j → dotProduct (φ i) (φ j) = 0)
+    (ρ s : ℕ → ℝ) (hρ : ∀ k, ρ k = dotProduct b (φ k)) (hs : ∀ k, s k = dotProduct (φ k) (φ k))
+    (N : ℕ) (hs_ne : ∀ k ∈ Finset.Icc 3 N, s k ≠ 0) :
+    let resid : Fin n → ℝ := b - ∑ k ∈ Finset.Icc 3 N, (ρ k / s k) • φ k
+    dotProduct resid resid = 1 - ∑ k ∈ Finset.Icc 3 N, ρ k ^ 2 / s k := by
+  intro resid
+  have h_cross : dotProduct b (∑ k ∈ Finset.Icc 3 N, (ρ k / s k) • φ k) =
+      ∑ k ∈ Finset.Icc 3 N, ρ k ^ 2 / s k := by
+    rw [dotProduct_sum]
+    refine Finset.sum_congr rfl fun k hk => ?_
+    rw [dotProduct_smul, smul_eq_mul, ← hρ k]
+    ring
+  have h_self : dotProduct (∑ k ∈ Finset.Icc 3 N, (ρ k / s k) • φ k)
+      (∑ k ∈ Finset.Icc 3 N, (ρ k / s k) • φ k) =
+      ∑ k ∈ Finset.Icc 3 N, ρ k ^ 2 / s k := by
+    rw [dotProduct_sum]
+    refine Finset.sum_congr rfl fun k hk => ?_
+    rw [sum_dotProduct]
+    have hsingle : ∑ j ∈ Finset.Icc 3 N,
+        dotProduct ((ρ j / s j) • φ j) ((ρ k / s k) • φ k) =
+        dotProduct ((ρ k / s k) • φ k) ((ρ k / s k) • φ k) := by
+      refine Finset.sum_eq_single k (fun j _ hjk => ?_) (fun hk_abs => absurd hk hk_abs)
+      rw [smul_dotProduct, dotProduct_smul, hφ_orth j k hjk]
+      simp
+    rw [hsingle, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul, ← hs k]
+    have hsk := hs_ne k hk
+    field_simp [hsk]
+  have h_expand : dotProduct resid resid =
+      dotProduct b b - 2 * dotProduct b (∑ k ∈ Finset.Icc 3 N, (ρ k / s k) • φ k) +
+        dotProduct (∑ k ∈ Finset.Icc 3 N, (ρ k / s k) • φ k)
+          (∑ k ∈ Finset.Icc 3 N, (ρ k / s k) • φ k) := by
+    dsimp [resid]
+    rw [dotProduct_sub, sub_dotProduct, sub_dotProduct, dotProduct_comm (∑ k ∈ Finset.Icc 3 N, _) b]
+    ring
+  rw [h_expand, hb, h_cross, h_self]
+  ring
+
+/-- **Bessel's Inequality for Orthogonal Innovations**: `∑_{k=3}^N ρ_k² / s_k ≤ 1`. -/
+theorem orthogonal_innovation_bessel_le_one {n : ℕ} (b : Fin n → ℝ)
+    (hb : dotProduct b b = 1) (φ : ℕ → (Fin n → ℝ))
+    (hφ_orth : ∀ i j, i ≠ j → dotProduct (φ i) (φ j) = 0)
+    (ρ s : ℕ → ℝ) (hρ : ∀ k, ρ k = dotProduct b (φ k)) (hs : ∀ k, s k = dotProduct (φ k) (φ k))
+    (N : ℕ) (hs_ne : ∀ k ∈ Finset.Icc 3 N, s k ≠ 0) :
+    ∑ k ∈ Finset.Icc 3 N, ρ k ^ 2 / s k ≤ 1 := by
+  have h := orthogonal_innovation_telescoping_energy b hb φ hφ_orth ρ s hρ hs N hs_ne
+  dsimp at h
+  have hnn : 0 ≤ dotProduct (b - ∑ k ∈ Finset.Icc 3 N, (ρ k / s k) • φ k)
+      (b - ∑ k ∈ Finset.Icc 3 N, (ρ k / s k) • φ k) :=
+    Finset.sum_nonneg fun i _ => mul_self_nonneg _
+  linarith
+
+/-- **Unconditional Monotonicity of `E_free(N)`**: `E_free(N + 1) ≤ E_free(N)` for `N ≥ 2`. -/
+theorem orthogonal_innovation_energy_monotone (ρ s : ℕ → ℝ) (N : ℕ) (hN : 2 ≤ N)
+    (hs_pos : 0 < s (N + 1)) :
+    1 - ∑ k ∈ Finset.Icc 3 (N + 1), ρ k ^ 2 / s k ≤
+      1 - ∑ k ∈ Finset.Icc 3 N, ρ k ^ 2 / s k := by
+  have hIcc : Finset.Icc 3 (N + 1) = insert (N + 1) (Finset.Icc 3 N) := by
+    ext k
+    simp only [Finset.mem_Icc, Finset.mem_insert]
+    omega
+  rw [hIcc, Finset.sum_insert (by simp)]
+  have hterm : 0 ≤ ρ (N + 1) ^ 2 / s (N + 1) := div_nonneg (sq_nonneg _) hs_pos.le
+  linarith
 
 end RiemannBlueprint.MatrixHalfObservation

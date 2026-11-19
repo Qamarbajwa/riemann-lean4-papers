@@ -69,7 +69,7 @@ where the \emph{pure $4$-point plaque kernel} is isolated solely from $K$:
 P(a,b) := K(a+1,b+1) - K(a+1,b+2) - K(a+2,b+1) + K(a+2,b+2).
 \end{equation}
 
-\begin{theorem}[Symmetry, Diagonal Collapse, and Anchor-Drive Cancellation \emph{[Lean: PR-7C]}]\label{thm:plaque_cancel}
+\begin{theorem}[Symmetry, Diagonal Collapse, and Anchor-Drive Cancellation \emph{[Lean: Module~7C]}]\label{thm:plaque_cancel}
 Let $N \ge 2$ and let $\alpha_m(h) = \sum_{j=m+2}^N h_j / j$ denote the cumulative suffix dipole coordinates.
 \begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
 \item $P(a,b) = P(b,a)$ for all $a,b \in \mathbb{N}$, and along the diagonal all interior terms vanish to give $P(m,m) = -2 K(m+1,m+2)$.
@@ -189,10 +189,10 @@ Table~\ref{tab:frontier_energies} and Figure~\ref{fig:dipole_energies} highlight
 \toprule
 ID & Module File & Principal Formalized Theorems & L \\
 \midrule
-\texttt{PR-7A} & \texttt{UpstreamPR\_\allowbreak 7A\_\allowbreak MellinKernelEnergyIdentity.lean} & \texttt{integral\_Ioc\_sq\_mellinWeight}, weighted Cauchy--Schwarz & 125 \\
-\texttt{PR-7B} & \texttt{UpstreamPR\_\allowbreak 7B\_\allowbreak RectangleContourSubdivision.lean} & \texttt{rectBoundaryIntegral\_\allowbreak split\_sigma}, \texttt{rectBoundaryIntegral\_\allowbreak split\_height} & 107 \\
-\texttt{PR-7C} & \texttt{UpstreamPR\_\allowbreak 7C\_\allowbreak PurePlaqueReduction.lean} & \texttt{dipolePlaqueEntry}, \texttt{SCot\_eq\_neg\_\allowbreak c\_one\_mul\_\allowbreak linearCotDrive\_sub\_plaque} & 162 \\
-\texttt{PR-7D} & \texttt{UpstreamPR\_\allowbreak 7D\_\allowbreak DiagonalOffDiagonalFrontier.lean} & \texttt{dipoleDiagEnergy\_nonneg}, \texttt{QCot\_eq\_\allowbreak dipoleDiagEnergy\_\allowbreak add\_dipoleOffDiagEnergy} & 97 \\
+\texttt{Module~7A} & \texttt{MellinKernelEnergyIdentity.lean} & \texttt{integral\_Ioc\_sq\_mellinWeight}, weighted Cauchy--Schwarz & 125 \\
+\texttt{Module~7B} & \texttt{RectangleContourSubdivision.lean} & \texttt{rectBoundaryIntegral\_\allowbreak split\_sigma}, \texttt{rectBoundaryIntegral\_\allowbreak split\_height} & 107 \\
+\texttt{Module~7C} & \texttt{PurePlaqueReduction.lean} & \texttt{dipolePlaqueEntry}, \texttt{SCot\_eq\_neg\_\allowbreak c\_one\_mul\_\allowbreak linearCotDrive\_sub\_plaque} & 162 \\
+\texttt{Module~7D} & \texttt{DiagonalOffDiagonalFrontier.lean} & \texttt{dipoleDiagEnergy\_nonneg}, \texttt{QCot\_eq\_\allowbreak dipoleDiagEnergy\_\allowbreak add\_dipoleOffDiagEnergy} & 97 \\
 \bottomrule
 \end{tabular}
 \caption{Lean~4.35 formal concordance (Series~7 modules, zero \texttt{sorry}, axioms \texttt{[propext, Classical.choice, Quot.sound]}).}

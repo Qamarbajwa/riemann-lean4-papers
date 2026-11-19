@@ -689,8 +689,25 @@ def main() -> None:
         assert abs(q_omega - psi_norm_sq) < tol_eq
         assert mp.mpf(0) < q_omega <= q_mn + tol_eq
         assert abs(q_mn - e_dir_w) < tol_eq
+        # Variational inverse-quadratic identity: alpha^T M_N alpha = 1/(1^T M_N^{-1} 1) + (alpha - alpha*)^T M_N (alpha - alpha*)
+        dim_w = N_w - 2
+        alpha_unif = [mp.mpf(1) / dim_w for _ in range(dim_w)]
+        diff_w = [a - b for a, b in zip(alpha_unif, alpha_w)]
+        q_unif = dot(alpha_unif, mat_vec_mul(M_wmat, alpha_unif))
+        q_diff = dot(diff_w, mat_vec_mul(M_wmat, diff_w))
+        assert abs(q_unif - (e_dir_w + q_diff)) < tol_eq
+        # SVD ground-state weight on Omega_{M,N}^T Omega_{M,N}: sigma_0(Omega)^2 / (v_0^T 1)^2
+        eigs_om, Q_om = mp.eigsy(gram_omega)
+        pairs_om = sorted([(eigs_om[c], c) for c in range(dim_w)], key=lambda t: t[0])
+        sig0_sq, idx_om = pairs_om[0]
+        v0_om = [Q_om[r, idx_om] for r in range(dim_w)]
+        ones_om = sum(v0_om)
+        assert abs(ones_om) > mp.mpf("1e-10")
+        svd_gs_bound = sig0_sq / (ones_om ** 2)
+        assert q_omega <= svd_gs_bound + tol_eq
         print(f"[PASS] N={N_w}, M={M_w}: max|Omega[0,:]|={mp.nstr(top_max, 3)}, "
-              f"||Omega a*||^2={mp.nstr(psi_norm_sq, 12)} <= E_dir={mp.nstr(e_dir_w, 12)}")
+              f"||Omega a*||^2={mp.nstr(psi_norm_sq, 12)} <= E_dir={mp.nstr(e_dir_w, 12)}, "
+              f"svd_gs={mp.nstr(svd_gs_bound, 10)}")
 
     for N_f, L_f in [(4, 12), (5, 60)]:
         H_f = (L_f - 2) // 2

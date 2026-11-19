@@ -257,12 +257,15 @@ Normalizing any unit eigenvector $v$ of $M_N$ with eigenvalue $\lambda$ and nonz
 | Cholesky telescoping & Schur innovation step | `cholesky_energy_eq_one_sub_sum_sq`, `schur_one_step_innovation` |
 | Exact $\{1, 2, 4\}$ dyadic energy $1 - \pi/4$ | `dyadicFourVec_mem_A_N`, `dyadicFourVec_one_isDirichletAnchored`, `one_sub_SCot_dyadicFour_eq`, `one_sub_SCot_dyadicFour_ge`, `one_sub_SCot_dyadicFour_opt_eq` |
 | Eigenvector energy bound & spectral RH criterion | `unitDefectMatrix_eigenvector_simplex_energy`, `unitDefectMatrix_eigenvalue_nonneg`, `riemannHypothesis_of_unitDefectMatrix_groundState_vanishing_unconditional` |
+| Wavefunction Gram $\alpha^T(\mathbf{\Omega}^T\mathbf{\Omega})\alpha = \|\mathbf{\Omega}\alpha\|_2^2 \ge 0$ | `anchoredWave_gram_quadForm_eq_norm_sq`, `anchoredWave_gram_quadForm_nonneg` |
+| Variational inverse-quadratic identity & lower bound | `variational_inverse_quadForm_identity`, `variational_inverse_quadForm_ge` |
+| Orthogonal Gram–Schmidt innovation $E_{\mathrm{free}}(N) = 1 - \sum_{k=3}^N \rho_k^2/s_k$, Bessel & monotonicity | `orthogonal_innovation_telescoping_energy`, `orthogonal_innovation_bessel_le_one`, `orthogonal_innovation_energy_monotone` |
 
 ### Exact Mathematical Boundary (Finite-$N$ Floor vs. Asymptotic Limit)
 For every **fixed** truncation $N \ge 2$, the prime-jump lower bound `sum_primes_le_integral_Ioc` guarantees a strictly positive prime floor:
 
 $$E_{\mathrm{dir}}(N) = \frac{1}{\mathbf{1}^T M_N^{-1} \mathbf{1}} \ge \sum_{p > N} \frac{1}{2p^2} > 0,$$
 
-so $E_{\mathrm{dir}}(N)$ can never vanish at any finite $N$. By `riemannHypothesis_of_unitDefectMatrix_vanishing_unconditional`, the **open** Riemann Hypothesis is equivalent to the asymptotic divergence of the total resolvent sum across all dimensions:
+so $E_{\mathrm{dir}}(N)$ can never vanish at any finite $N$. All matrix identities, finite-$N$ algebraic evaluations, and wavefunction/Cholesky decompositions above are structural reformulations and conditional reductions; by `riemannHypothesis_of_unitDefectMatrix_vanishing_unconditional`, the **open** Riemann Hypothesis is equivalent to the asymptotic divergence of the total resolvent sum (equivalently $\sum_{k=3}^\infty \rho_k^2 / s_k = 1$), which carries the full analytic difficulty of the problem:
 
 $$\text{RH} \iff \lim_{N \to \infty} E_{\mathrm{dir}}(N) = 0 \iff \lim_{N \to \infty} \mathbf{1}^T M_N^{-1}\mathbf{1} = +\infty.$$

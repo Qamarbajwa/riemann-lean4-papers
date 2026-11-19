@@ -59,15 +59,15 @@ def generate_manifest() -> Dict[str, Any]:
         }
         hubs.append(entry)
 
-    staging_dir = ROOT / "MATHLIB4_PR_STAGING"
-    up_files = sorted(f.name for f in staging_dir.glob("UpstreamPR_*.lean"))
+    mod_dir = ROOT / "RiemannBlueprint" / "RiemannBlueprint" / "Modules"
+    mod_files = sorted(f.name for f in mod_dir.glob("*.lean"))
     return {
         "schema_version": "1.0",
         "lean_toolchain": "leanprover/lean4:v4.35.0",
-        "modular_units_count": len(up_files),
+        "modular_units_count": len(mod_files),
         "canonical_hubs_count": len(hubs),
         "hubs": hubs,
-        "upstream_pr_modules": up_files,
+        "lean_modules": mod_files,
     }
 
 
@@ -109,17 +109,17 @@ def verify_manifest() -> None:
     assert data["canonical_hubs_count"] == 14, f"Expected 14 hubs, got {data['canonical_hubs_count']}"
     assert data["modular_units_count"] == 64, f"Expected 64 modules, got {data['modular_units_count']}"
     assert len(data["hubs"]) == 14
-    assert len(data["upstream_pr_modules"]) == 64
+    mod_list = data.get("lean_modules", [])
+    assert len(mod_list) == 64
 
-    # Check staged UpstreamPR modules in whichever repo layout we are running inside
-    staging_candidates = [
-        ROOT / "MATHLIB4_PR_STAGING",
-        ROOT / "05_mathlib4_pr_staging",
-    ]
-    staging_dir = next((d for d in staging_candidates if d.is_dir()), None)
-    assert staging_dir is not None, "Could not locate UpstreamPR staging directory"
-    for mod in data["upstream_pr_modules"]:
-        assert (staging_dir / mod).is_file(), f"Missing staged module: {staging_dir / mod}"
+    # Check standalone Modules/ directory when running inside the root workspace
+    modules_dir = ROOT / "RiemannBlueprint" / "RiemannBlueprint" / "Modules"
+    if modules_dir.is_dir():
+        for mod in mod_list:
+            assert (modules_dir / mod).is_file(), f"Missing Lean module: {modules_dir / mod}"
+    assert not (ROOT / "05_mathlib4_pr_staging").exists(), "05_mathlib4_pr_staging must be removed"
+    for forbidden in ("push_carved_prs_to_mathlib4.py", "manage_mathlib4_pr_queue.py", "ZULIP_PR_REVIEW_MESSAGES.md", "PR_SUBMISSION_GUIDE.md"):
+        assert not (ROOT / "MATHLIB4_PR_STAGING" / forbidden).exists(), f"Forbidden PR automation file still exists: {forbidden}"
 
     # Verify PDF SHA-256 parity across all present mirrors
     pdf_checks = 0

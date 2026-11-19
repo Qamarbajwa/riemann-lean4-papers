@@ -20,8 +20,9 @@
 
 ### Part II — Finite-$N$ Báez-Duarte / Vasyunin Cotangent Calculations and Conditional Reductions
 
-- **Finite-Dimensional Algebraic Computations & Known Cotangent Symmetries:** Exact evaluations on $N = 3, 4, 5, 6$ (`03_nyman_beurling_baez_duarte_wavelets/`), palindromic period checks, `mpmath` / `flint.arb` numerical conditioning diagnostics (`04_spectral_diagnostics_and_audits/`), and matrix/half-observation scripts ([`MATRIX_RELATIONS_AND_HALF_OBSERVATION.md`](./MATRIX_RELATIONS_AND_HALF_OBSERVATION.md), [`verify_matrix_half_observation.py`](./verify_matrix_half_observation.py)).
-- **Conditional Reductions:** All Nyman–Beurling / Baez–Duarte / plaque / spectral-gap equivalences parameterize their unproven analytic hypotheses explicitly; those hypotheses carry the full analytic difficulty of the Nyman–Beurling problem.
+- **Identity-Matrix Linear Algebra & Numerical Diagnostics:** Gaussian elimination of $\mathbf{D}_M$ ($\mathbf{D}_M \mathbf{D}_M^{-1} = \mathbf{I}_M$, $\mathbf{D}_M \mu = e_1$), unit lower-triangular factorization $\mathbf{F}_M = \mathbf{\Sigma}_M \mathbf{D}_M$ ($\mathbf{F}_M \mathbf{F}_M^{-1} = \mathbf{I}_M$), nullspace basis $T_{N,N-2}$, Cholesky whitening to $\mathbf{I}_{N-2}$, wavefunction Gram operator $M_N = \mathbf{\Omega}_N^T \mathbf{\Omega}_N$, and projection residual $\langle b | (\mathbf{I} - \widehat{\Pi}_N) | b \rangle = 1 - \sum_{k=3}^N \rho_k^2 / s_k$ ([`MATRIX_RELATIONS_AND_HALF_OBSERVATION.md`](./MATRIX_RELATIONS_AND_HALF_OBSERVATION.md), [`verify_matrix_half_observation.py`](./verify_matrix_half_observation.py)).
+- **Finite-Dimensional Algebraic Computations & Known Cotangent Symmetries:** Exact evaluations on $N = 3, 4, 5, 6$ (`03_nyman_beurling_baez_duarte_wavelets/`), palindromic period checks, and `mpmath` / `flint.arb` numerical conditioning diagnostics (`04_spectral_diagnostics_and_audits/`).
+- **Conditional Reductions:** All Nyman–Beurling / Baez–Duarte / spectral-gap equivalences parameterize their unproven analytic hypotheses explicitly; the $N \to \infty$ convergence $\widehat{\Pi}_N |b\rangle \to |b\rangle$ carries the full analytic difficulty of the open Riemann Hypothesis.
 
 ## Companion Subdirectories (Historical Frozen Zenodo Archive DOIs)
 

@@ -87,10 +87,17 @@ def verify_integer_factorization_and_inversion(M: int = 64, N: int = 16) -> None
     I_M = [[1 if i == j else 0 for j in range(M)] for i in range(M)]
 
     assert matmul_int(Delta, Sigma) == I_M, "Delta @ Sigma != I"
+    assert matmul_int(Sigma, Delta) == I_M, "Sigma @ Delta != I"
     assert matmul_int(M_mu, D_sq) == I_M, "M_mu @ D != I"
+    assert matmul_int(D_sq, M_mu) == I_M, "D @ M_mu != I"
     F_inv = matmul_int(M_mu, Delta)
     assert matmul_int(F_inv, F_sq) == I_M, "(M_mu @ Delta) @ F != I"
-    print(f"[PASS] Exact integer factorization & inversion verified (M={M}, N={N})")
+    assert matmul_int(F_sq, F_inv) == I_M, "F @ (M_mu @ Delta) != I"
+    # Forward Gaussian elimination of D_M on Mobius vector equals e_1 = [1, 0, ..., 0]^T
+    mu_vec = [[mu[j + 1]] for j in range(M)]
+    e1_vec = [[1 if i == 0 else 0] for i in range(M)]
+    assert matmul_int(D_sq, mu_vec) == e1_vec, "D @ mu != e_1"
+    print(f"[PASS] Exact integer factorization & Identity-Matrix inversions (D D^-1 = F F^-1 = I, D mu = e_1) verified (M={M}, N={N})")
 
 
 # ---------------------------------------------------------------------------
@@ -740,6 +747,12 @@ def main() -> None:
     G64, _, _, u64 = core_mats[64]
     L64 = cholesky_factor(G64)
     assert max_abs_diff(L64 * L64.T, G64) < tol_eq
+    # Verify Cholesky whitening L^{-1} G L^{-T} = I_{N-2} at N=16
+    G16, _, _, _ = core_mats[16]
+    L16 = cholesky_factor(G16)
+    L16_inv = L16 ** -1
+    I14 = mp.eye(14)
+    assert max_abs_diff(L16_inv * G16 * L16_inv.T, I14) < tol_eq
     b_full = [mp.pi * val for val in u64]
     z64 = forward_solve(L64, b_full)
     innov_prime = mp.mpf(0)

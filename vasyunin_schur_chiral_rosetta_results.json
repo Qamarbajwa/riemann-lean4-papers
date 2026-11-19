@@ -1,0 +1,682 @@
+{
+  "NO_RH_PROOF": true,
+  "VASYUNIN_SCHUR_CHIRAL_ROSETTA_OK": true,
+  "mpmath_dps": 55,
+  "max_numerical_residual": "1.63133e-55",
+  "elapsed_seconds": 3.987,
+  "test_1_dirichlet_anchor_and_triple": {
+    "anchor_recon_err": "0.0",
+    "triple_offdiag_err": "1.22349e-55",
+    "qsqrt3_reciprocity_err": "1.63133e-55",
+    "diag_triple": [
+      "1.32779328935558",
+      "2.20320400698818",
+      "1.9104007963589"
+    ],
+    "vacuum_schur_table": [
+      {
+        "N": 3,
+        "dim": 1,
+        "E_free": "0.798466737307309",
+        "det_S_vac": "1.44825846049",
+        "v1_schur_trace": "0.0",
+        "inertia": [
+          1,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 4,
+        "dim": 2,
+        "E_free": "0.773848407948234",
+        "det_S_vac": "1.86369829622",
+        "v1_schur_trace": "1.32779328936",
+        "inertia": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 5,
+        "dim": 3,
+        "E_free": "0.760498094767172",
+        "det_S_vac": "2.9831129277",
+        "v1_schur_trace": "2.95653361481",
+        "inertia": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 6,
+        "dim": 4,
+        "E_free": "0.760353258953002",
+        "det_S_vac": "4.29896376774",
+        "v1_schur_trace": "4.52020202678",
+        "inertia": [
+          4,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 7,
+        "dim": 5,
+        "E_free": "0.756296618502598",
+        "det_S_vac": "7.48668745126",
+        "v1_schur_trace": "6.72750340811",
+        "inertia": [
+          5,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 8,
+        "dim": 6,
+        "E_free": "0.756178706742231",
+        "det_S_vac": "12.0666644067",
+        "v1_schur_trace": "8.82070294583",
+        "inertia": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 9,
+        "dim": 7,
+        "E_free": "0.756091048029181",
+        "det_S_vac": "21.7940107867",
+        "v1_schur_trace": "10.909507788",
+        "inertia": [
+          7,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 10,
+        "dim": 8,
+        "E_free": "0.756070036527583",
+        "det_S_vac": "37.4228445077",
+        "v1_schur_trace": "13.3422820328",
+        "inertia": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 11,
+        "dim": 9,
+        "E_free": "0.755128558728187",
+        "det_S_vac": "74.5588895856",
+        "v1_schur_trace": "15.8293346711",
+        "inertia": [
+          9,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 12,
+        "dim": 10,
+        "E_free": "0.755127164582503",
+        "det_S_vac": "132.769263887",
+        "v1_schur_trace": "18.2700000952",
+        "inertia": [
+          10,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "test_2_palindromic_chirality": {
+    "palindromic_cases": [
+      {
+        "N": 4,
+        "L": 12,
+        "M": 10,
+        "H": 5,
+        "proj_err": "0.0",
+        "even_proj_err": "0.0",
+        "frob_orth_err": "9.24e-57",
+        "recon_4T_err": "0.0",
+        "H_odd_frob_norm": "1.23079785641"
+      },
+      {
+        "N": 5,
+        "L": 60,
+        "M": 58,
+        "H": 29,
+        "proj_err": "0.0",
+        "even_proj_err": "0.0",
+        "frob_orth_err": "9.439e-57",
+        "recon_4T_err": "0.0",
+        "H_odd_frob_norm": "2.34857511478"
+      }
+    ]
+  },
+  "test_3_prime_composite_schur": {
+    "prime_composite_schur_table": [
+      {
+        "N": 4,
+        "num_primes": 1,
+        "num_composites": 1,
+        "delta_PC": "0.0",
+        "det_Sigma_Schur": "1.32779328936",
+        "lam_min_P": "-0.0205412434975",
+        "alpha_star_P_alpha_star": "0.0467659563598296",
+        "P_inertia": [
+          1,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          1,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 5,
+        "num_primes": 2,
+        "num_composites": 1,
+        "delta_PC": "0.0",
+        "det_Sigma_Schur": "1.32779328936",
+        "lam_min_P": "-0.193119194076",
+        "alpha_star_P_alpha_star": "-0.0127752934914209",
+        "P_inertia": [
+          2,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          1,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 6,
+        "num_primes": 2,
+        "num_composites": 2,
+        "delta_PC": "0.157647933508191",
+        "det_Sigma_Schur": "1.91384727764",
+        "lam_min_P": "-0.392022097429",
+        "alpha_star_P_alpha_star": "-0.0182507765500872",
+        "P_inertia": [
+          3,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 7,
+        "num_primes": 3,
+        "num_composites": 2,
+        "delta_PC": "0.2262545048374",
+        "det_Sigma_Schur": "1.56075044618",
+        "lam_min_P": "-0.502109704594",
+        "alpha_star_P_alpha_star": "-0.0240889422973922",
+        "P_inertia": [
+          4,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 8,
+        "num_primes": 3,
+        "num_composites": 3,
+        "delta_PC": "0.142057470675124",
+        "det_Sigma_Schur": "2.51593092906",
+        "lam_min_P": "-0.619560401019",
+        "alpha_star_P_alpha_star": "-0.0258553100757865",
+        "P_inertia": [
+          5,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 9,
+        "num_primes": 3,
+        "num_composites": 4,
+        "delta_PC": "0.201195562942821",
+        "det_Sigma_Schur": "4.54463479105",
+        "lam_min_P": "-0.718456454851",
+        "alpha_star_P_alpha_star": "-0.0271276077381121",
+        "P_inertia": [
+          6,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          4,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 10,
+        "num_primes": 3,
+        "num_composites": 5,
+        "delta_PC": "0.190544544085785",
+        "det_Sigma_Schur": "7.80388195628",
+        "lam_min_P": "-0.828800070889",
+        "alpha_star_P_alpha_star": "-0.0257114899603596",
+        "P_inertia": [
+          7,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          5,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 11,
+        "num_primes": 4,
+        "num_composites": 5,
+        "delta_PC": "0.2087631667605",
+        "det_Sigma_Schur": "6.39918268028",
+        "lam_min_P": "-0.90708914876",
+        "alpha_star_P_alpha_star": "-0.0245133966018713",
+        "P_inertia": [
+          8,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          5,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 12,
+        "num_primes": 4,
+        "num_composites": 6,
+        "delta_PC": "0.201629807418083",
+        "det_Sigma_Schur": "11.3952386799",
+        "lam_min_P": "-0.986542714037",
+        "alpha_star_P_alpha_star": "-0.0245026092216974",
+        "P_inertia": [
+          9,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 13,
+        "num_primes": 5,
+        "num_composites": 6,
+        "delta_PC": "0.20511386673753",
+        "det_Sigma_Schur": "10.817492633",
+        "lam_min_P": "-1.0664521283",
+        "alpha_star_P_alpha_star": "-0.0252948825656062",
+        "P_inertia": [
+          10,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 14,
+        "num_primes": 5,
+        "num_composites": 7,
+        "delta_PC": "0.238018133689578",
+        "det_Sigma_Schur": "20.9875785359",
+        "lam_min_P": "-1.15197296787",
+        "alpha_star_P_alpha_star": "-0.0220116107413438",
+        "P_inertia": [
+          11,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          7,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 15,
+        "num_primes": 5,
+        "num_composites": 8,
+        "delta_PC": "0.242414092721061",
+        "det_Sigma_Schur": "43.8297555968",
+        "lam_min_P": "-1.21469754788",
+        "alpha_star_P_alpha_star": "-0.0218007508208413",
+        "P_inertia": [
+          12,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 16,
+        "num_primes": 5,
+        "num_composites": 9,
+        "delta_PC": "0.226504471352944",
+        "det_Sigma_Schur": "87.2775228962",
+        "lam_min_P": "-1.28570116571",
+        "alpha_star_P_alpha_star": "-0.0215954023233547",
+        "P_inertia": [
+          13,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          9,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 17,
+        "num_primes": 6,
+        "num_composites": 9,
+        "delta_PC": "0.237331078597376",
+        "det_Sigma_Schur": "71.9148690055",
+        "lam_min_P": "-1.34876651778",
+        "alpha_star_P_alpha_star": "-0.0212257986045214",
+        "P_inertia": [
+          14,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          9,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 18,
+        "num_primes": 6,
+        "num_composites": 10,
+        "delta_PC": "0.236296962572308",
+        "det_Sigma_Schur": "143.553245073",
+        "lam_min_P": "-1.41664049948",
+        "alpha_star_P_alpha_star": "-0.021219166375982",
+        "P_inertia": [
+          15,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          10,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 19,
+        "num_primes": 7,
+        "num_composites": 10,
+        "delta_PC": "0.253381387452313",
+        "det_Sigma_Schur": "120.26606381",
+        "lam_min_P": "-1.47261980623",
+        "alpha_star_P_alpha_star": "-0.0211678428148917",
+        "P_inertia": [
+          16,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          10,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 20,
+        "num_primes": 7,
+        "num_composites": 11,
+        "delta_PC": "0.250991687162093",
+        "det_Sigma_Schur": "255.831932431",
+        "lam_min_P": "-1.53142558531",
+        "alpha_star_P_alpha_star": "-0.0210187752298329",
+        "P_inertia": [
+          17,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          11,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 21,
+        "num_primes": 7,
+        "num_composites": 12,
+        "delta_PC": "0.267574546335398",
+        "det_Sigma_Schur": "590.510398135",
+        "lam_min_P": "-1.58699094236",
+        "alpha_star_P_alpha_star": "-0.0202003290131404",
+        "P_inertia": [
+          18,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          12,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 22,
+        "num_primes": 7,
+        "num_composites": 13,
+        "delta_PC": "0.269646193902536",
+        "det_Sigma_Schur": "1279.30281226",
+        "lam_min_P": "-1.64936424368",
+        "alpha_star_P_alpha_star": "-0.0200017358329054",
+        "P_inertia": [
+          19,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          13,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 23,
+        "num_primes": 8,
+        "num_composites": 13,
+        "delta_PC": "0.288297518356074",
+        "det_Sigma_Schur": "1015.47880775",
+        "lam_min_P": "-1.69905058175",
+        "alpha_star_P_alpha_star": "-0.0197415440550718",
+        "P_inertia": [
+          20,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          13,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 24,
+        "num_primes": 8,
+        "num_composites": 14,
+        "delta_PC": "0.277269818912918",
+        "det_Sigma_Schur": "2178.97006812",
+        "lam_min_P": "-1.75206669638",
+        "alpha_star_P_alpha_star": "-0.0197400465186196",
+        "P_inertia": [
+          21,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          14,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 25,
+        "num_primes": 8,
+        "num_composites": 15,
+        "delta_PC": "0.2892563341902",
+        "det_Sigma_Schur": "5465.57721937",
+        "lam_min_P": "-1.80094054292",
+        "alpha_star_P_alpha_star": "-0.0196900483647688",
+        "P_inertia": [
+          22,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          15,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 26,
+        "num_primes": 8,
+        "num_composites": 16,
+        "delta_PC": "0.291453865168403",
+        "det_Sigma_Schur": "12399.1501878",
+        "lam_min_P": "-1.85573517076",
+        "alpha_star_P_alpha_star": "-0.0195465983547909",
+        "P_inertia": [
+          23,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          16,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 27,
+        "num_primes": 8,
+        "num_composites": 17,
+        "delta_PC": "0.295991473102398",
+        "det_Sigma_Schur": "30584.3727327",
+        "lam_min_P": "-1.9003690485",
+        "alpha_star_P_alpha_star": "-0.0193284372614358",
+        "P_inertia": [
+          24,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          17,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 28,
+        "num_primes": 8,
+        "num_composites": 18,
+        "delta_PC": "0.2961151411391",
+        "det_Sigma_Schur": "70290.3378355",
+        "lam_min_P": "-1.94774874556",
+        "alpha_star_P_alpha_star": "-0.0190230217960272",
+        "P_inertia": [
+          25,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          18,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 29,
+        "num_primes": 9,
+        "num_composites": 18,
+        "delta_PC": "0.307692246253699",
+        "det_Sigma_Schur": "56203.3605944",
+        "lam_min_P": "-1.99258346954",
+        "alpha_star_P_alpha_star": "-0.0186895876381284",
+        "P_inertia": [
+          26,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          18,
+          0,
+          0
+        ]
+      },
+      {
+        "N": 30,
+        "num_primes": 9,
+        "num_composites": 19,
+        "delta_PC": "0.304008082754568",
+        "det_Sigma_Schur": "125394.565239",
+        "lam_min_P": "-2.04091202573",
+        "alpha_star_P_alpha_star": "-0.0184784025953877",
+        "P_inertia": [
+          27,
+          1,
+          0
+        ],
+        "Schur_inertia": [
+          19,
+          0,
+          0
+        ]
+      }
+    ]
+  }
+}

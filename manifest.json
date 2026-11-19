@@ -98,12 +98,12 @@
       "hub": "07",
       "folder": "07_MASTER_LEAN4_REPO_AND_MATHLIB4_PRS",
       "title": "RiemannBlueprint: Axiom-Free Lean 4 Formalizations of Classical Analytic Number Theory and Identity-Matrix Linear Algebra (v3.0.15)",
-      "version": "v3.0.15",
+      "version": "v3.2.0",
       "doi": "10.5281/zenodo.24357255",
       "pdf": null,
       "zip": {
         "filename": "RiemannBlueprint_Verified_Lean4_v3.0.zip",
-        "sha256": "8746fbd53681d184fccdead81eb52c49ad2d1e16827b31d9cebf3865844950be"
+        "sha256": "50a73cecf33ccc4bcf3ade36f506fbb23ed8e1fe9be4fdbd953f5c89e663e06e"
       }
     },
     {
@@ -200,7 +200,7 @@
       "hub": "14",
       "folder": "14_PAPER_L_UNIFIED_ARITHMETIC_MASTER_REVIEW",
       "title": "Unconditional Arithmetic Reductions, Exact Cotangent Reciprocity, and Lean 4 Formal Verification for the Classical and Nyman-Beurling Theory of the Riemann Zeta Function",
-      "version": "v3.0.26",
+      "version": "v3.2.0",
       "doi": "10.5281/zenodo.24357280",
       "pdf": {
         "filename": "paper_l_unified_arithmetic_lean4_master_review.pdf",
@@ -208,7 +208,7 @@
       },
       "zip": {
         "filename": "PAPER_L_SUBMISSION_PACKAGE.zip",
-        "sha256": "395f6d8c420cba11a028591b4267729ef4e72f4edcf996a7ce232d276db0f8a3"
+        "sha256": "6cb2bda7768b4a5eb4a8a5dbed486287804218bca0a893334e4cc948cb77c9fb"
       }
     }
   ],

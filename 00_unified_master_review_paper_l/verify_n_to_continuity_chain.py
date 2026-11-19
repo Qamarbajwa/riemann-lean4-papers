@@ -27,21 +27,21 @@ UPSTREAM_DIR = next(
     (
         d
         for d in (
-            ROOT / "RiemannBlueprint" / "RiemannBlueprint" / "UpstreamPRs",
+            ROOT / "RiemannBlueprint" / "RiemannBlueprint" / "Modules",
             ROOT / "MATHLIB4_PR_STAGING",
             ROOT.parent / "05_mathlib4_pr_staging",
             ROOT,
         )
-        if (d / "UpstreamPR_8N_HarmonicCellL2QuadratureAndPrimeJumps.lean").is_file()
+        if (d / "HarmonicCellL2QuadratureAndPrimeJumps.lean").is_file()
     ),
-    ROOT / "RiemannBlueprint" / "RiemannBlueprint" / "UpstreamPRs",
+    ROOT / "RiemannBlueprint" / "RiemannBlueprint" / "Modules",
 )
 
 CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
     (
         1,
         "Half-Open Slab Partition & Horizon Gap",
-        "UpstreamPR_8N_HarmonicCellL2QuadratureAndPrimeJumps.lean;UpstreamPR_8P_HarmonicSlabNonTermination.lean",
+        "HarmonicCellL2QuadratureAndPrimeJumps.lean;HarmonicSlabNonTermination.lean",
         [
             "sum_Icc_harmonicCellWidth",
             "residualHorizonGap_eq_sub_sum_Icc",
@@ -52,7 +52,7 @@ CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
     (
         2,
         "Pointwise Affine Decomposition & Null-Slope Collapse",
-        "UpstreamPR_8M_PointwiseContinuityAndPeriodicity.lean;UpstreamPR_8P_HarmonicSlabNonTermination.lean",
+        "PointwiseContinuityAndPeriodicity.lean;HarmonicSlabNonTermination.lean",
         [
             "continuousNymanResidual_eq_sub_D1_mul_inv",
             "floor_one_div_mul_eq_nat_div",
@@ -63,7 +63,7 @@ CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
     (
         3,
         "Outer-Slab Continuum Annihilation on (1/2, 1]",
-        "UpstreamPR_8M_PointwiseContinuityAndPeriodicity.lean",
+        "PointwiseContinuityAndPeriodicity.lean",
         [
             "discreteCellResidual_one_eq",
             "continuousNymanResidual_eq_zero_on_top_half",
@@ -72,7 +72,7 @@ CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
     (
         4,
         "Periodic Folding, Palindromic Reflection & Double-Cone Symmetry",
-        "UpstreamPR_8M_PointwiseContinuityAndPeriodicity.lean;UpstreamPR_8T_DoubleConeL2FoldingAndFlux.lean",
+        "PointwiseContinuityAndPeriodicity.lean;DoubleConeL2FoldingAndFlux.lean",
         [
             "modularCellResidual_periodic",
             "fract_palindromic_add_eq",
@@ -84,7 +84,7 @@ CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
     (
         5,
         "Prime-Conductor Jump & Multi-Prime 1/(2p^2) Quantum",
-        "UpstreamPR_8P_HarmonicSlabNonTermination.lean;UpstreamPR_8Q_PrimeCellL2EnergyFloor.lean;UpstreamPR_8S_MultiPrimeL2Superposition.lean",
+        "HarmonicSlabNonTermination.lean;PrimeCellL2EnergyFloor.lean;MultiPrimeL2Superposition.lean",
         [
             "discreteCellResidual_prime_sub_pred",
             "sq_div_pred_mul_add_sq_div_mul_succ",
@@ -96,7 +96,7 @@ CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
     (
         6,
         "Period-Free Uniform Bound & Euclidean Book X.1 Tail Exhaustion",
-        "UpstreamPR_8U_EuclideanExhaustionTailBound.lean",
+        "EuclideanExhaustionTailBound.lean",
         [
             "abs_modularCellResidual_le",
             "abs_discreteCellResidual_le_of_D1_eq_zero",
@@ -108,7 +108,7 @@ CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
     (
         7,
         "Lebesgue Set-Integral Bridge & Unconditional L^2(0, 1] Positivity",
-        "UpstreamPR_8P_HarmonicSlabNonTermination.lean;UpstreamPR_8U_EuclideanExhaustionTailBound.lean",
+        "HarmonicSlabNonTermination.lean;EuclideanExhaustionTailBound.lean",
         [
             "setIntegral_Ioc_harmonicCell_eq",
             "harmonicCellL2PartialSum_eq_setIntegral_Ioc",
@@ -120,7 +120,7 @@ CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
     (
         8,
         "Mellin Zero-Obstruction & Off-Line Cauchy-Schwarz Barrier",
-        "UpstreamPR_8R_MellinZeroObstructionFloor.lean;UpstreamPR_8S_MultiPrimeL2Superposition.lean;UpstreamPR_8U_EuclideanExhaustionTailBound.lean",
+        "MellinZeroObstructionFloor.lean;MultiPrimeL2Superposition.lean;EuclideanExhaustionTailBound.lean",
         [
             "mellinResidualQuotient_at_zeta_zero",
             "l2NormSq_ge_offlineEnergyFloor_of_cauchy_schwarz",
@@ -132,15 +132,15 @@ CONDITIONS: List[Tuple[int, str, str, List[str]]] = [
 ]
 
 SERIES_8MNOPQRSTU_MODULES = [
-    "RiemannBlueprint.UpstreamPRs.UpstreamPR_8M_PointwiseContinuityAndPeriodicity",
-    "RiemannBlueprint.UpstreamPRs.UpstreamPR_8N_HarmonicCellL2QuadratureAndPrimeJumps",
-    "RiemannBlueprint.UpstreamPRs.UpstreamPR_8O_PeriodicL2CellSumCompression",
-    "RiemannBlueprint.UpstreamPRs.UpstreamPR_8P_HarmonicSlabNonTermination",
-    "RiemannBlueprint.UpstreamPRs.UpstreamPR_8Q_PrimeCellL2EnergyFloor",
-    "RiemannBlueprint.UpstreamPRs.UpstreamPR_8R_MellinZeroObstructionFloor",
-    "RiemannBlueprint.UpstreamPRs.UpstreamPR_8S_MultiPrimeL2Superposition",
-    "RiemannBlueprint.UpstreamPRs.UpstreamPR_8T_DoubleConeL2FoldingAndFlux",
-    "RiemannBlueprint.UpstreamPRs.UpstreamPR_8U_EuclideanExhaustionTailBound",
+    "RiemannBlueprint.Modules.UpstreamPR_8M_PointwiseContinuityAndPeriodicity",
+    "RiemannBlueprint.Modules.UpstreamPR_8N_HarmonicCellL2QuadratureAndPrimeJumps",
+    "RiemannBlueprint.Modules.UpstreamPR_8O_PeriodicL2CellSumCompression",
+    "RiemannBlueprint.Modules.UpstreamPR_8P_HarmonicSlabNonTermination",
+    "RiemannBlueprint.Modules.UpstreamPR_8Q_PrimeCellL2EnergyFloor",
+    "RiemannBlueprint.Modules.UpstreamPR_8R_MellinZeroObstructionFloor",
+    "RiemannBlueprint.Modules.UpstreamPR_8S_MultiPrimeL2Superposition",
+    "RiemannBlueprint.Modules.UpstreamPR_8T_DoubleConeL2FoldingAndFlux",
+    "RiemannBlueprint.Modules.UpstreamPR_8U_EuclideanExhaustionTailBound",
 ]
 
 CAPSTONE_AXIOM_TARGETS = [
@@ -196,7 +196,7 @@ def verify_source_modules() -> Dict[str, object]:
 
 def verify_lean_kernel_axioms_and_lint() -> Dict[str, object]:
     lines = [
-        "import RiemannBlueprint.UpstreamPRs.UpstreamPR_8U_EuclideanExhaustionTailBound",
+        "import RiemannBlueprint.Modules.UpstreamPR_8U_EuclideanExhaustionTailBound",
         "import Batteries.Tactic.Lint",
         "",
     ]

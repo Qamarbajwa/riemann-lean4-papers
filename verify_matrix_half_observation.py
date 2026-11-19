@@ -15,6 +15,12 @@ High-precision (50-60 digit mpmath + exact integer arithmetic) verification of:
          of the pure plaque matrix P_N across N = 4..64,
        - closed-form Dirichlet simplex optimum E_dir(N) = 1 / (1^T M_N^{-1} 1)
          above the prime floor sum_{N < p <= 500} 1/(2p^2).
+  5. Basal 50/50 clock, orthogonal parity observation matrix O_{2K}, and
+     palindromic 50/50 projectors P_+, P_-.
+  6. Anchored wavefunction matrix Omega_{M,N}, folded half-space isometry,
+     exact {1, 2, 4} dyadic energy 1 - pi/4, Cholesky/Schur innovation recursion
+     E_free(N) = 1 - sum rho_k^2 / s_k, Lorentzian timelike dynamics (alpha*^T P_N alpha* < 0),
+     and isolated ground-state eigenmode concentration.
 """
 
 from __future__ import annotations
@@ -321,6 +327,73 @@ def primes_in_range(lo_exclusive: int, hi_inclusive: int) -> List[int]:
     return out
 
 
+def is_prime_int(n: int) -> bool:
+    return n >= 2 and all(n % d != 0 for d in range(2, int(math.isqrt(n)) + 1))
+
+
+def is_power_of_two(n: int) -> bool:
+    return n >= 1 and (n & (n - 1)) == 0
+
+
+def cholesky_factor(A: mp.matrix) -> mp.matrix:
+    """Lower-triangular Cholesky factor L of symmetric positive-definite matrix A = L L^T."""
+    n = A.rows
+    L = mp.zeros(n, n)
+    for i in range(n):
+        for j in range(i + 1):
+            s = sum(L[i, k] * L[j, k] for k in range(j))
+            if i == j:
+                val = A[i, i] - s
+                assert val > 0, f"Matrix not PD at pivot {i}: {val}"
+                L[i, j] = mp.sqrt(val)
+            else:
+                L[i, j] = (A[i, j] - s) / L[j, j]
+    return L
+
+
+def forward_solve(L: mp.matrix, b: List[mp.mpf]) -> List[mp.mpf]:
+    """Forward substitution solving L z = b for lower-triangular L."""
+    n = L.rows
+    z: List[mp.mpf] = []
+    for i in range(n):
+        s = sum(L[i, k] * z[k] for k in range(i))
+        z.append((b[i] - s) / L[i, i])
+    return z
+
+
+def build_anchored_wave_matrix(M: int, N: int) -> mp.matrix:
+    """Construct M x (N - 2) anchored wavefunction matrix Omega_{M,N} = |b_tilde> 1^T + Psi_{M,N}."""
+    dim = N - 2
+    # cumulativeDipole (m+1) for m=0..dim-1 has nonzeros at r=m+1, m+2, m+3 with weights (m+1), -2(m+2), (m+3)
+    Omega = mp.zeros(M, dim)
+    for i in range(M):
+        n = i + 1
+        rt_w = mp.sqrt(mp.mpf(1) / (n * (n + 1)))
+        vac_i = rt_w * ((-1) ** n)
+        for m in range(dim):
+            a = m + 1
+            psi_im = mp.mpf(0)
+            for r in range(1, a + 1):
+                psi_im += (
+                    r * (n // r)
+                    - 2 * (r + 1) * (n // (r + 1))
+                    + (r + 2) * (n // (r + 2))
+                )
+            Omega[i, m] = vac_i + rt_w * psi_im
+    return Omega
+
+
+def cot_quad_form(cache: VasyuninCache, c_1based: List[mp.mpf], N: int) -> mp.mpf:
+    """Compute exact 1 - SCot = 1 + QCot from Vasyunin unweighted K_cot kernel."""
+    q = mp.mpf(0)
+    for j in range(1, N + 1):
+        for k in range(1, N + 1):
+            if j != k:
+                # vasyuninGCot(j, k) = unweighted_k_cot(j, k) / (j * k)
+                q += (c_1based[j] * c_1based[k] / (j * k)) * cache.unweighted_k_cot(j, k)
+    return mp.mpf(1) + q
+
+
 # ---------------------------------------------------------------------------
 # 4. End-to-End Verification Suite
 # ---------------------------------------------------------------------------
@@ -358,10 +431,12 @@ def main() -> None:
           f"{'E_dir(N)':>20} {'prime_floor(>N,<=500)':>21} {'t(s)':>6}  spectral notes")
 
     opt_data: Dict[int, Tuple[List[mp.mpf], List[mp.mpf], mp.mpf]] = {}
+    core_mats: Dict[int, Tuple[mp.matrix, mp.matrix, mp.matrix, List[mp.mpf]]] = {}
     for N in N_list:
         t_n = time.perf_counter()
         dim = N - 2
         G, P, M_mat, u = cache.build_core_matrices(N)
+        core_mats[N] = (G, P, M_mat, u)
 
         # Verify rank-2 shift identities: G - (P + (pi/2)(u 1^T + 1 u^T)) = 0
         # and M - (1 1^T - (pi/2)(u 1^T + 1 u^T) + P) = 0
@@ -448,8 +523,7 @@ def main() -> None:
         prime_floor = sum(mp.mpf(1) / (2 * p * p) for p in p_list)
         assert e_dir > prime_floor, f"Simplex optimum {e_dir} below prime floor {prime_floor} at N={N}"
 
-        if N in (4, 6, 8, 12, 16, 24):
-            opt_data[N] = (alpha, c_vec, e_dir)
+        opt_data[N] = (alpha, c_vec, e_dir)
 
         dt = time.perf_counter() - t_n
         print(f"{N:>4} {dim:>4} {str((sig_P[0], sig_P[1])):>11} {str((sig_G[0], sig_G[1])):>13} "
@@ -457,7 +531,8 @@ def main() -> None:
               f"{mp.nstr(prime_floor, 14):>21} {dt:>6.2f}  {spectral_note}")
 
     # N = 5 also needed for L_5 = 60 period folding
-    _, _, M5, _ = cache.build_core_matrices(5)
+    G5, P5, M5, u5 = cache.build_core_matrices(5)
+    core_mats[5] = (G5, P5, M5, u5)
     alpha5, e_dir5 = solve_simplex_optimum(M5)
     opt_data[5] = (alpha5, reconstruct_c_from_alpha(5, alpha5), e_dir5)
 
@@ -593,6 +668,141 @@ def main() -> None:
         assert abs((e_mean + e_alt + e_cross) - e_tot) < tol_eq
         print(f"{N:>4} {mp.nstr(e_tot, 10):>16} {mp.nstr(100 * e_mean / e_tot, 4):>10} "
               f"{mp.nstr(100 * e_alt / e_tot, 4):>10} {mp.nstr(100 * e_cross / e_tot, 4):>11}")
+
+    # 8. Wavefunction Matrix Omega_{M,N}, Dyadic {1,2,4}, Cholesky Innovation, Lorentzian Cone & Ground State
+    print("\n--- 8.1 Wavefunction Matrix Omega_{M,N} & Folded Half-Space Isometry ---")
+    for N_w, M_w in [(4, 200), (6, 200)]:
+        alpha_w, c_w, e_dir_w = opt_data[N_w]
+        _, _, M_wmat, _ = core_mats[N_w]
+        Omega = build_anchored_wave_matrix(M_w, N_w)
+        top_max = max(abs(Omega[0, m]) for m in range(N_w - 2))
+        assert top_max < tol_eq, f"Top row Omega[0,:] != 0 at N={N_w}: {top_max}"
+        psi = mat_vec_mul(Omega, alpha_w)
+        psi_norm_sq = dot(psi, psi)
+        e_m_direct = sum(
+            (discrete_residual(c_w, N_w, n) ** 2) / (n * (n + 1)) for n in range(1, M_w + 1)
+        )
+        assert abs(psi_norm_sq - e_m_direct) < tol_eq
+        gram_omega = Omega.T * Omega
+        q_omega = dot(alpha_w, mat_vec_mul(gram_omega, alpha_w))
+        q_mn = dot(alpha_w, mat_vec_mul(M_wmat, alpha_w))
+        assert abs(q_omega - psi_norm_sq) < tol_eq
+        assert mp.mpf(0) < q_omega <= q_mn + tol_eq
+        assert abs(q_mn - e_dir_w) < tol_eq
+        print(f"[PASS] N={N_w}, M={M_w}: max|Omega[0,:]|={mp.nstr(top_max, 3)}, "
+              f"||Omega a*||^2={mp.nstr(psi_norm_sq, 12)} <= E_dir={mp.nstr(e_dir_w, 12)}")
+
+    for N_f, L_f in [(4, 12), (5, 60)]:
+        H_f = (L_f - 2) // 2
+        _, c_f, _ = opt_data[N_f]
+        half_wave = []
+        for i in range(H_f):
+            m = i + 1
+            m_ref = L_f - 1 - m
+            w_sym = (mp.mpf(1) / (m * (m + 1)) + mp.mpf(1) / (m_ref * (m_ref + 1))) / 2
+            half_wave.append(mp.sqrt(2 * w_sym) * discrete_residual(c_f, N_f, m))
+        hw_norm_sq = dot(half_wave, half_wave)
+        full_e = sum(
+            (discrete_residual(c_f, N_f, n) ** 2) / (n * (n + 1)) for n in range(1, 2 * H_f + 1)
+        )
+        assert abs(hw_norm_sq - full_e) < tol_eq
+        print(f"[PASS] Folded half-wave N={N_f}, H={H_f}: | ||psi_half||^2 - E_{{2H}} | = "
+              f"{mp.nstr(abs(hw_norm_sq - full_e), 3)}")
+
+    print("\n--- 8.2 Exact Dyadic {1, 2, 4} Variational Minimum (1 - pi/4) ---")
+    dyadic_opt = mp.mpf(1) - mp.pi / 4
+    for t_val in [mp.mpf(0), mp.mpf("0.5"), mp.mpf(1), mp.mpf("1.5")]:
+        c_dy = [mp.mpf(0), -2 + t_val, 4 - 3 * t_val, mp.mpf(0), 2 * t_val]
+        e_dy = cot_quad_form(cache, c_dy, 4)
+        e_formula = dyadic_opt + (mp.pi / 4) * ((t_val - 1) ** 2)
+        assert abs(e_dy - e_formula) < tol_eq
+        assert e_dy >= dyadic_opt - tol_eq
+    print(f"[PASS] Dyadic {{1,2,4}} minimum = 1 - pi/4 = {mp.nstr(dyadic_opt, 18)} (err < 1e-45)")
+
+    print("\n--- 8.3 Exact Cholesky & Schur Innovation Recursion (N = 3..64) ---")
+    G64, _, _, u64 = core_mats[64]
+    L64 = cholesky_factor(G64)
+    assert max_abs_diff(L64 * L64.T, G64) < tol_eq
+    b_full = [mp.pi * val for val in u64]
+    z64 = forward_solve(L64, b_full)
+    innov_prime = mp.mpf(0)
+    innov_pow2 = mp.mpf(0)
+    innov_comp = mp.mpf(0)
+    total_innov = mp.mpf(0)
+    for m_idx, z_val in enumerate(z64):
+        k = m_idx + 3
+        dz = z_val * z_val
+        total_innov += dz
+        if is_prime_int(k):
+            innov_prime += dz
+        elif is_power_of_two(k):
+            innov_pow2 += dz
+        else:
+            innov_comp += dz
+    for N_c in N_list:
+        dim_c = N_c - 2
+        G_c, _, _, u_c = core_mats[N_c]
+        g_inv_u = mp.lu_solve(G_c, mp.matrix([[u_c[i]] for i in range(dim_c)]))
+        e_free_direct = mp.mpf(1) - (mp.pi ** 2) * sum(u_c[i] * g_inv_u[i, 0] for i in range(dim_c))
+        e_free_chol = mp.mpf(1) - sum(z64[i] ** 2 for i in range(dim_c))
+        assert abs(e_free_direct - e_free_chol) < tol_eq, (
+            f"Cholesky E_free mismatch at N={N_c}: {abs(e_free_direct - e_free_chol)}"
+        )
+    # Cross-check one-step Schur innovation identity at N = 4 -> 5
+    G3, _, _, u3 = core_mats[4]
+    G4_, _, _, u4_ = core_mats[5]
+    alpha_prev = mp.lu_solve(G3, mp.matrix([[mp.pi * u3[i]] for i in range(2)]))
+    g_col = mp.matrix([[G4_[i, 2]] for i in range(2)])
+    v_col = mp.lu_solve(G3, g_col)
+    s_schur = G4_[2, 2] - sum(G4_[i, 2] * v_col[i, 0] for i in range(2))
+    rho_schur = mp.pi * u4_[2] - sum(G4_[i, 2] * alpha_prev[i, 0] for i in range(2))
+    assert abs((rho_schur ** 2) / s_schur - z64[2] ** 2) < tol_eq
+    print(f"[PASS] Cholesky L L^T = G_64 & E_free(N) = 1 - sum z_m^2 matched (< 1e-45)")
+    print(f"       Class shares of 1 - E_free(64) = {mp.nstr(total_innov, 10)}: "
+          f"primes={mp.nstr(100 * innov_prime / total_innov, 5)}%, "
+          f"2^k={mp.nstr(100 * innov_pow2 / total_innov, 5)}%, "
+          f"composites={mp.nstr(100 * innov_comp / total_innov, 4)}%")
+
+    print("\n--- 8.4 Lorentzian Light-Cone Dynamics & Isolated Ground-State Eigenmode ---")
+    print(f"{'N':>4} {'1 - pi u^T a*':>16} {'a*^T P a*':>16} {'E_dir(N)':>16} "
+          f"{'lam_0':>14} {'gap lam1/lam0':>14} {'GS share %':>11}")
+    for N_s in N_list:
+        dim_s = N_s - 2
+        alpha_s, _, e_dir_s = opt_data[N_s]
+        _, P_s, M_s, u_s = core_mats[N_s]
+        bdy_s = mp.mpf(1) - mp.pi * dot(u_s, alpha_s)
+        plaque_s = dot(alpha_s, mat_vec_mul(P_s, alpha_s))
+        assert abs((bdy_s + plaque_s) - e_dir_s) < tol_eq
+        if N_s == 4:
+            assert plaque_s > mp.mpf(0), f"Expected spacelike plaque > 0 at N=4, got {plaque_s}"
+        else:
+            assert plaque_s < mp.mpf(0), f"Expected timelike plaque < 0 at N={N_s}, got {plaque_s}"
+
+        if N_s <= 32:
+            eigs_s, Q_s = mp.eigsy(M_s)
+            pairs = sorted([(eigs_s[c], c) for c in range(dim_s)], key=lambda t: t[0])
+            lam0, idx0 = pairs[0]
+            lam1, _ = pairs[1]
+            v0 = [Q_s[r, idx0] for r in range(dim_s)]
+            assert abs(dot(v0, v0) - 1) < tol_eq
+            res_eig = max(abs(x - lam0 * y) for x, y in zip(mat_vec_mul(M_s, v0), v0))
+            assert res_eig < tol_eig, f"Eigenvector residual too large at N={N_s}: {res_eig}"
+            ones_ov = sum(v0)
+            assert abs(ones_ov) > mp.mpf("1e-10")
+            gs_bound = lam0 / (ones_ov ** 2)
+            assert e_dir_s <= gs_bound + tol_eq
+            gs_share = (ones_ov ** 2 / lam0) * e_dir_s
+            gap_ratio = lam1 / lam0
+            assert gap_ratio > mp.mpf("7.5"), f"Unexpected small spectral gap at N={N_s}: {gap_ratio}"
+            assert gs_share > mp.mpf("0.90"), f"Unexpected low GS share at N={N_s}: {gs_share}"
+            lam0_str = mp.nstr(lam0, 8)
+            gap_str = mp.nstr(gap_ratio, 6)
+            share_str = mp.nstr(100 * gs_share, 5)
+        else:
+            lam0_str, gap_str, share_str = "-", "-", "-"
+
+        print(f"{N_s:>4} {mp.nstr(bdy_s, 10):>16} {mp.nstr(plaque_s, 10):>16} "
+              f"{mp.nstr(e_dir_s, 10):>16} {lam0_str:>14} {gap_str:>14} {share_str:>11}")
 
     total_t = time.perf_counter() - t0
     print("=" * 78)

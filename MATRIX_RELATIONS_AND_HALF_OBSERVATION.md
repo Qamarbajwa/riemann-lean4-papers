@@ -28,6 +28,9 @@ This document transcribes the full analytic–arithmetic–Hilbert-space structu
 | Palindromic 50/50 projectors | $P_+, P_-$ | $n \times n$ | $\frac{1}{2}(I_n \pm J_n)$, $\operatorname{tr}(P_\pm) = H$ when $n = 2H$ |
 | Augmented 50/50-clock Gram matrix | $\mathcal{G}_N^{\mathrm{aug}}$ | $(N{-}1)\times(N{-}1)$ | $\begin{psmallmatrix} 1 & -\pi u_N^T \\ -\pi u_N & \widetilde{G}_N \end{psmallmatrix}$ |
 | Dirichlet simplex lift matrix | $S_N$ | $(N{-}1)\times(N{-}2)$ | $\begin{psmallmatrix} \mathbf{1}_{N-2}^T \\ I_{N-2} \end{psmallmatrix}$, linking $M_N = S_N^T \mathcal{G}_N^{\mathrm{aug}} S_N$ |
+| Normalized wavefunction vector | $\psi_{M,N}$ | $M \times 1$ | $W_M^{1/2} r_M$, Born norm $\|\psi_{M,N}\|_2^2 = r_M^T W_M r_M$ |
+| Anchored wavefunction matrix | $\mathbf{\Omega}_{M,N}$ | $M \times (N{-}2)$ | $\tilde{\mathbf{b}}_M \mathbf{1}^T + \mathbf{\Psi}_{M,N}$, yielding $\psi_{M,N} = \mathbf{\Omega}_{M,N}\alpha_N$ |
+| Folded half-space wavefunction | $\psi^{\mathrm{half}}_H$ | $H \times 1$ | $\sqrt{2\overline{W}_{\mathrm{half}}}\, a_L$ on $[1, H]$ for period $L = 2H+2$ |
 
 ---
 
@@ -175,7 +178,53 @@ $$\alpha^T \widetilde{G}_N \alpha \ge \frac{1}{2}(\mathbf{1}^T \alpha)^2 \qquad 
 
 ---
 
-## 7. Lean 4 Concordance & Exact Mathematical Boundary
+## 7. Wavefunction Matrix ($\mathbf{\Omega}_{M,N}$), Cholesky Innovation Recursion, Lorentzian Dynamics, & Ground-State Spectral Criterion
+
+### 7.1 Wavefunction State, Matrix Superposition, & Half-Space Born Isometry
+Weighting the discrete residual vector by $W_M^{1/2} = \operatorname{diag}(\sqrt{w_n})$ turns the cell $L^2$ quadrature form into an exact Euclidean squared norm (Born law) $\psi_{M,N} := W_M^{1/2} r_M$, $\|\psi_{M,N}\|_2^2 = \sum_{n=1}^M r_n^2 w_n = \int_{1/(M+1)}^1 r(x)^2\,dx$. On `IsDirichletAnchored c N`, expanding $c = c_{\mathrm{base}} + \sum_{m=1}^{N-2} \alpha_m d_m$ with $\mathbf{1}^T \alpha = 1$ yields the matrix superposition law:
+
+$$\psi_{M,N} = \mathbf{\Omega}_{M,N}\,\alpha_N, \qquad \mathbf{\Omega}_{M,N} := \tilde{\mathbf{b}}_M \mathbf{1}_{N-2}^T + \mathbf{\Psi}_{M,N}, \qquad \tilde{\mathbf{b}}_M := W_M^{1/2} \mathbf{b}_M,$$
+
+with exact Born norm $\|\tilde{\mathbf{b}}_M\|_2^2 = 1 - \frac{1}{M+1}$. Every column of $\mathbf{\Omega}_{M,N}$ vanishes identically in its top row ($n = 1$, corresponding to the upper half $(1/2, 1]$), while the finite-horizon wavefunction Gram matrices $\mathbf{\Omega}_{M,N}^T \mathbf{\Omega}_{M,N}$ increase monotonically with $M$ and converge from below onto $M_N$:
+
+$$\alpha^T \bigl(\mathbf{\Omega}_{M,N}^T \mathbf{\Omega}_{M,N}\bigr) \alpha \le \alpha^T \bigl(\mathbf{\Omega}_{M',N}^T \mathbf{\Omega}_{M',N}\bigr) \alpha \le \alpha^T M_N \alpha \qquad (1 \le M \le M',\; \mathbf{1}^T \alpha = 1).$$
+
+Similarly, the $H$-dimensional folded half-space wavefunction $\psi^{\mathrm{half}}_H := \sqrt{2\,\overline{W}_{\mathrm{half}}}\,a_L$ satisfies $\|\psi^{\mathrm{half}}_H\|_2^2 = \|\psi_{2H,N}\|_2^2$ whenever $1,\dots,N \mid (2H + 2)$.
+
+### 7.2 Exact Dyadic $\{1, 2, 4\}$ Variational Formula ($1 - \pi/4$)
+Restricting $A_4$ to the dyadic first octave $\{1, 2, 4\}$ ($c_3 = 0$) leaves the one-parameter family $c_t = (-2 + t,\, 4 - 3t,\, 0,\, 2t)^T$, yielding an exact closed form on $A_4$:
+
+$$1 - S_{\mathrm{cot}}(c, 4) = \left(1 - \frac{\pi}{4}\right) + \frac{\pi}{4}(c_1 + 1)^2 \ge 1 - \frac{\pi}{4} = 0.21460183660255\dots,$$
+
+with equality uniquely at the Dirichlet-anchored mode `dyadicFourVec 1` $= (-1, 1, 0, 2)^T$ ($c_1 = -1$).
+
+### 7.3 Exact Cholesky & Schur One-Step Innovation Recursion
+Factorizing $\widetilde{G}_N = L_N L_N^T$ (or recursively bordering $\widetilde{G}_k \mapsto \widetilde{G}_{k+1}$ with Schur complement $s_{k+3} = d - g^T v$ and innovation scalar $\rho_{k+3} = b_{\mathrm{new}} - g^T \alpha$) decomposes the free-boundary minimum $E_{\mathrm{free}}(N)$ strictly additively across scales $k = 3, \dots, N$:
+
+$$E_{\mathrm{free}}(N) = 1 - \sum_{m=1}^{N-2} z_m^2 = 1 - \sum_{k=3}^{N} \frac{\rho_k^2}{s_k}, \qquad L_N z = \pi u_N.$$
+
+For $N = 64$ (`verify_matrix_half_observation.py`), $1 - E_{\mathrm{free}}(64) = 0.9886075252$ splits cleanly by arithmetic class: **primes** contribute `89.307%`, **powers of $2$** contribute `10.118%`, and **non-power-of-$2$ composites** contribute `0.5741%`.
+
+### 7.4 Lorentzian Light-Cone Dynamics & Isolated Ground-State Eigenmode
+Decomposition $E_{\mathrm{dir}}(N) = (1 - \pi u_N^T \alpha^*) + (\alpha^*)^T P_N \alpha^*$ places the unconstrained $N = 4$ optimum inside the **spacelike** sector of $P_4$, while every optimum for $N \ge 6$ crosses into the **timelike** cone ($(\alpha^*)^T P_N \alpha^* < 0$), where negative-curvature modes of $P_N$ cancel more than half of the remaining boundary defect. Spectral diagonalization of $M_N$ reveals a persistent isolated ground-state eigenvector $v_0(N)$ ($\|v_0\|_2 = 1$, $M_N v_0 = \lambda_0 v_0$) separated by a large gap ($\lambda_1 / \lambda_0 \in [7.77, 10.87]$ for $N \le 32$) carrying over `91%` of $\mathbf{1}^T M_N^{-1}\mathbf{1}$:
+
+| $N$ | $1 - \pi u_N^T \alpha^*$ | $(\alpha^*)^T P_N \alpha^*$ | $E_{\mathrm{dir}}(N)$ | $\lambda_0(M_N)$ | Gap $\lambda_1/\lambda_0$ | GS Share $\frac{(v_0^T\mathbf{1})^2/\lambda_0}{\mathbf{1}^T M_N^{-1}\mathbf{1}}$ |
+|---:|---:|---:|---:|---:|---:|---:|
+| 4 | `0.0514805968` | `+0.0467659564` | `0.0982465531` | `0.1685258` | `10.8676` | `98.318%` |
+| 6 | `0.0602450807` | `-0.0182507766` | `0.0419943041` | `0.09840289` | `10.4551` | `93.748%` |
+| 8 | `0.0517632277` | `-0.0258553101` | `0.0259079176` | `0.07278997` | `9.92386` | `92.885%` |
+| 12 | `0.0461187508` | `-0.0245026092` | `0.0216161416` | `0.06310731` | `8.09383` | `91.134%` |
+| 16 | `0.0404281835` | `-0.0215954023` | `0.0188327812` | `0.05437583` | `8.04747` | `91.874%` |
+| 24 | `0.0360520207` | `-0.0197400465` | `0.0163119742` | `0.04731903` | `7.77322` | `92.744%` |
+| 32 | `0.0324210182` | `-0.0177400881` | `0.0146809301` | `0.04258629` | `8.45959` | `93.454%` |
+| 48 | `0.0272283414` | `-0.0149113220` | `0.0123170193` | — | — | — |
+| 64 | `0.0261399079` | `-0.0143532850` | `0.0117866229` | — | — | — |
+
+Normalizing any unit eigenvector $v$ of $M_N$ with eigenvalue $\lambda$ and nonzero overlap $\mathbf{1}^T v \ne 0$ gives the exact variational vector $\alpha = v / (\mathbf{1}^T v)$ with energy $\alpha^T M_N \alpha = \lambda / (\mathbf{1}^T v)^2$ (`unitDefectMatrix_eigenvector_simplex_energy`), yielding the **ground-state spectral RH criterion**: if $\inf_{N, \lambda, v} \lambda / (\mathbf{1}^T v)^2 = 0$, then `_root_.RiemannHypothesis` follows (`riemannHypothesis_of_unitDefectMatrix_groundState_vanishing_unconditional`).
+
+---
+
+## 8. Lean 4 Concordance & Exact Mathematical Boundary
 
 ### Lean 4 Theorem Concordance (`RiemannBlueprint.MatrixHalfObservation`)
 
@@ -201,6 +250,13 @@ $$\alpha^T \widetilde{G}_N \alpha \ge \frac{1}{2}(\mathbf{1}^T \alpha)^2 \qquad 
 | Transformed metric $\widetilde{W}_{2K} = \mathbf{O}_{2K}W_{2K}\mathbf{O}_{2K}^T$ | `parityObsMatrix_conj_slabWeightMatrix`, `parityObsMatrix_preserves_quadForm` |
 | Palindromic projectors $P_\pm$ & $P_- W_{\mathrm{odd}} P_- = 0$ | `palindromicProj_trace_half`, `palindromicProjMinus_annihilates_odd_metric` |
 | $M_N = S_N^T \mathcal{G}_N^{\mathrm{aug}} S_N$ & upper-half bound | `unitDefectMatrix_eq_simplexLift_conj_augClockGram`, `dipoleGramMatrix_quadForm_ge_half_sq` |
+| Wavefunction state $\psi_{M,N} = W_M^{1/2} r_M$ & Born norm | `slabWeightSqrtMatrix_mul_self`, `wavefunctionVec_norm_sq_eq_partialSum`, `setIntegral_Ioc_eq_wavefunctionVec_norm_sq` |
+| Basal vacuum norm & top-row annihilation | `vacuumWaveVec_norm_sq_eq`, `anchoredWaveMatrix_topRow_zero` |
+| Superposition $\psi_{M,N} = \mathbf{\Omega}_{M,N}\alpha_N$ & Gram monotone/domination | `wavefunctionVec_eq_anchoredWaveMatrix_mulVec`, `harmonicCellL2PartialSum_eq_anchoredWave_gram_quadForm`, `anchoredWave_gram_quadForm_monotone`, `anchoredWave_gram_quadForm_le_unitDefectMatrix` |
+| Folded half-space wavefunction isometry | `foldedHalfWaveVec_norm_sq_eq_period` |
+| Cholesky telescoping & Schur innovation step | `cholesky_energy_eq_one_sub_sum_sq`, `schur_one_step_innovation` |
+| Exact $\{1, 2, 4\}$ dyadic energy $1 - \pi/4$ | `dyadicFourVec_mem_A_N`, `dyadicFourVec_one_isDirichletAnchored`, `one_sub_SCot_dyadicFour_eq`, `one_sub_SCot_dyadicFour_ge`, `one_sub_SCot_dyadicFour_opt_eq` |
+| Eigenvector energy bound & spectral RH criterion | `unitDefectMatrix_eigenvector_simplex_energy`, `unitDefectMatrix_eigenvalue_nonneg`, `riemannHypothesis_of_unitDefectMatrix_groundState_vanishing_unconditional` |
 
 ### Exact Mathematical Boundary (Finite-$N$ Floor vs. Asymptotic Limit)
 For every **fixed** truncation $N \ge 2$, the prime-jump lower bound `sum_primes_le_integral_Ioc` guarantees a strictly positive prime floor:

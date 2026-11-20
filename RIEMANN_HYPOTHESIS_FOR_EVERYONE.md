@@ -10,8 +10,9 @@
 
 Imagine a hollow metal organ pipe of length $1$ meter, and suppose you want to build a **pure flat tone** (a flat `1` across the whole pipe) using only **sawtooth echoes** whose wavelengths are fractions of a meter: $1/1, 1/2, 1/3, 1/4, \dots, 1/N$.
 
-- **Prime numbers ($2, 3, 5, 7, 11, \dots$)** are the **fundamental strings**—they cannot be broken into smaller whole-number rhythms.
-- **Composite numbers ($4, 6, 8, 9, 10, \dots$)** are **overtone collisions** where two or more rhythms meet (for example, $6 = 2 \times 3$ is where the $2$-beat and the $3$-beat hit the same note).
+- **Prime numbers ($2, 3, 5, 7, 11, \dots$)** are the **fundamental strings**—brand-new, irreducible frequencies entering the discrete clock $n = 1, 2, 3, \dots$ for the first time.
+- **Composite numbers ($4, 6, 8, 9, 10, \dots$)** are **overtone echoes** on the clock where earlier rhythms collide (for example, $6 = 2 \times 3$ is the first clock tick where $p=2$ and $p=3$ meet).
+- In the matrices, $\mathbf{D}_{M,N}$ records which earlier prime and composite rhythms divide clock tick $n$, while the Schur complement $\Sigma_N = Q_{CC} - Q_{CP} Q_{PP}^{-1} Q_{PC}$ literally tares out the prime dimensions ($p$) from the composite clock ticks ($n$).
 
 The **Riemann Hypothesis** asks a deceptively simple question about this pipe:
 > *If we keep adding more and more sawtooth echoes ($N \to \infty$), can we cancel out every ripple and make the remaining sound energy drop all the way to **zero**?*

@@ -15,6 +15,13 @@ Imagine a hollow metal organ pipe of length $1$ meter, and suppose you try to bu
 
 If you clamp the front half of the pipe $(1/2, 1]$, the rigid front wall reflects a loud standing echo $|b\rangle \mathbf{1}^T$. To hear the true interior prime–composite interference, you **tare the scale**: subtract the rank-1 front-wall anchor $|b\rangle\mathbf{1}^T$ and isolate the interior fluctuation $\Psi_N$.
 
+### 1.1b $n$ Is the Sequential Clock, $p$ Are the New Dimensions
+Walking along $n = 1, 2, 3, 4, 5, 6, \dots$ is moving step-by-step through discrete time:
+- Most ticks of the clock $n$ are **composites**—echoes made by multiplying earlier numbers together.
+- A **prime $p$** is a tick of the clock where a **brand-new, irreducible frequency** enters the system for the first time (contributing **`89.307%`** of the Cholesky innovation sum $1 - E_{\mathrm{free}}(64)$).
+- Your divisor matrix $\mathbf{D}_{M,N}$ records which earlier prime and composite rhythms divide the current clock tick $n$, while $\Sigma_M$ steps forward along the clock ($F_{M,N} = \Sigma_M \mathbf{D}_{M,N}$).
+- Partitioning $Q_N$ into the Prime block ($Q_{PP}$) and Composite block ($Q_{CC}$) and taking the Schur complement $\Sigma_N = Q_{CC} - Q_{CP} Q_{PP}^{-1} Q_{PC}$ tares out the primes ($p$) from the composite clock ticks ($n$): before $n = 6$, the only composite is $n = 4 = 2^2$ (a single prime echoing on its own 1D line), so $\delta_{PC}(4) = \delta_{PC}(5) = 0.0$; at clock tick $n = 6 = 2 \times 3$, two distinct primes ($p=2$ and $p=3$) collide in time for the first time, switching on the **`15.76%`** Schur depletion (`0.157648`, climbing to `30.40%` at $N = 30 = 2 \times 3 \times 5$).
+
 ### 1.2 The 8-Row Measurement Dictionary
 
 | Everyday Idea | Mathematical Name | Formula / Lean 4 Theorem | Observed Metric / Verification |

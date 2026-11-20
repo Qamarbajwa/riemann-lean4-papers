@@ -71,4 +71,32 @@ Every finite-dimensional operator mechanism in `RiemannBlueprint` mirrors the "S
 - **Hodge Conjecture (`v1.5.0-rosetta`):** `10.5281/zenodo.24381741`
 - **4D Yang–Mills (`v1.1.0-rosetta`):** `10.5281/zenodo.24378644`
 - **3D Navier–Stokes (`v1.0.0-rosetta`):** `10.5281/zenodo.24378625`
-- **Riemann Hypothesis (`RiemannBlueprint` / `riemann-lean4-papers`):** Hub 07 `10.5281/zenodo.24381534`, Hub 13 `10.5281/zenodo.24381535`, Hub 14 `10.5281/zenodo.24381605` (updated in `v3.2.0-rosetta`).
+- **Riemann Hypothesis (`RiemannBlueprint` / `riemann-lean4-papers`):** Hub 07 `10.5281/zenodo.24382033`, Hub 13 `10.5281/zenodo.24381535`, Hub 14 `10.5281/zenodo.24382036` (updated in `v3.3.0-rosetta`).
+
+---
+
+## Part 4 — Public Reading Perspectives: Identity Matrices, 2D Crossroads, the $4\pi$ Sphere & Cosmic Horizons
+
+*Original exposition by Qamar Munawer (`NO_RH_PROOF = TRUE`, `NO_UNIFIED_THEORY_CLAIM = TRUE`). Classical results are explicitly attributed to their originators (Euclid, Euler, Leibniz, De la Vallée Poussin, Einstein, Bekenstein–Hawking, Tsiolkovsky).*
+
+### 4.1 Numbers as Identity Matrices & the 94.7% Two-Body Crossroads Law
+If numbers only multiplied, each prime $p$ would sit quietly on its own independent identity axis $I_p$, and every composite would be a Kronecker product $I_p \otimes I_q = I_{pq}$ (`PrimeIdentityExteriorWedge.lean`). Addition ($+1$) forces those independent axes onto a single sequential clock $n = 1, 2, 3, \dots$, creating interference that Cholesky whitening $L_N^{-1}\widetilde{Q}_N L_N^{-T} = I_{N-1}$ untangles back to the identity (`1.283e-13` error at $N = 211$).
+
+- **1D Prime Lines Stall:** Using only primes $\Lambda^{\le 1}$ (or even primes + prime powers $p^m$) stalls near $E_{\mathrm{dir}} \approx 0.028511$ across $N = 30..500$.
+- **2D Semiprime Crossroads Carry ~94.7%:** As soon as pairwise 2D intersections $p_1 \wedge p_2$ ($\Lambda^2$) enter, $E_{\mathrm{dir}}$ collapses by $>3\times$ (`0.028511 -> 0.008543` at $N=500$). Across $N \in \{30, 100, 211, 350, 500\}$, **Grade-2 semiprime planes account for `94.20%–94.76%`** of the total composite reduction, while square-full echoes ($\mu(k)=0$) shrink to `0.92%` at $N=500$.
+
+### 4.2 Proving From the Opposite Side (Euclid's $+1$ Flip & Exclusion Discs)
+Why aren't odd numbers alone enough to prove infinitely many primes? Because a single odd prime like $3$ can generate infinitely many odd powers ($3, 9, 27, 81, \dots$). **Euclid's proof by contradiction** works because adding $+1$ to $p_1 \cdots p_k$ (e.g., $2\cdot 3\cdot 5\cdot 7 + 1 = 211$) steps off every existing prime's rhythm and forces a new prime dimension.
+
+In `EuclidOppositeSideExclusion.lean`, the same opposite-side logic turns finite-$N$ energy measurements into expanding **Euclid Exclusion Discs** via the Cauchy–Schwarz Mellin floor (De la Vallée Poussin 1899 / Báez–Duarte):
+$$\left(\beta_0 - \frac{1}{E_{\mathrm{dir}}(N)}\right)^2 + \gamma_0^2 < \frac{1 - E_{\mathrm{dir}}(N)}{E_{\mathrm{dir}}(N)^2}.$$
+From $N = 2$ to $N = 500$, the disc radius grows monotonically from $R_2 = 2.71$ to $R_{500} = 134.15$ ($\beta_{\min}(500) = 0.500932$), while the $N \to \infty$ limit remains **strictly OPEN**.
+
+### 4.3 Splitting One Into Two Halves ($P_+ + P_- = I$) & Reconstructing $\pi$ From Scratch
+In `HalfDimensionIdentitySplit.lean`, the Möbius reflection $J_N = \operatorname{diag}(\mu(k))$ ($J_N^2 = I$) splits the identity into two orthogonal halves $P_\pm = \frac{1}{2}(I \pm J_N)$ **before** squaring erases sign (`P_+ + P_- = I`, `P_+ P_- = 0`). At $N = 211$, the whitened Cholesky norm splits cleanly into **`85.28%` odd-grade ($P_-$)** vs. **`14.72%` even-grade ($P_+$)**, and second-order Schur taring $S_{\ge 3}$ achieves `98.23%` (`N=211`) and `98.78%` (`N=500`) depletion. Inverting the Vasyunin tare $\frac{1}{4}\exp(2 + \gamma - \ln(N)E_{\mathrm{dir}}(N))$ reconstructs $\pi \approx 3.14162463$ (`0.0010%` error at $N = 211$) and $\sqrt{\pi} = \Gamma(1/2) \approx 1.77246287$ alongside Euler's trace product and the Mod-4 prime diode product (Leibniz).
+
+### 4.4 From Flat Circle ($2\pi$) to Sphere ($4\pi$), Gravity, & Cosmic Horizons
+In `RiemannSphereDoubleCover.lean`:
+- **Circle vs. Sphere ($2\pi$ vs. $4\pi$):** On $S^2 / SU(2) \cong S^3$, a $360^\circ$ turn gives half-angle $\theta/2 = \pi$ ($\cos\pi = -1$), requiring **$720^\circ$ ($4\pi$)** to return to $+1$—mirroring the $4\pi$ sphere-area scale inside $C_{\mathrm{BBLR}} = 2 + \gamma - \ln(4\pi)$ and explaining why spacecraft attitude computers use $S^3$ quaternions rather than Euler angles.
+- **Space vs. Matter & Why We Feel a "Push":** In General Relativity (Einstein), **space** is the metric stage ($g_{\mu\nu}$), **matter** is the stress-energy source ($T_{\mu\nu}$), and **gravity** is their 2-form curvature coupling $G_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu}$ ($\alpha_G \approx 5.9 \times 10^{-39}$, $10^{36}\times$ weaker than electromagnetism between two protons). Free-fall feels zero push; the "push" we feel on a floor is a **boundary gradient** ($\mathbf{F} = -\nabla V$) backed by electromagnetic and Pauli-exclusion repulsion.
+- **Barycenter Taring, Light Cones & Horizons:** Just as Earth (`81.3x` heavier) and the Moon orbit a shared barycenter (`4,671 km` inside Earth) while light's finite speed $c$ sets an observable horizon (`~46.5 billion light-years`), and a black hole amalgamates infalling energies onto a $4\pi r_s^2$ event-horizon sphere (Bekenstein–Hawking), our finite Rosetta matrices tare out bulk motion and reveal sharp phase transitions ($N=6$ timelike switch in Riemann; `12.74x` Win–Win Arch in 3D Navier–Stokes)—while all continuum/infinite Clay limits and Quantum Gravity remain **strictly OPEN**.
